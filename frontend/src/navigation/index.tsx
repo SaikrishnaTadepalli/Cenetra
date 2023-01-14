@@ -5,15 +5,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import { View, Text } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  SimpleLineIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 import colors from "../constants/Colors";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { RootStackParamList } from "../../types";
 import { RootTabParamList } from "../../types";
 
-import LogScreen from "../screens/LogScreen";
+import DailyLogsScreen from "../screens/DailyLogsScreen";
 import ChatScreen from "../screens/ChatScreen";
 import NoticeScreen from "../screens/NoticeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
@@ -118,7 +121,7 @@ const BottomTab = createBottomTabNavigator();
 function BottomTabNavigator({ navigation, route }) {
   return (
     <BottomTab.Navigator
-      initialRouteName="Log"
+      initialRouteName="DailyLogs"
       screenOptions={{
         tabBarStyle: {
           shadowOffset: {
@@ -177,8 +180,8 @@ function BottomTabNavigator({ navigation, route }) {
       }}
     >
       <BottomTab.Screen
-        name="Logs"
-        component={LogScreen}
+        name="DailyLogs"
+        component={DailyLogsScreen}
         options={({ navigation, route }) => {
           return {
             tabBarIcon: ({ color }) => (
