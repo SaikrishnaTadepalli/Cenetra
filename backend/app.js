@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const graphqlHttp = require("express-graphql").graphqlHTTP;
 const mongoose = require("mongoose");
+const config = require("./utils/config");
 
 const graphQlSchema = require("./graphql/schema/injex");
 const graphQlResolvers = require("./graphql/resolvers/index");
@@ -19,15 +20,12 @@ app.use(
   })
 );
 
-const DN_Name = "cenetra-dev";
 mongoose.set("strictQuery", false);
 mongoose
-  .connect(
-    `mongodb+srv://Cenetra:<Password>@cluster0.5eznkpa.mongodb.net/${DN_Name}?retryWrites=true&w=majority`
-  )
+  .connect(config.MONGODB_URI)
   .then(() => {
-    console.log("Connected to MongoDB. App running on port 3000");
-    app.listen(3000);
+    console.log(`Connected to MongoDB. App running on port: ${config.PORT}.`);
+    app.listen(config.PORT);
   })
   .catch((err) => {
     console.log(err);
