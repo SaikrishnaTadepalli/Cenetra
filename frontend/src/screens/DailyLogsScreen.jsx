@@ -11,7 +11,7 @@ import React from "react";
 import Card from "../components/Card";
 import Picture from "../components/Picture";
 
-const DailyLogsScreen = () => {
+const DailyLogsScreen = ({ navigation }) => {
   const logs = [
     { id: "1", title: "Title", time: "Time", date: "Created on..." },
     { id: "2", title: "Title", time: "Time", date: "Created on..." },
@@ -52,7 +52,10 @@ const DailyLogsScreen = () => {
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.titleText}>Daily Logs</Text>
-      <TouchableOpacity style={styles.buttonText}>
+      <TouchableOpacity
+        style={styles.buttonText}
+        onPress={() => navigation.navigate("Gallery")}
+      >
         <Text style={styles.buttonText}>See All</Text>
       </TouchableOpacity>
       <ScrollView horizontal={true} style={styles.imagesContainer}>

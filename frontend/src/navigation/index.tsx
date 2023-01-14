@@ -20,7 +20,7 @@ import DailyLogsScreen from "../screens/DailyLogsScreen";
 import ChatScreen from "../screens/ChatScreen";
 import NoticeScreen from "../screens/NoticeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import PicturesScreen from "../screens/PicturesScreen";
+import GalleryScreen from "../screens/GalleryScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import { RootState } from "../redux/store";
 
@@ -79,14 +79,8 @@ function RootNavigator() {
               headerShown: false,
             }}
           />
+          <Stack.Screen name="Gallery" component={GalleryScreen} />
           {/* <Stack.Screen
-              name="LogViewScreen"
-              component={<Component>}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
               name="Gallery"
               component={<Component>}
               options={{
@@ -99,7 +93,7 @@ function RootNavigator() {
               options={{
                 headerShown: false,
               }}
-            /> */}
+            />  */}
         </>
       ) : (
         <>

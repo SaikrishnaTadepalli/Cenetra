@@ -8,7 +8,7 @@ import LogScreen from "./src/screens/LogScreen";
 import ChatScreen from "./src/screens/ChatScreen";
 import NoticeScreen from "./src/screens/NoticeScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
-import PicturesScreen from "./src/screens/PicturesScreen";
+import PicturesScreen from "./src/screens/GalleryScreen";
 //import Header from "./components/Header";
 
 const Tab = createBottomTabNavigator();
