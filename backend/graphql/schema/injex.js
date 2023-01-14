@@ -33,6 +33,15 @@ type Log {
     details: String!
 }
 
+type Notice {
+    _id: ID!
+    teacher: Teacher!
+    students: [Student!]!
+    details: String!
+    createdAt: String!
+    updatedAt: String!
+}
+
 input TeacherInput {
     firstName: String!
     lastName: String!
@@ -52,6 +61,7 @@ type RootQuery {
     students: [Student!]!
     classes: [Class!]!
     logs(studentId: ID!): [Log!]!
+    notices(studentId: ID!): [Notice!]!
 }
 
 type RootMutation {
@@ -63,6 +73,8 @@ type RootMutation {
     addStudentToClass(classId: ID!, studentId: ID!): Class!
 
     createLog(teacherId: ID!, studentId: ID!, details: String!): Log!
+
+    createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
 }
 
 schema {
