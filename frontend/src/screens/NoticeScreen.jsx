@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, SectionList } from "react-native";
 import React from "react";
 
 import Card from "../components/Card";
-import Picture from "../components/Picture";
 
 const NoticeScreen = () => {
   const notices = [
