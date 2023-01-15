@@ -50,7 +50,7 @@ const DailyLogsScreen = ({ navigation }) => {
     { id: "13", uri: "https://reactnative.dev/img/tiny_logo.png" },
   ];
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView style={styles.mainContainer} nestedScrollEnabled={true}>
       <Text style={styles.titleText}>Daily Logs</Text>
       <TouchableOpacity
         style={styles.buttonText}
@@ -61,24 +61,18 @@ const DailyLogsScreen = ({ navigation }) => {
       <ScrollView horizontal={true} style={styles.imagesContainer}>
         {pictures.map((picture, idx) =>
           idx < 10 ? (
-            <View style={styles.imageContainer}>
-              <Picture key={picture.id} />
+            <View key={picture.id} style={styles.imageContainer}>
+              <Picture isGallery={false} />
             </View>
           ) : null
         )}
       </ScrollView>
-      <FlatList
-        data={logs}
-        keyExtractor={(log) => log.id}
-        ListFooterComponent={<View />}
-        ListFooterComponentStyle={{ height: 240 }}
-        renderItem={({ log }) => (
-          <View style={styles.logsContainer}>
-            <Card isLog={true} />
-          </View>
-        )}
-      />
-    </View>
+      {logs.map((log) => (
+        <View style={styles.logsContainer} key={log.id}>
+          <Card isLog={true} navigateTo={"Log"} navigation={navigation} />
+        </View>
+      ))}
+    </ScrollView>
   );
 };
 
@@ -108,7 +102,6 @@ const styles = StyleSheet.create({
   imagesContainer: {
     marginBottom: 18,
     marginLeft: 20,
-    paddingBottom: 42,
   },
   imageContainer: {
     marginRight: 10,

@@ -23,6 +23,8 @@ import SettingsScreen from "../screens/SettingsScreen";
 import GalleryScreen from "../screens/GalleryScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import { RootState } from "../redux/store";
+import LogScreen from "../screens/LogScreen";
+import NoticeInfoScreen from "../screens/NoticeInfoScreen";
 
 // Understand This
 const MyTheme = {
@@ -80,20 +82,8 @@ function RootNavigator() {
             }}
           />
           <Stack.Screen name="Gallery" component={GalleryScreen} />
-          {/* <Stack.Screen
-              name="Gallery"
-              component={<Component>}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="IndividualChat"
-              component={<Component>}
-              options={{
-                headerShown: false,
-              }}
-            />  */}
+          <Stack.Screen name="Log" component={LogScreen} />
+          <Stack.Screen name="NoticeInfo" component={NoticeInfoScreen} />
         </>
       ) : (
         <>

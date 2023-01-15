@@ -1,9 +1,12 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 
-const Card = ({ isLog }) => {
+const Card = ({ isLog, navigation, navigateTo }) => {
   return (
-    <View style={styles.cardContainer}>
+    <TouchableOpacity
+      style={styles.cardContainer}
+      onPress={() => navigation.navigate(navigateTo)}
+    >
       <View style={styles.headerRow}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {isLog ? null : <View style={styles.dotContainer} />}
@@ -14,7 +17,7 @@ const Card = ({ isLog }) => {
       <View style={styles.dateContainer}>
         <Text style={styles.dateText}>Created on...</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

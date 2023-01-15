@@ -28,7 +28,7 @@ const GalleryScreen = () => {
       ListFooterComponent={<View />}
       ListFooterComponentStyle={{ height: 20 }}
       numColumns={3}
-      renderItem={({ picture }) => <Picture />}
+      renderItem={({ picture }) => <Picture isGallery={true} />}
     />
   );
 };

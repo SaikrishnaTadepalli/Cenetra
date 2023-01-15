@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 
-const Picture = () => {
+const Picture = ({ isGallery }) => {
   return (
-    <View style={styles.pictureContainer}>
+    <View style={!isGallery ? styles.pictureContainer : null}>
       <Image
-        style={styles.pictureSize}
+        style={!isGallery ? styles.pictureSize : styles.galleryPictureSize}
         source={{
           uri: "https://reactnative.dev/img/tiny_logo.png",
         }}
@@ -28,5 +28,9 @@ const styles = StyleSheet.create({
     height: 90,
     alignSelf: "center",
     marginVertical: 18,
+  },
+  galleryPictureSize: {
+    width: 115,
+    height: 130,
   },
 });

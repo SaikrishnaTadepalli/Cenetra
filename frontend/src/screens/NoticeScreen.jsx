@@ -3,7 +3,7 @@ import React from "react";
 
 import Card from "../components/Card";
 
-const NoticeScreen = () => {
+const NoticeScreen = ({ navigation }) => {
   const notices = [
     {
       title: "Today",
@@ -58,7 +58,11 @@ const NoticeScreen = () => {
         ListFooterComponentStyle={{ height: 20 }}
         renderItem={({ notice }) => (
           <View style={styles.noticesContainer}>
-            <Card isLog={false} />
+            <Card
+              isLog={false}
+              navigateTo={"NoticeInfo"}
+              navigation={navigation}
+            />
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
