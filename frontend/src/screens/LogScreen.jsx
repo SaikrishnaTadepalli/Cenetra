@@ -98,7 +98,7 @@ const LogScreen = ({ navigation }) => {
         )}
       </ScrollView>
       {logs.map((log) => (
-        <View>
+        <View key={log.id}>
           <Text style={[styles.sectionHeader, { color: log.color }]}>
             {log.title}
           </Text>
