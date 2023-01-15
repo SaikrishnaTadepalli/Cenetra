@@ -1,7 +1,5 @@
 const Student = require("../../models/student");
 const Teacher = require("../../models/teacher");
-const Class = require("../../models/class");
-const Log = require("../../models/log");
 
 const { dateToString } = require("../../utils/date");
 
@@ -22,6 +20,17 @@ const transformLog = (log) => {
     student: student.bind(this, log._doc.student),
     createdAt: dateToString(log._doc.createdAt),
     updatedAt: dateToString(log._doc.updatedAt),
+  };
+};
+
+const transformNotice = (notice) => {
+  return {
+    ...notice._doc,
+    _id: notice.id,
+    teacher: teacher.bind(this, notice._doc.teacher),
+    students: students.bind(this, notice._doc.students),
+    createdAt: dateToString(notice._doc.createdAt),
+    updatedAt: dateToString(notice._doc.updatedAt),
   };
 };
 
@@ -61,3 +70,4 @@ const students = async (stuIds) => {
 
 exports.transformClass = transformClass;
 exports.transformLog = transformLog;
+exports.transformNotice = transformNotice;

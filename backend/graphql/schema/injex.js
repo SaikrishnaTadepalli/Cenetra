@@ -37,9 +37,9 @@ type Notice {
     _id: ID!
     teacher: Teacher!
     students: [Student!]!
-    details: String!
     createdAt: String!
     updatedAt: String!
+    details: String!
 }
 
 input TeacherInput {
