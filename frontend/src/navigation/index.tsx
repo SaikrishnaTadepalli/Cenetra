@@ -3,12 +3,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import {
   Ionicons,
   SimpleLineIcons,
   MaterialCommunityIcons,
+  Octicons,
+  Feather,
 } from "@expo/vector-icons";
 
 import colors from "../constants/Colors";
@@ -159,7 +161,7 @@ function BottomTabNavigator({ navigation, route }) {
         headerTitle: "",
         tabBarItemStyle: { height: 45, marginTop: 10 },
         tabBarActiveTintColor: "#037971",
-        tabBarInactiveTintColor: "#9ac9c6",
+        tabBarInactiveTintColor: "#037971",
         tabBarShowLabel: false,
       }}
     >
@@ -168,9 +170,12 @@ function BottomTabNavigator({ navigation, route }) {
         component={DailyLogsScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ color }) => (
-              <Ionicons name="document-outline" size={28} color={color} />
-            ),
+            tabBarIcon: ({ focused, color }) =>
+              focused ? (
+                <Ionicons name="document" size={28} color={color} />
+              ) : (
+                <Ionicons name="document-outline" size={28} color={color} />
+              ),
           };
         }}
       />
@@ -179,13 +184,12 @@ function BottomTabNavigator({ navigation, route }) {
         component={NoticeScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="bell-outline"
-                size={28}
-                color={color}
-              />
-            ),
+            tabBarIcon: ({ focused, color }) =>
+              focused ? (
+                <Octicons name="bell-fill" size={28} color={color} />
+              ) : (
+                <Feather name="bell" size={28} color={color} />
+              ),
           };
         }}
       />
@@ -194,13 +198,12 @@ function BottomTabNavigator({ navigation, route }) {
         component={ChatScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="chat-outline"
-                size={28}
-                color={color}
-              />
-            ),
+            tabBarIcon: ({ focused, color }) =>
+              focused ? (
+                <Ionicons name="chatbubble" size={28} color={color} />
+              ) : (
+                <Ionicons name="chatbubble-outline" size={28} color={color} />
+              ),
           };
         }}
       />
@@ -209,9 +212,12 @@ function BottomTabNavigator({ navigation, route }) {
         component={SettingsScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="account" size={28} color={color} />
-            ),
+            tabBarIcon: ({ focused, color }) =>
+              focused ? (
+                <Ionicons name="person" size={28} color={color} />
+              ) : (
+                <Ionicons name="person-outline" size={28} color={color} />
+              ),
           };
         }}
       />

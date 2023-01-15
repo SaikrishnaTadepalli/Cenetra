@@ -8,41 +8,161 @@ const NoticeScreen = ({ navigation }) => {
     {
       title: "Today",
       data: [
-        { id: "1", title: "Title", time: "Time", date: "Created on..." },
-        { id: "2", title: "Title", time: "Time", date: "Created on..." },
-        { id: "3", title: "Title", time: "Time", date: "Created on..." },
-        { id: "4", title: "Title", time: "Time", date: "Created on..." },
+        {
+          id: "1",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: true,
+        },
+        {
+          id: "2",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "3",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: true,
+        },
+        {
+          id: "4",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
       ],
     },
     {
       title: "Yesterday",
       data: [
-        { id: "5", title: "Title", time: "Time", date: "Created on..." },
-        { id: "6", title: "Title", time: "Time", date: "Created on..." },
-        { id: "7", title: "Title", time: "Time", date: "Created on..." },
-        { id: "8", title: "Title", time: "Time", date: "Created on..." },
-        { id: "9", title: "Title", time: "Time", date: "Created on..." },
+        {
+          id: "5",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "6",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "7",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "8",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "9",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
       ],
     },
     {
       title: "October 2, 2022",
       data: [
-        { id: "10", title: "Title", time: "Time", date: "Created on..." },
-        { id: "11", title: "Title", time: "Time", date: "Created on..." },
-        { id: "12", title: "Title", time: "Time", date: "Created on..." },
-        { id: "13", title: "Title", time: "Time", date: "Created on..." },
-        { id: "14", title: "Title", time: "Time", date: "Created on..." },
-        { id: "15", title: "Title", time: "Time", date: "Created on..." },
-        { id: "16", title: "Title", time: "Time", date: "Created on..." },
+        {
+          id: "10",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "11",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "12",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "13",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "14",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "15",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "16",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
       ],
     },
     {
       title: "April 16, 2022",
       data: [
-        { id: "17", title: "Title", time: "Time", date: "Created on..." },
-        { id: "18", title: "Title", time: "Time", date: "Created on..." },
-        { id: "19", title: "Title", time: "Time", date: "Created on..." },
-        { id: "20", title: "Title", time: "Time", date: "Created on..." },
+        {
+          id: "17",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "18",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "19",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
+        {
+          id: "20",
+          title: "Title",
+          time: "Time",
+          date: "Created on...",
+          isUnread: false,
+        },
       ],
     },
   ];
@@ -56,12 +176,13 @@ const NoticeScreen = ({ navigation }) => {
         keyExtractor={(notice) => notice.id}
         ListFooterComponent={<View />}
         ListFooterComponentStyle={{ height: 20 }}
-        renderItem={({ notice }) => (
+        renderItem={({ item }) => (
           <View style={styles.noticesContainer}>
             <Card
               isLog={false}
               navigateTo={"NoticeInfo"}
               navigation={navigation}
+              isUnread={item.isUnread}
             />
           </View>
         )}

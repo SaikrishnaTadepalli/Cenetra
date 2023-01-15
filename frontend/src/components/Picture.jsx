@@ -20,14 +20,15 @@ const styles = StyleSheet.create({
   pictureContainer: {
     width: 115,
     height: 130,
-    backgroundColor: "#D9D9D9",
-    borderRadius: 8,
+    backgroundColor: "#E9E9E9",
+    borderRadius: 20,
+    justifyContent: "center",
   },
   pictureSize: {
     width: 75,
     height: 90,
     alignSelf: "center",
-    marginVertical: 18,
+    borderRadius: 5,
   },
   galleryPictureSize: {
     width: 115,

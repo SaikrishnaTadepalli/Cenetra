@@ -1,11 +1,21 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { useState } from "react";
 
-const Card = ({ isLog, navigation, navigateTo }) => {
+const Card = ({ isLog, navigation, navigateTo, isUnread }) => {
+  const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
+
+  const handleClick = () => {
+    navigation.navigate(navigateTo);
+    setIsNoticeUnread(false);
+  };
+
+  const cardColor = isNoticeUnread ? "#CCCCCC" : "#FFFF";
+
   return (
     <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={() => navigation.navigate(navigateTo)}
+      style={[styles.cardContainer, { backgroundColor: cardColor }]}
+      onPress={handleClick}
     >
       <View style={styles.headerRow}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -26,7 +36,6 @@ export default Card;
 const styles = StyleSheet.create({
   cardContainer: {
     width: 390,
-    backgroundColor: "#FFFFFF",
     borderColor: "#CCCCCC",
     borderWidth: 1,
     borderRadius: 4,
