@@ -4,10 +4,10 @@
     "slug": "cenetra",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/AppIcon.jpg",
+    "icon": "./assets/images/AppIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/SplashScreen.jpg",
+      "image": "./assets/images/SplashScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#EAECFF"
     },
