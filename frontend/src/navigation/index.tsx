@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 
@@ -16,6 +16,7 @@ import DailyLogsScreen from "../screens/DailyLogsScreen";
 import ChatScreen from "../screens/ChatScreen";
 import NoticeScreen from "../screens/NoticeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 import GalleryScreen from "../screens/GalleryScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import { RootState } from "../redux/store";
@@ -86,6 +87,7 @@ const RootNavigator = () => {
             name="IndividualChat"
             component={IndividualChatScreen}
           />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
         </>
       ) : (
         <>
@@ -149,15 +151,21 @@ const BottomTabNavigator = ({ navigation, route }) => {
             }}
           >
             <Logo />
-            <Text style={{ fontWeight: "400", fontSize: 18, marginLeft: 16 }}>
+            <Text
+              style={{
+                fontFamily: "InterMedium",
+                fontSize: 18,
+                marginLeft: 16,
+              }}
+            >
               Cenetra
             </Text>
           </View>
         ),
         headerTitle: "",
         tabBarItemStyle: { height: 45, marginTop: 10 },
-        tabBarActiveTintColor: "#8390FA",
-        tabBarInactiveTintColor: "#6F6D6D",
+        tabBarActiveTintColor: colors.purple,
+        tabBarInactiveTintColor: colors.darkGrey,
         tabBarShowLabel: false,
       }}
     >
@@ -171,14 +179,14 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: "#EAECFF",
+                        backgroundColor: colors.lightPurple,
                         width: 45,
                         height: 45,
                         alignItems: "center",
                         justifyContent: "center",
                         borderRadius: 6,
                       }
-                    : { backgroundColor: "#FFFF" }
+                    : { backgroundColor: colors.white }
                 }
               >
                 <Ionicons name="document" size={24} color={color} />
@@ -197,14 +205,14 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: "#EAECFF",
+                        backgroundColor: colors.lightPurple,
                         width: 45,
                         height: 45,
                         alignItems: "center",
                         justifyContent: "center",
                         borderRadius: 6,
                       }
-                    : { backgroundColor: "#FFFF" }
+                    : { backgroundColor: colors.white }
                 }
               >
                 <Octicons name="bell-fill" size={24} color={color} />
@@ -223,14 +231,14 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: "#EAECFF",
+                        backgroundColor: colors.lightPurple,
                         width: 45,
                         height: 45,
                         alignItems: "center",
                         justifyContent: "center",
                         borderRadius: 6,
                       }
-                    : { backgroundColor: "#FFFF" }
+                    : { backgroundColor: colors.white }
                 }
               >
                 <Ionicons name="chatbubble" color={color} size={24} />
@@ -240,8 +248,8 @@ const BottomTabNavigator = ({ navigation, route }) => {
         }}
       />
       <BottomTab.Screen
-        name="Settings"
-        component={SettingsScreen}
+        name="Profile"
+        component={ProfileScreen}
         options={({ navigation, route }) => {
           return {
             tabBarIcon: ({ focused, color }) => (
@@ -249,19 +257,37 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: "#EAECFF",
+                        backgroundColor: colors.lightPurple,
                         width: 45,
                         height: 45,
                         alignItems: "center",
                         justifyContent: "center",
                         borderRadius: 6,
                       }
-                    : { backgroundColor: "#FFFF" }
+                    : { backgroundColor: colors.white }
                 }
               >
                 <Ionicons name="person" size={24} color={color} />
               </View>
             ),
+            headerRight: () => {
+              return (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Settings")}
+                >
+                  <Ionicons
+                    name="settings-outline"
+                    color={colors.darkGrey}
+                    size={24}
+                    style={{
+                      alignSelf: "flex-end",
+                      marginRight: 20,
+                      marginBottom: 10,
+                    }}
+                  />
+                </TouchableOpacity>
+              );
+            },
           };
         }}
       />
