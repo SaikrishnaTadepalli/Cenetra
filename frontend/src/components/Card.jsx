@@ -16,7 +16,7 @@ const Card = ({
   const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
 
   const handleClick = () => {
-    navigation.navigate(navigateTo);
+    navigation.navigate(navigateTo, { title: title });
     setIsNoticeUnread(false);
   };
 
