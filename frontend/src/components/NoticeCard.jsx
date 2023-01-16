@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
+import colors from "../constants/Colors";
+
 const NoticeCard = () => {
   return (
     <View style={styles.container}>
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
     marginTop: 10,
-    borderColor: "#CCCCCC",
+    borderColor: colors.lightGrey,
     borderWidth: 2,
     width: 390,
     borderRadius: 8,
@@ -36,12 +38,12 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: "InterMedium",
   },
   timeText: {
-    color: "#A2A2A2",
+    color: colors.secondaryText,
     fontSize: 14,
-    fontWeight: "500",
+    fontFamily: "InterMedium",
     textAlign: "center",
     alignSelf: "center",
     marginLeft: 10,
@@ -50,5 +52,7 @@ const styles = StyleSheet.create({
   noticeText: {
     fontSize: 16,
     marginLeft: 10,
+    fontFamily: "InterRegular",
+    color: colors.primaryText,
   },
 });

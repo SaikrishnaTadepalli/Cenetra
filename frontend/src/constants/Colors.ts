@@ -1,16 +1,21 @@
-const tintColorLight = "#2f95dc";
+// const tintColorLight = "#2f95dc";
 
-const lightGreyBackground = "#fafafa";
+// const lightGreyBackground = "#fafafa";
 
-// colours 2.0
-const primaryPurple = "#7656D5";
-const lighterPurpleShade = "#FAF9FF";
-const offWhite = "#FCFBFF";
-const darkGrey = "#363537";
+const lightBlack = "#363535";
 const black = "#000000";
-const lightGreyShade = "#EEEEEE";
-const lightGrey = "#7D7D7D";
 const white = "#fff";
+const grey = "#A1A1A1";
+const lightGreyBackground = "#E9E9E9";
+const lightGrey = "#CCCCCC";
+const green = "#037971";
+const darkGrey = "#585858";
+
+// const primaryPurple = "#7656D5";
+// const lighterPurpleShade = "#FAF9FF";
+// const offWhite = "#FCFBFF";
+// const lightGreyShade = "#EEEEEE";
+// const lightGrey = "#7D7D7D";
 
 const primary = {
   100: "#f5f3ff",
@@ -79,19 +84,25 @@ const newColors = {
 };
 
 export default {
-  primaryText: black,
-  secondaryText: lightGrey,
+  headerText: black,
+  sectionText: darkGrey,
+  primaryText: lightBlack,
+  secondaryText: grey,
   appBackground: white,
-  cardBackground: offWhite,
-  primaryCol: primaryPurple,
-  backgroundShapes: lighterPurpleShade,
-  mapPillBackground: darkGrey,
-  tagsBackground: lightGreyShade,
-  inactiveTabBackground: "#F3EFFF",
+  cardBackground: white,
+  lightGrey: lightGrey,
+  green: green,
+  buttonText: "#10AC76",
   background: lightGreyBackground,
-  tint: tintColorLight,
-  tabIconDefault: "#ccc",
-  tabIconSelected: tintColorLight,
+  // primaryCol: primaryPurple,
+  // backgroundShapes: lighterPurpleShade,
+  // mapPillBackground: darkGrey,
+  // tagsBackground: lightGreyShade,
+  // inactiveTabBackground: "#F3EFFF",
+  // background: lightGreyBackground,
+  // tint: tintColorLight,
+  // tabIconDefault: "#ccc",
+  // tabIconSelected: tintColorLight,
   white: white,
   black: black,
   primary,

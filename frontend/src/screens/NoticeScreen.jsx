@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SectionList } from "react-native";
 import React from "react";
 
 import Card from "../components/Card";
+import colors from "../constants/Colors";
 
 const NoticeScreen = ({ navigation }) => {
   const notices = [
@@ -198,12 +199,12 @@ export default NoticeScreen;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     paddingBottom: 32,
   },
   titleText: {
     fontSize: 24,
-    fontWeight: "500",
+    fontFamily: "InterMedium",
     textAlign: "left",
     marginLeft: 20,
     marginTop: 20,
@@ -213,9 +214,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionHeaderText: {
-    color: "#585858",
+    color: colors.sectionText,
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: "InterMedium",
     marginBottom: 12,
     marginLeft: 20,
     marginTop: 20,

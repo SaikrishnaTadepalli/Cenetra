@@ -9,6 +9,7 @@ import React from "react";
 
 import LogCard from "../components/LogCard";
 import Picture from "../components/Picture";
+import colors from "../constants/Colors";
 
 const LogScreen = ({ navigation }) => {
   const pictures = [
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     textAlign: "center",
     fontSize: 20,
-    fontWeight: "700",
+    fontFamily: "InterSemiBold",
     marginBottom: 8,
     marginTop: 10,
   },
@@ -129,9 +130,9 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   buttonText: {
-    color: "#10AC76",
+    color: colors.buttonText,
     fontSize: 12,
-    fontWeight: "500",
+    fontFamily: "InterMedium",
     marginRight: 16,
     marginVertical: 8,
   },

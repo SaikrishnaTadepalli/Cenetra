@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 
+import colors from "../constants/Colors";
+
 const Picture = ({ isGallery }) => {
   return (
     <View style={!isGallery ? styles.pictureContainer : null}>
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
   pictureContainer: {
     width: 115,
     height: 130,
-    backgroundColor: "#E9E9E9",
+    backgroundColor: colors.background,
     borderRadius: 20,
     justifyContent: "center",
   },
