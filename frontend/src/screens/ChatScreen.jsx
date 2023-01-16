@@ -8,20 +8,20 @@ const ChatScreen = ({ navigation }) => {
   const chats = [
     {
       id: "1",
-      sender: "Vipasha Gupta",
+      sender: "Mr. Vladmir Putin",
       subject: "Thank you for your message",
       time: "1 min ago",
     },
     {
       id: "2",
-      sender: "Saikrishna Tadepalli",
-      subject: "Thank you for your message",
+      sender: "Ms. Kim Kardashian",
+      subject: "I'll let you know as soon as possible",
       time: "2 min ago",
     },
     {
       id: "3",
-      sender: "Teacher",
-      subject: "Thank you for your message",
+      sender: "Ms. Nareni Modi",
+      subject: "Will you be free for a chat?",
       time: "10 min ago",
     },
   ];

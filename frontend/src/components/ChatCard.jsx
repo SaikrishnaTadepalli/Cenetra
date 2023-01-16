@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import colors from "../constants/Colors";
 
 const ChatCard = ({ name, subject, time, navigation, isRead }) => {
-  const image = require("../../assets/chatImage.jpeg");
+  const image = require("../../assets/images/chatImage.jpeg");
   const [isChatRead, setIsChatRead] = useState(isRead);
 
   const handleClick = () => {

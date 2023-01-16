@@ -2,6 +2,7 @@
   "expo": {
     "name": "Cenetra",
     "slug": "cenetra-test",
+    "owner": "vips11",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/AppIcon.png",

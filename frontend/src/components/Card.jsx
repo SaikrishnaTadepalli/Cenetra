@@ -12,11 +12,16 @@ const Card = ({
   title,
   time,
   subText,
+  stars,
 }) => {
   const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
 
   const handleClick = () => {
-    navigation.navigate(navigateTo);
+    navigation.navigate(navigateTo, {
+      title: title,
+      subText: subText,
+      time: time,
+    });
     setIsNoticeUnread(false);
   };
 
@@ -28,14 +33,26 @@ const Card = ({
       onPress={handleClick}
     >
       <View style={styles.headerRow}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            width: "70%",
+          }}
+        >
           {isLog ? null : <View style={styles.dotContainer} />}
-          <Text style={styles.titleText}>{title}</Text>
+          <Text style={styles.titleText} numberOfLines={1} ellipsizeMode="tail">
+            {title}
+          </Text>
         </View>
         <Text style={styles.timeText}>{time}</Text>
       </View>
       <View>
-        {isLog ? null : <Text style={styles.dateText}>{subText}</Text>}
+        {isLog ? null : (
+          <Text style={styles.subText} numberOfLines={1} ellipsizeMode="tail">
+            {subText}
+          </Text>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -70,16 +87,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.primaryText,
     fontFamily: "InterMedium",
+    width: "90%",
   },
   timeText: {
     color: colors.secondaryText,
     fontSize: 14,
     fontFamily: "InterMedium",
     alignSelf: "center",
+    width: "30%",
+    textAlign: "right",
   },
-  dateText: {
+  subText: {
     color: colors.secondaryText,
     fontSize: 14,
+    width: "90%",
     fontFamily: "InterMedium",
   },
 });

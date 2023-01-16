@@ -11,17 +11,17 @@ const ProfileScreen = () => {
       <View style={styles.profileContainer}>
         <View style={styles.imageAndChildInfoContainer}>
           <Image
-            source={require("../../assets/childImage.png")}
+            source={require("../../assets/images/childImage.png")}
             width={60}
             height={60}
           />
           <View style={styles.studentDetailsContainer}>
-            <Text style={styles.studentName}>Child name</Text>
-            <Text style={styles.studentId}>Student #</Text>
+            <Text style={styles.studentName}>Cashew Patel</Text>
+            <Text style={styles.studentId}>Student Number: 90982047</Text>
           </View>
         </View>
-        <Text style={styles.teacherName}>Teacher: Ms X</Text>
-        <Text style={styles.section}>Section: 2B</Text>
+        <Text style={styles.teacherName}>Teacher: Ms Johanna Beckett</Text>
+        <Text style={styles.section}>Section: 2 B</Text>
       </View>
       <View style={styles.iconsContainer}>
         {icons.map((icon, idx) => (
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     color: colors.navyBlue,
   },
   studentId: {
-    fontFamily: "InterRegular",
-    fontSize: 16,
+    fontFamily: "InterMedium",
+    fontSize: 14,
     color: colors.navyBlue,
   },
   teacherName: {

@@ -30,20 +30,20 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginHorizontal: 10,
     marginBottom: 8,
   },
   headerText: {
     fontSize: 18,
     fontFamily: "InterMedium",
+    flexWrap: "wrap",
+    maxWidth: 240,
   },
   timeText: {
     color: colors.secondaryText,
     fontSize: 14,
     fontFamily: "InterMedium",
-    textAlign: "center",
-    alignSelf: "center",
-    marginLeft: 10,
     marginTop: 1,
   },
   noticeText: {
