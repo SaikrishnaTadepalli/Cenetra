@@ -3,16 +3,14 @@ import React from "react";
 
 import colors from "../constants/Colors";
 
-const NoticeCard = () => {
+const NoticeCard = ({ title, time, text }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Title</Text>
-        <Text style={styles.timeText}>Time</Text>
+        <Text style={styles.headerText}>{title}</Text>
+        <Text style={styles.timeText}>{time}</Text>
       </View>
-      <Text style={styles.noticeText}>
-        There is a PTA meeting going to be held on 26th June at 5pm.
-      </Text>
+      <Text style={styles.noticeText}>{text}</Text>
     </View>
   );
 };

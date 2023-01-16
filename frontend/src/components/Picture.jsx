@@ -3,13 +3,13 @@ import React from "react";
 
 import colors from "../constants/Colors";
 
-const Picture = ({ isGallery }) => {
+const Picture = ({ isGallery, uri }) => {
   return (
     <View style={!isGallery ? styles.pictureContainer : null}>
       <Image
         style={!isGallery ? styles.pictureSize : styles.galleryPictureSize}
         source={{
-          uri: "https://reactnative.dev/img/tiny_logo.png",
+          uri: uri,
         }}
       />
     </View>

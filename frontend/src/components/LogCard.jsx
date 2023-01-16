@@ -3,7 +3,7 @@ import React from "react";
 
 import colors from "../constants/Colors";
 
-const LogCard = ({ sectionHeaderColor }) => {
+const LogCard = ({ sectionHeaderColor, header, mainText }) => {
   return (
     <View style={styles.cardContainer}>
       <View
@@ -12,12 +12,10 @@ const LogCard = ({ sectionHeaderColor }) => {
           { backgroundColor: sectionHeaderColor },
         ]}
       >
-        <Text style={styles.headerText}>Activities</Text>
+        <Text style={styles.header}>{header}</Text>
       </View>
       <View style={styles.mainTextContainer}>
-        <Text style={styles.mainText}>
-          Createad Santa with coffee filters, googly eyes, cotton ball and glue.
-        </Text>
+        <Text style={styles.mainText}>{mainText}</Text>
       </View>
     </View>
   );
@@ -40,7 +38,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 8,
     borderTopEndRadius: 8,
   },
-  headerText: {
+  header: {
     color: colors.white,
     fontFamily: "InterBold",
     fontSize: 16,

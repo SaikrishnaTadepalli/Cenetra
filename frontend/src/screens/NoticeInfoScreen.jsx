@@ -5,7 +5,11 @@ import NoticeCard from "../components/NoticeCard";
 const NoticeInfoScreen = () => {
   return (
     <View style={styles.container}>
-      <NoticeCard />
+      <NoticeCard
+        title="Title"
+        time="Time"
+        text="There is a PTA meeting going to be held on 26th June at 5pm."
+      />
     </View>
   );
 };
