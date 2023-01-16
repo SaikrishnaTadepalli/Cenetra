@@ -82,11 +82,7 @@ const LogScreen = ({ navigation }) => {
   ];
 
   return (
-    <ScrollView
-      style={styles.container}
-      nestedScrollEnabled={true}
-      contentContainerStyle={{ alignItems: "center", paddingBottom: 32 }}
-    >
+    <ScrollView style={styles.container} nestedScrollEnabled={true}>
       <View style={{ alignSelf: "flex-end" }}>
         <TouchableOpacity
           style={styles.buttonText}
@@ -130,6 +126,9 @@ export default LogScreen;
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
+    width: "100%",
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
   sectionHeader: {
     textAlign: "center",
@@ -140,18 +139,16 @@ const styles = StyleSheet.create({
   },
   divider: {
     borderWidth: 0.5,
-    width: 390,
+    width: "100%",
     marginBottom: 25,
   },
   buttonText: {
     color: colors.buttonText,
     fontSize: 12,
     fontFamily: "InterMedium",
-    marginRight: 16,
     marginVertical: 8,
   },
   imagesContainer: {
-    marginLeft: 20,
     marginBottom: 10,
   },
   imageContainer: {

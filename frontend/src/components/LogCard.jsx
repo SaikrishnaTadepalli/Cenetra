@@ -25,7 +25,7 @@ export default LogCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 390,
+    width: "100%",
     backgroundColor: colors.white,
     borderColor: colors.lightGrey,
     borderWidth: 1,

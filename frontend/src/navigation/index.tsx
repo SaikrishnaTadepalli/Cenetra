@@ -167,7 +167,6 @@ const BottomTabNavigator = ({ navigation, route }) => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginBottom: 16,
               marginLeft: 18,
             }}
           >
@@ -303,7 +302,6 @@ const BottomTabNavigator = ({ navigation, route }) => {
                     style={{
                       alignSelf: "flex-end",
                       marginRight: 20,
-                      marginBottom: 10,
                     }}
                   />
                 </TouchableOpacity>

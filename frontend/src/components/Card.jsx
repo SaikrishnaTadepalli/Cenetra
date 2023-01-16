@@ -16,7 +16,7 @@ const Card = ({
   const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
 
   const handleClick = () => {
-    navigation.navigate(navigateTo, { title: title });
+    navigation.navigate(navigateTo);
     setIsNoticeUnread(false);
   };
 
@@ -45,7 +45,7 @@ export default Card;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 390,
+    width: "100%",
     minHeight: 55,
     borderColor: colors.lightGrey,
     borderWidth: 1,

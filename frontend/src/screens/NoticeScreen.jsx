@@ -204,12 +204,13 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.white,
     paddingBottom: 32,
+    width: "100%",
+    paddingHorizontal: 20,
   },
   titleText: {
     fontSize: 24,
     fontFamily: "InterMedium",
     textAlign: "left",
-    marginLeft: 20,
     marginTop: 20,
   },
   noticesContainer: {
@@ -221,7 +222,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "InterMedium",
     marginBottom: 12,
-    marginLeft: 20,
     marginTop: 20,
   },
 });

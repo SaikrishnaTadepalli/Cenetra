@@ -26,7 +26,7 @@ const ChatCard = ({ name, subject, time, navigation, isRead }) => {
           source={image}
           height={1}
           width={1}
-          style={{ height: 40, width: 40 }}
+          style={{ height: 40, width: 40, marginRight: 6 }}
         />
         <View style={{ flex: 1, marginLeft: 10 }}>
           <View style={styles.headerRow}>
@@ -57,12 +57,11 @@ export default ChatCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 400,
+    width: "100%",
     height: 50,
     borderTopColor: colors.lightGrey,
     borderTopWidth: 1,
     alignSelf: "center",
-    paddingHorizontal: 10,
   },
   headerRow: {
     flexDirection: "row",

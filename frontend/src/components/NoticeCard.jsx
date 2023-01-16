@@ -19,11 +19,10 @@ export default NoticeCard;
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 10,
-    marginTop: 10,
+    marginTop: 20,
     borderColor: colors.lightGrey,
     borderWidth: 2,
-    width: 390,
+    width: "100%",
     borderRadius: 8,
     paddingBottom: 20,
     paddingTop: 10,

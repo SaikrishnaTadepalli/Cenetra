@@ -19,5 +19,7 @@ export default NoticeInfoScreen;
 const styles = StyleSheet.create({
   container: {
     alignSelf: "center",
+    width: "100%",
+    paddingHorizontal: 20,
   },
 });

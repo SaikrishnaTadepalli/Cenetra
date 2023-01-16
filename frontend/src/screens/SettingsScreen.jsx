@@ -33,6 +33,7 @@ export default SettingsScreen;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    width: "100%",
     marginTop: 20,
     paddingHorizontal: 20,
   },
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.navyBlue,
     marginLeft: 10,
+    alignSelf: "center",
   },
   logOutText: {
     color: colors.red,

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Cenetra",
-    "slug": "cenetra",
+    "slug": "cenetra-test",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/AppIcon.png",

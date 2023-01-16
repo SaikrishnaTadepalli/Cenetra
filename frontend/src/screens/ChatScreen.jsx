@@ -36,7 +36,7 @@ const ChatScreen = ({ navigation }) => {
             style={{
               borderBottomColor: colors.lightGrey,
               borderBottomWidth: 1,
-              width: "96%",
+              width: "100%",
               alignSelf: "center",
               paddingBottom: 10,
             }}
@@ -63,14 +63,17 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
+    width: "100%",
+    height: "100%",
+    paddingHorizontal: 20,
   },
   titleText: {
     fontSize: 24,
     textAlign: "left",
-    marginLeft: 26,
     marginTop: 10,
     fontFamily: "InterMedium",
     color: colors.black,
+    marginBottom: 15,
   },
   text: {
     fontSize: 30,
@@ -79,6 +82,5 @@ const styles = StyleSheet.create({
   chatsContainer: {
     backgroundColor: colors.white,
     marginVertical: 10,
-    marginHorizontal: 10,
   },
 });

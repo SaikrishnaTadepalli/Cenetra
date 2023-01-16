@@ -103,12 +103,13 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.white,
     paddingBottom: 32,
+    width: "100%",
+    paddingHorizontal: 20,
   },
   titleText: {
     fontSize: 24,
     textAlign: "left",
     marginBottom: 8,
-    marginLeft: 26,
     marginTop: 20,
     fontFamily: "InterMedium",
     color: colors.black,
@@ -118,12 +119,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "InterMedium",
     textAlign: "right",
-    marginRight: 16,
     marginBottom: 8,
   },
   imagesContainer: {
+    width: "100%",
     marginBottom: 18,
-    marginLeft: 20,
   },
   imageContainer: {
     marginRight: 10,
