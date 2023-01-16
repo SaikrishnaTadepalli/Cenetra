@@ -184,6 +184,9 @@ const NoticeScreen = ({ navigation }) => {
               navigateTo={"NoticeInfo"}
               navigation={navigation}
               isUnread={item.isUnread}
+              title={item.title}
+              time={item.time}
+              subText={item.date}
             />
           </View>
         )}

@@ -93,7 +93,7 @@ const LogScreen = ({ navigation }) => {
         {pictures.map((picture, idx) =>
           idx < 10 ? (
             <View key={picture.id} style={styles.imageContainer}>
-              <Picture isGallery={false} />
+              <Picture isGallery={false} uri={picture.uri} />
             </View>
           ) : null
         )}
@@ -104,7 +104,11 @@ const LogScreen = ({ navigation }) => {
             {log.title}
           </Text>
           <View style={[styles.divider, { borderColor: log.color }]} />
-          <LogCard sectionHeaderColor={log.color} />
+          {log.data.map((data) => (
+            <View style={styles.logsContainer}>
+              <LogCard sectionHeaderColor={log.color} header={data.title} />
+            </View>
+          ))}
         </View>
       ))}
     </ScrollView>
@@ -143,7 +147,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     marginRight: 10,
   },
-  noticesContainer: {
+  logsContainer: {
     alignItems: "center",
     marginBottom: 12,
   },

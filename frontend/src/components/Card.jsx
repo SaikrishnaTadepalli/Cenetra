@@ -4,7 +4,15 @@ import { useState } from "react";
 
 import colors from "../constants/Colors";
 
-const Card = ({ isLog, navigation, navigateTo, isUnread }) => {
+const Card = ({
+  isLog,
+  navigation,
+  navigateTo,
+  isUnread,
+  title,
+  time,
+  subText,
+}) => {
   const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
 
   const handleClick = () => {
@@ -22,12 +30,12 @@ const Card = ({ isLog, navigation, navigateTo, isUnread }) => {
       <View style={styles.headerRow}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {isLog ? null : <View style={styles.dotContainer} />}
-          <Text style={styles.titleText}>Title</Text>
+          <Text style={styles.titleText}>{title}</Text>
         </View>
-        <Text style={styles.timeText}>Time</Text>
+        <Text style={styles.timeText}>{time}</Text>
       </View>
       <View>
-        <Text style={styles.dateText}>Created on...</Text>
+        <Text style={styles.dateText}>{subText}</Text>
       </View>
     </TouchableOpacity>
   );
