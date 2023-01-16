@@ -22,9 +22,12 @@ import { RootState } from "../redux/store";
 import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
 import Logo from "../../assets/icons/logo.svg";
-import Document from "../../assets/icons/documentIcon.svg";
+import DocumentO from "../../assets/icons/documentO.svg";
 import ChatOutline from "../../assets/icons/chatOutline.svg";
 import BellOutline from "../../assets/icons/bellOutline.svg";
+import DocumentFilled from "../../assets/icons/documentFilled.svg";
+import ChatFilled from "../../assets/icons/chatFilled.svg";
+import BellFilled from "../../assets/icons/bellFilled.svg";
 
 // Understand This
 const MyTheme = {
@@ -165,11 +168,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
         options={({ navigation, route }) => {
           return {
             tabBarIcon: ({ focused, color }) =>
-              focused ? (
-                <Ionicons name="document" size={28} color={color} />
-              ) : (
-                <Document />
-              ),
+              focused ? <DocumentFilled /> : <DocumentO />,
           };
         }}
       />
@@ -179,11 +178,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
         options={({ navigation, route }) => {
           return {
             tabBarIcon: ({ focused, color }) =>
-              focused ? (
-                <Octicons name="bell-fill" size={28} color={color} />
-              ) : (
-                <BellOutline />
-              ),
+              focused ? <BellFilled /> : <BellOutline />,
           };
         }}
       />
@@ -193,11 +188,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
         options={({ navigation, route }) => {
           return {
             tabBarIcon: ({ focused, color }) =>
-              focused ? (
-                <Ionicons name="chatbubble" size={28} color={color} />
-              ) : (
-                <ChatOutline />
-              ),
+              focused ? <ChatFilled /> : <ChatOutline />,
           };
         }}
       />
