@@ -3,6 +3,7 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 
 import Picture from "../components/Picture";
+import colors from "../constants/Colors";
 
 const GalleryScreen = () => {
   const pictures = [
@@ -37,7 +38,7 @@ export default GalleryScreen;
 
 const styles = StyleSheet.create({
   imagesContainer: {
-    backgroundColor: "#ffff",
+    backgroundColor: colors.white,
     flex: 1,
     justifyContent: "space-between",
     marginVertical: 10,

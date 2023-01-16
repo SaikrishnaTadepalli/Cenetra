@@ -14,7 +14,14 @@ export default function useCachedResources() {
 
         // Load fonts
         await Font.loadAsync({
-          ...FontAwesome.font,
+          InterBlack: require("../../assets/fonts/Inter-Black.ttf"),
+          InterBold: require("../../assets/fonts/Inter-Bold.ttf"),
+          InterExtraBold: require("../../assets/fonts/Inter-ExtraBold.ttf"),
+          InterLight: require("../../assets/fonts/Inter-Light.ttf"),
+          InterMedium: require("../../assets/fonts/Inter-Medium.ttf"),
+          InterRegular: require("../../assets/fonts/Inter-Regular.ttf"),
+          InterSemiBold: require("../../assets/fonts/Inter-SemiBold.ttf"),
+          InterThin: require("../../assets/fonts/Inter-Thin.ttf"),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service

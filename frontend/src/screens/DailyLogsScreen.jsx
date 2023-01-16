@@ -10,6 +10,7 @@ import React from "react";
 
 import Card from "../components/Card";
 import Picture from "../components/Picture";
+import colors from "../constants/Colors";
 
 const DailyLogsScreen = ({ navigation }) => {
   const logs = [
@@ -80,21 +81,22 @@ export default DailyLogsScreen;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     paddingBottom: 32,
   },
   titleText: {
     fontSize: 24,
-    fontWeight: "500",
     textAlign: "left",
     marginBottom: 8,
     marginLeft: 26,
     marginTop: 20,
+    fontFamily: "InterMedium",
+    color: colors.black,
   },
   buttonText: {
-    color: "#10AC76",
+    color: colors.buttonText,
     fontSize: 12,
-    fontWeight: "500",
+    fontFamily: "InterMedium",
     textAlign: "right",
     marginRight: 16,
     marginBottom: 8,

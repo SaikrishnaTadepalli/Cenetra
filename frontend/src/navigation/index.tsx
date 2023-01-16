@@ -5,13 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import { View, Text, Image } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import {
-  Ionicons,
-  SimpleLineIcons,
-  MaterialCommunityIcons,
-  Octicons,
-  Feather,
-} from "@expo/vector-icons";
+import { Ionicons, Octicons } from "@expo/vector-icons";
 
 import colors from "../constants/Colors";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -27,6 +21,10 @@ import WelcomeScreen from "../screens/WelcomeScreen";
 import { RootState } from "../redux/store";
 import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
+import Logo from "../../assets/icons/logo.svg";
+import Document from "../../assets/icons/documentIcon.svg";
+import ChatOutline from "../../assets/icons/chatOutline.svg";
+import BellOutline from "../../assets/icons/bellOutline.svg";
 
 // Understand This
 const MyTheme = {
@@ -66,7 +64,7 @@ export default Navigation;
 
 const Stack = createNativeStackNavigator();
 
-function RootNavigator() {
+const RootNavigator = () => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   return (
     <Stack.Navigator
@@ -100,11 +98,11 @@ function RootNavigator() {
       )}
     </Stack.Navigator>
   );
-}
+};
 
 const BottomTab = createBottomTabNavigator();
 
-function BottomTabNavigator({ navigation, route }) {
+const BottomTabNavigator = ({ navigation, route }) => {
   return (
     <BottomTab.Navigator
       initialRouteName="DailyLogs"
@@ -117,7 +115,7 @@ function BottomTabNavigator({ navigation, route }) {
           shadowOpacity: 0.5,
           shadowRadius: 12.0,
           elevation: 24,
-          backgroundColor: "#fff",
+          backgroundColor: colors.white,
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
           height: 90,
@@ -125,7 +123,7 @@ function BottomTabNavigator({ navigation, route }) {
 
         headerTitleStyle: {
           textAlign: "left",
-          color: colors.primaryText,
+          color: colors.headerText,
         },
         headerStyle: {
           shadowOffset: {
@@ -134,7 +132,7 @@ function BottomTabNavigator({ navigation, route }) {
           },
           shadowOpacity: 1,
           shadowRadius: 1.0,
-          backgroundColor: "#ffff",
+          backgroundColor: colors.white,
           borderBottomLeftRadius: 18,
           borderBottomRightRadius: 18,
           height: 100,
@@ -145,23 +143,19 @@ function BottomTabNavigator({ navigation, route }) {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 16,
+              marginLeft: 18,
             }}
           >
-            <SimpleLineIcons
-              name="graph"
-              size={24}
-              color="#037971"
-              style={{ marginLeft: 12 }}
-            />
-            <Text style={{ fontWeight: "400", fontSize: 16, marginLeft: 16 }}>
+            <Logo />
+            <Text style={{ fontWeight: "400", fontSize: 18, marginLeft: 16 }}>
               Cenetra
             </Text>
           </View>
         ),
         headerTitle: "",
         tabBarItemStyle: { height: 45, marginTop: 10 },
-        tabBarActiveTintColor: "#037971",
-        tabBarInactiveTintColor: "#037971",
+        tabBarActiveTintColor: colors.green,
+        tabBarInactiveTintColor: colors.green,
         tabBarShowLabel: false,
       }}
     >
@@ -174,7 +168,7 @@ function BottomTabNavigator({ navigation, route }) {
               focused ? (
                 <Ionicons name="document" size={28} color={color} />
               ) : (
-                <Ionicons name="document-outline" size={28} color={color} />
+                <Document />
               ),
           };
         }}
@@ -188,7 +182,7 @@ function BottomTabNavigator({ navigation, route }) {
               focused ? (
                 <Octicons name="bell-fill" size={28} color={color} />
               ) : (
-                <Feather name="bell" size={28} color={color} />
+                <BellOutline />
               ),
           };
         }}
@@ -202,7 +196,7 @@ function BottomTabNavigator({ navigation, route }) {
               focused ? (
                 <Ionicons name="chatbubble" size={28} color={color} />
               ) : (
-                <Ionicons name="chatbubble-outline" size={28} color={color} />
+                <ChatOutline />
               ),
           };
         }}
@@ -214,13 +208,13 @@ function BottomTabNavigator({ navigation, route }) {
           return {
             tabBarIcon: ({ focused, color }) =>
               focused ? (
-                <Ionicons name="person" size={28} color={color} />
+                <Ionicons name="person" size={24} color={color} />
               ) : (
-                <Ionicons name="person-outline" size={28} color={color} />
+                <Ionicons name="person-outline" size={24} color={color} />
               ),
           };
         }}
       />
     </BottomTab.Navigator>
   );
-}
+};

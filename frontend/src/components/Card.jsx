@@ -2,6 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useState } from "react";
 
+import colors from "../constants/Colors";
+
 const Card = ({ isLog, navigation, navigateTo, isUnread }) => {
   const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
 
@@ -10,7 +12,7 @@ const Card = ({ isLog, navigation, navigateTo, isUnread }) => {
     setIsNoticeUnread(false);
   };
 
-  const cardColor = isNoticeUnread ? "#CCCCCC" : "#FFFF";
+  const cardColor = isNoticeUnread ? colors.lightGrey : colors.white;
 
   return (
     <TouchableOpacity
@@ -24,7 +26,7 @@ const Card = ({ isLog, navigation, navigateTo, isUnread }) => {
         </View>
         <Text style={styles.timeText}>Time</Text>
       </View>
-      <View style={styles.dateContainer}>
+      <View>
         <Text style={styles.dateText}>Created on...</Text>
       </View>
     </TouchableOpacity>
@@ -36,7 +38,7 @@ export default Card;
 const styles = StyleSheet.create({
   cardContainer: {
     width: 390,
-    borderColor: "#CCCCCC",
+    borderColor: colors.lightGrey,
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 16,
@@ -55,21 +57,20 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   titleText: {
-    fontWeight: "500",
-    fontSize: 16,
-    color: "#363535",
+    fontSize: 15,
+    color: colors.primaryText,
     textAlign: "center",
+    fontFamily: "InterMedium",
   },
   timeText: {
-    color: "#A2A2A2",
+    color: colors.secondaryText,
     fontSize: 14,
-    fontWeight: "500",
     textAlign: "center",
+    fontFamily: "InterMedium",
   },
-  dateContainer: {},
   dateText: {
-    color: "#A2A2A2",
+    color: colors.secondaryText,
     fontSize: 14,
-    fontWeight: "500",
+    fontFamily: "InterMedium",
   },
 });

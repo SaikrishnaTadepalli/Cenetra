@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
+import colors from "../constants/Colors";
+
 const LogCard = ({ sectionHeaderColor }) => {
   return (
     <View style={styles.cardContainer}>
@@ -26,21 +28,21 @@ export default LogCard;
 const styles = StyleSheet.create({
   cardContainer: {
     width: 390,
-    backgroundColor: "#ffff",
-    borderColor: "#CCCCCC",
+    backgroundColor: colors.white,
+    borderColor: colors.lightGrey,
     borderWidth: 1,
     borderRadius: 8,
   },
   headerContainer: {
     width: "100%",
-    borderColor: "#CCCCCC",
+    borderColor: colors.lightGrey,
     borderWidth: 1,
     borderTopStartRadius: 8,
     borderTopEndRadius: 8,
   },
   headerText: {
-    color: "#ffff",
-    fontWeight: "500",
+    color: colors.white,
+    fontFamily: "InterBold",
     fontSize: 16,
     textAlign: "left",
     paddingVertical: 8,
@@ -53,5 +55,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginHorizontal: 10,
     textAlignVertical: "center",
+    fontFamily: "InterRegular",
+    color: colors.primaryText,
   },
 });
