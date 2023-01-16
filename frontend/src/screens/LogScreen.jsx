@@ -13,64 +13,70 @@ import colors from "../constants/Colors";
 
 const LogScreen = ({ navigation }) => {
   const pictures = [
-    { id: "1", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "2", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "3", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "4", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "5", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "6", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "7", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "8", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "9", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "10", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "11", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "12", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "13", uri: "https://reactnative.dev/img/tiny_logo.png" },
+    {
+      id: "1",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "2",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "3",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "4",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "5",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "6",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "7",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
   ];
 
   const logs = [
     {
-      title: "Today",
-      color: "red",
+      title: "Overview",
+      color: colors.green,
       data: [
-        { id: "1", title: "Title", time: "Time", date: "Created on..." },
-        { id: "2", title: "Title", time: "Time", date: "Created on..." },
-        { id: "3", title: "Title", time: "Time", date: "Created on..." },
-        { id: "4", title: "Title", time: "Time", date: "Created on..." },
+        {
+          id: "1",
+          title: "Activities",
+          text: "Created Santa with coffee filters, googly eyes, cotton ball and glue",
+        },
+        { id: "2", title: "Sleep", text: "Slept for 1.5 hours" },
+        { id: "3", title: "Pee", text: "Pee in toilet" },
       ],
     },
     {
-      title: "Yesterday",
+      title: "Meals",
       color: "pink",
       data: [
-        { id: "5", title: "Title", time: "Time", date: "Created on..." },
-        { id: "6", title: "Title", time: "Time", date: "Created on..." },
-        { id: "7", title: "Title", time: "Time", date: "Created on..." },
-        { id: "8", title: "Title", time: "Time", date: "Created on..." },
-        { id: "9", title: "Title", time: "Time", date: "Created on..." },
-      ],
-    },
-    {
-      title: "October 2, 2022",
-      color: "blue",
-      data: [
-        { id: "10", title: "Title", time: "Time", date: "Created on..." },
-        { id: "11", title: "Title", time: "Time", date: "Created on..." },
-        { id: "12", title: "Title", time: "Time", date: "Created on..." },
-        { id: "13", title: "Title", time: "Time", date: "Created on..." },
-        { id: "14", title: "Title", time: "Time", date: "Created on..." },
-        { id: "15", title: "Title", time: "Time", date: "Created on..." },
-        { id: "16", title: "Title", time: "Time", date: "Created on..." },
-      ],
-    },
-    {
-      title: "April 16, 2022",
-      color: "purple",
-      data: [
-        { id: "17", title: "Title", time: "Time", date: "Created on..." },
-        { id: "18", title: "Title", time: "Time", date: "Created on..." },
-        { id: "19", title: "Title", time: "Time", date: "Created on..." },
-        { id: "20", title: "Title", time: "Time", date: "Created on..." },
+        {
+          id: "5",
+          title: "Morning Snack",
+          text: "Menu: Whole Wheat English Muffin Toasted with Margarine, Fresh Fruit",
+        },
+        {
+          id: "6",
+          title: "Lunch",
+          time: "Time",
+          text: "Menu: Greek Chicken Souvlaki with WG Rice and Tzatziki Sauce (skinless chicken breast, chicken soup base, lemon, cucumbers, garlic) Milk, Fresh Fruit Notes: Had 1 bowl veggie rice, apple , milk",
+        },
+        {
+          id: "7",
+          title: "Afternoon Snack",
+          text: "Menu: Carrot Muffins, Fresh Fruit Notes: Carrots muffin, cantaloupe O water",
+        },
       ],
     },
   ];
@@ -106,7 +112,11 @@ const LogScreen = ({ navigation }) => {
           <View style={[styles.divider, { borderColor: log.color }]} />
           {log.data.map((data) => (
             <View style={styles.logsContainer}>
-              <LogCard sectionHeaderColor={log.color} header={data.title} />
+              <LogCard
+                sectionHeaderColor={log.color}
+                header={data.title}
+                text={data.text}
+              />
             </View>
           ))}
         </View>
