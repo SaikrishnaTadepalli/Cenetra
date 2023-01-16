@@ -7,19 +7,34 @@ import colors from "../constants/Colors";
 
 const GalleryScreen = () => {
   const pictures = [
-    { id: "1", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "2", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "3", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "4", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "5", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "6", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "7", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "8", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "9", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "10", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "11", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "12", uri: "https://reactnative.dev/img/tiny_logo.png" },
-    { id: "13", uri: "https://reactnative.dev/img/tiny_logo.png" },
+    {
+      id: "1",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "2",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "3",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "4",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "5",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "6",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
+    {
+      id: "7",
+      uri: "https://upload.wikimedia.org/wikipedia/en/1/10/Winniethepooh.png",
+    },
   ];
   return (
     <FlatList

@@ -11,6 +11,8 @@ const Picture = ({ isGallery, uri }) => {
         source={{
           uri: uri,
         }}
+        height={isGallery ? 150 : 90}
+        width={isGallery ? 115 : 75}
       />
     </View>
   );

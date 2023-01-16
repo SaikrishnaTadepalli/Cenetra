@@ -3,7 +3,7 @@ import React from "react";
 
 import colors from "../constants/Colors";
 
-const LogCard = ({ sectionHeaderColor, header, mainText }) => {
+const LogCard = ({ sectionHeaderColor, header, text }) => {
   return (
     <View style={styles.cardContainer}>
       <View
@@ -15,7 +15,7 @@ const LogCard = ({ sectionHeaderColor, header, mainText }) => {
         <Text style={styles.header}>{header}</Text>
       </View>
       <View style={styles.mainTextContainer}>
-        <Text style={styles.mainText}>{mainText}</Text>
+        <Text style={styles.mainText}>{text}</Text>
       </View>
     </View>
   );

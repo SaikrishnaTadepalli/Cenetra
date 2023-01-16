@@ -35,7 +35,7 @@ const Card = ({
         <Text style={styles.timeText}>{time}</Text>
       </View>
       <View>
-        <Text style={styles.dateText}>{subText}</Text>
+        {isLog ? null : <Text style={styles.dateText}>{subText}</Text>}
       </View>
     </TouchableOpacity>
   );
@@ -46,11 +46,13 @@ export default Card;
 const styles = StyleSheet.create({
   cardContainer: {
     width: 390,
+    minHeight: 55,
     borderColor: colors.lightGrey,
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 16,
     paddingVertical: 8,
+    justifyContent: "center",
   },
   headerRow: {
     flexDirection: "row",
@@ -61,20 +63,19 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: "pink",
+    backgroundColor: "#2BB4FB",
     marginRight: 8,
   },
   titleText: {
     fontSize: 15,
     color: colors.primaryText,
-    textAlign: "center",
     fontFamily: "InterMedium",
   },
   timeText: {
     color: colors.secondaryText,
     fontSize: 14,
-    textAlign: "center",
     fontFamily: "InterMedium",
+    alignSelf: "center",
   },
   dateText: {
     color: colors.secondaryText,
