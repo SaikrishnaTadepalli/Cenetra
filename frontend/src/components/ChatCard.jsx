@@ -8,7 +8,7 @@ const ChatCard = ({ name, subject, time, navigation, isRead }) => {
   const [isChatRead, setIsChatRead] = useState(isRead);
 
   const handleClick = () => {
-    navigation.navigate("IndividualChat");
+    navigation.navigate("IndividualChat", { title: name });
     setIsChatRead(true);
   };
   const dotColor = isChatRead ? null : colors.blue;

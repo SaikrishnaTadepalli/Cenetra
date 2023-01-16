@@ -81,11 +81,32 @@ const RootNavigator = () => {
             }}
           />
           <Stack.Screen name="Gallery" component={GalleryScreen} />
-          <Stack.Screen name="Log" component={LogScreen} />
-          <Stack.Screen name="NoticeInfo" component={NoticeInfoScreen} />
+          <Stack.Screen
+            name="Log"
+            component={LogScreen}
+            options={({ navigation, route }) => {
+              return {
+                headerTitle: route.params ? route.params.title : "",
+              };
+            }}
+          />
+          <Stack.Screen
+            name="NoticeInfo"
+            component={NoticeInfoScreen}
+            options={({ navigation, route }) => {
+              return {
+                headerTitle: route.params ? route.params.title : "",
+              };
+            }}
+          />
           <Stack.Screen
             name="IndividualChat"
             component={IndividualChatScreen}
+            options={({ navigation, route }) => {
+              return {
+                headerTitle: route.params ? route.params.title : "",
+              };
+            }}
           />
           <Stack.Screen name="Settings" component={SettingsScreen} />
         </>
