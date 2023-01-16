@@ -14,4 +14,4 @@ web-build/
 # macOS
 .DS_Store
 
-./backend/utils/credentials.json
+credentials.json
