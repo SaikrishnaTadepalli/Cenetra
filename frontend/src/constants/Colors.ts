@@ -2,14 +2,22 @@
 
 // const lightGreyBackground = "#fafafa";
 
-const lightBlack = "#363535";
+const lightBlack = "#2A2A2B";
 const black = "#000000";
 const white = "#fff";
 const grey = "#A1A1A1";
 const lightGreyBackground = "#E9E9E9";
 const lightGrey = "#CCCCCC";
 const green = "#037971";
-const darkGrey = "#585858";
+const darkGrey = "#6F6D6D";
+const lightPurple = "#EAECFF";
+const navyBlue = "#1D2F6F";
+const blue = "#0582CA";
+const purple = "#8390FA";
+const yellow = "#FAC748";
+const peach = "#F9E9EC";
+const pink = "#F88DAD";
+const red = "#F30000";
 
 // const primaryPurple = "#7656D5";
 // const lighterPurpleShade = "#FAF9FF";
@@ -92,8 +100,17 @@ export default {
   cardBackground: white,
   lightGrey: lightGrey,
   green: green,
-  buttonText: "#10AC76",
+  buttonText: purple,
   background: lightGreyBackground,
+  purple: purple,
+  lightPurple: lightPurple,
+  pink: pink,
+  peach: peach,
+  navyBlue: navyBlue,
+  blue: blue,
+  yellow: yellow,
+  darkGrey: darkGrey,
+  red: red,
   // primaryCol: primaryPurple,
   // backgroundShapes: lighterPurpleShade,
   // mapPillBackground: darkGrey,

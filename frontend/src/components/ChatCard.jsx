@@ -11,7 +11,7 @@ const ChatCard = ({ name, subject, time, navigation, isRead }) => {
     navigation.navigate("IndividualChat");
     setIsChatRead(true);
   };
-  const dotColor = isChatRead ? null : "#0582CA";
+  const dotColor = isChatRead ? null : colors.blue;
 
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
@@ -81,13 +81,13 @@ const styles = StyleSheet.create({
     fontFamily: "InterBold",
   },
   timeText: {
-    color: "#9B9A9A",
+    color: colors.secondaryText,
     fontSize: 14,
     fontFamily: "InterMedium",
     alignSelf: "center",
   },
   subject: {
-    color: "#6F6D6D",
+    color: colors.darkGrey,
     fontSize: 14,
     fontFamily: "InterMedium",
   },

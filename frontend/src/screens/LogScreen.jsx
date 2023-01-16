@@ -110,8 +110,8 @@ const LogScreen = ({ navigation }) => {
             {log.title}
           </Text>
           <View style={[styles.divider, { borderColor: log.color }]} />
-          {log.data.map((data) => (
-            <View style={styles.logsContainer}>
+          {log.data.map((data, idx) => (
+            <View style={styles.logsContainer} key={idx}>
               <LogCard
                 sectionHeaderColor={log.color}
                 header={data.title}

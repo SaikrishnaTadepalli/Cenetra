@@ -27,17 +27,19 @@ const ChatScreen = ({ navigation }) => {
   ];
   return (
     <View style={styles.container}>
+      <Text style={styles.titleText}>Chats</Text>
       <FlatList
         data={chats}
         keyExtractor={(chat) => chat.id}
         ListFooterComponent={
           <View
-          // style={{
-          //   borderBottomColor: colors.lightGrey,
-          //   borderBottomWidth: 1,
-          //   width: "96%",
-          //   alignSelf: "center",
-          // }}
+            style={{
+              borderBottomColor: colors.lightGrey,
+              borderBottomWidth: 1,
+              width: "96%",
+              alignSelf: "center",
+              paddingBottom: 10,
+            }}
           />
         }
         // ListFooterComponentStyle={{ height: 20 }}
@@ -60,9 +62,15 @@ export default ChatScreen;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: 10,
+  },
+  titleText: {
+    fontSize: 24,
+    textAlign: "left",
+    marginLeft: 26,
+    marginTop: 10,
+    fontFamily: "InterMedium",
+    color: colors.black,
   },
   text: {
     fontSize: 30,
