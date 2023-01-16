@@ -1,6 +1,5 @@
 import { StyleSheet, Text, FlatList, View } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
 
 import Picture from "../components/Picture";
 import colors from "../constants/Colors";

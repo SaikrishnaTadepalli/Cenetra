@@ -22,6 +22,7 @@ import { RootState } from "../redux/store";
 import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
 import Logo from "../../assets/icons/logo.svg";
+import IndividualChatScreen from "../screens/IndividualChatScreen";
 
 // Understand This
 const MyTheme = {
@@ -81,6 +82,10 @@ const RootNavigator = () => {
           <Stack.Screen name="Gallery" component={GalleryScreen} />
           <Stack.Screen name="Log" component={LogScreen} />
           <Stack.Screen name="NoticeInfo" component={NoticeInfoScreen} />
+          <Stack.Screen
+            name="IndividualChat"
+            component={IndividualChatScreen}
+          />
         </>
       ) : (
         <>
