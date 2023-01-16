@@ -22,12 +22,6 @@ import { RootState } from "../redux/store";
 import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
 import Logo from "../../assets/icons/logo.svg";
-import DocumentO from "../../assets/icons/documentO.svg";
-import ChatOutline from "../../assets/icons/chatOutline.svg";
-import BellOutline from "../../assets/icons/bellOutline.svg";
-import DocumentFilled from "../../assets/icons/documentFilled.svg";
-import ChatFilled from "../../assets/icons/chatFilled.svg";
-import BellFilled from "../../assets/icons/bellFilled.svg";
 
 // Understand This
 const MyTheme = {
@@ -157,8 +151,8 @@ const BottomTabNavigator = ({ navigation, route }) => {
         ),
         headerTitle: "",
         tabBarItemStyle: { height: 45, marginTop: 10 },
-        tabBarActiveTintColor: colors.green,
-        tabBarInactiveTintColor: colors.green,
+        tabBarActiveTintColor: "#8390FA",
+        tabBarInactiveTintColor: "#6F6D6D",
         tabBarShowLabel: false,
       }}
     >
@@ -167,8 +161,24 @@ const BottomTabNavigator = ({ navigation, route }) => {
         component={DailyLogsScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ focused, color }) =>
-              focused ? <DocumentFilled /> : <DocumentO />,
+            tabBarIcon: ({ focused, color }) => (
+              <View
+                style={
+                  focused
+                    ? {
+                        backgroundColor: "#EAECFF",
+                        width: 45,
+                        height: 45,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 6,
+                      }
+                    : { backgroundColor: "#FFFF" }
+                }
+              >
+                <Ionicons name="document" size={24} color={color} />
+              </View>
+            ),
           };
         }}
       />
@@ -177,8 +187,24 @@ const BottomTabNavigator = ({ navigation, route }) => {
         component={NoticeScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ focused, color }) =>
-              focused ? <BellFilled /> : <BellOutline />,
+            tabBarIcon: ({ focused, color }) => (
+              <View
+                style={
+                  focused
+                    ? {
+                        backgroundColor: "#EAECFF",
+                        width: 45,
+                        height: 45,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 6,
+                      }
+                    : { backgroundColor: "#FFFF" }
+                }
+              >
+                <Octicons name="bell-fill" size={24} color={color} />
+              </View>
+            ),
           };
         }}
       />
@@ -187,8 +213,24 @@ const BottomTabNavigator = ({ navigation, route }) => {
         component={ChatScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ focused, color }) =>
-              focused ? <ChatFilled /> : <ChatOutline />,
+            tabBarIcon: ({ focused, color }) => (
+              <View
+                style={
+                  focused
+                    ? {
+                        backgroundColor: "#EAECFF",
+                        width: 45,
+                        height: 45,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 6,
+                      }
+                    : { backgroundColor: "#FFFF" }
+                }
+              >
+                <Ionicons name="chatbubble" color={color} size={24} />
+              </View>
+            ),
           };
         }}
       />
@@ -197,12 +239,24 @@ const BottomTabNavigator = ({ navigation, route }) => {
         component={SettingsScreen}
         options={({ navigation, route }) => {
           return {
-            tabBarIcon: ({ focused, color }) =>
-              focused ? (
+            tabBarIcon: ({ focused, color }) => (
+              <View
+                style={
+                  focused
+                    ? {
+                        backgroundColor: "#EAECFF",
+                        width: 45,
+                        height: 45,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 6,
+                      }
+                    : { backgroundColor: "#FFFF" }
+                }
+              >
                 <Ionicons name="person" size={24} color={color} />
-              ) : (
-                <Ionicons name="person-outline" size={24} color={color} />
-              ),
+              </View>
+            ),
           };
         }}
       />
