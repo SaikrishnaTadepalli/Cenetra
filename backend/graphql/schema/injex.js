@@ -42,6 +42,14 @@ type Notice {
     details: String!
 }
 
+type Media {
+    _id: ID!
+    teacher: Teacher!
+    student: Student!
+    createdAt: String!
+    mediaKey: String!
+}
+
 input TeacherInput {
     firstName: String!
     lastName: String!
@@ -62,6 +70,7 @@ type RootQuery {
     classes: [Class!]!
     logs(studentId: ID!): [Log!]!
     notices(studentId: ID!): [Notice!]!
+    media(studentId: ID!): [Media!]!
 }
 
 type RootMutation {
@@ -75,6 +84,8 @@ type RootMutation {
     createLog(teacherId: ID!, studentId: ID!, details: String!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
+
+    uploadMedia(teacherId: ID!, studentId: ID!, mediaObj: GraphQlUpload): Media!
 }
 
 schema {
