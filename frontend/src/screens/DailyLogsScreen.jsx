@@ -2,35 +2,34 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
 import React from "react";
 
-import Card from "../components/Card";
 import Picture from "../components/Picture";
 import colors from "../constants/Colors";
+import DailyLogsCard from "../components/DailyLogsCard";
 
 const DailyLogsScreen = ({ navigation }) => {
   const logs = [
-    { id: "1", date: "October 20, 2022", rate: "5/5" },
-    { id: "2", date: "October 12, 2022", rate: "4/5" },
-    { id: "3", date: "October 11, 2022", rate: "4/5" },
-    { id: "4", date: "October 10, 2022", rate: "4/5" },
-    { id: "5", date: "October 9, 2022", rate: "4/5" },
-    { id: "6", date: "October 8, 2022", rate: "4/5" },
-    { id: "7", date: "October 7, 2022", rate: "4/5" },
-    { id: "8", date: "October 6, 2022", rate: "4/5" },
-    { id: "9", date: "October 5, 2022", rate: "4/5" },
-    { id: "10", date: "October 4, 2022", rate: "5/5" },
-    { id: "11", date: "October 3, 2022", rate: "4/5" },
-    { id: "12", date: "October 2, 2022", rate: "3/5" },
-    { id: "13", date: "October 1, 2022", rate: "2/5" },
-    { id: "14", date: "September 10, 2022", rate: "4/5" },
-    { id: "15", date: "September 9, 2022", rate: "3/5" },
-    { id: "16", date: "September 8, 2022", rate: "2/5" },
-    { id: "17", date: "September 7, 2022", rate: "3/5" },
+    { id: "1", date: "October 20, 2022", rate: 2 },
+    { id: "2", date: "October 12, 2022", rate: 3 },
+    { id: "3", date: "October 11, 2022", rate: 4 },
+    { id: "4", date: "October 10, 2022", rate: 1 },
+    { id: "5", date: "October 9, 2022", rate: 5 },
+    { id: "6", date: "October 8, 2022", rate: 3 },
+    { id: "7", date: "October 7, 2022", rate: 2 },
+    { id: "8", date: "October 6, 2022", rate: 3 },
+    { id: "9", date: "October 5, 2022", rate: 1 },
+    { id: "10", rate: 4, date: "Created on..." },
+    { id: "11", rate: 3, date: "Created on..." },
+    { id: "12", rate: 2, date: "Created on..." },
+    { id: "13", rate: 5, date: "Created on..." },
+    { id: "14", rate: 1, date: "Created on..." },
+    { id: "15", rate: 2, date: "Created on..." },
+    { id: "16", rate: 3, date: "Created on..." },
+    { id: "17", rate: 2, date: "Created on..." },
   ];
 
   const pictures = [
@@ -84,12 +83,10 @@ const DailyLogsScreen = ({ navigation }) => {
       </ScrollView>
       {logs.map((log) => (
         <View style={styles.logsContainer} key={log.id}>
-          <Card
-            isLog={true}
-            navigateTo={"Log"}
+          <DailyLogsCard
             navigation={navigation}
-            title={log.date}
-            time={log.rate}
+            stars={log.rate}
+            time={log.date}
           />
         </View>
       ))}

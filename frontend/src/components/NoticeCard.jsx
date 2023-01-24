@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "InterMedium",
     flexWrap: "wrap",
-    maxWidth: 240,
+    maxWidth: "85%",
   },
   timeText: {
     color: colors.secondaryText,
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
     fontFamily: "InterRegular",
+    maxWidth: "95%",
     color: colors.primaryText,
   },
 });

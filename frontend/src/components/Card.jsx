@@ -4,20 +4,11 @@ import { useState } from "react";
 
 import colors from "../constants/Colors";
 
-const Card = ({
-  isLog,
-  navigation,
-  navigateTo,
-  isUnread,
-  title,
-  time,
-  subText,
-  stars,
-}) => {
+const Card = ({ navigation, isUnread, title, time, subText }) => {
   const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
 
   const handleClick = () => {
-    navigation.navigate(navigateTo, {
+    navigation.navigate("NoticeInfo", {
       title: title,
       subText: subText,
       time: time,
@@ -40,7 +31,7 @@ const Card = ({
             width: "70%",
           }}
         >
-          {isLog ? null : <View style={styles.dotContainer} />}
+          <View style={styles.dotContainer} />
           <Text style={styles.titleText} numberOfLines={1} ellipsizeMode="tail">
             {title}
           </Text>
@@ -48,11 +39,9 @@ const Card = ({
         <Text style={styles.timeText}>{time}</Text>
       </View>
       <View>
-        {isLog ? null : (
-          <Text style={styles.subText} numberOfLines={1} ellipsizeMode="tail">
-            {subText}
-          </Text>
-        )}
+        <Text style={styles.subText} numberOfLines={1} ellipsizeMode="tail">
+          {subText}
+        </Text>
       </View>
     </TouchableOpacity>
   );
