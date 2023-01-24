@@ -139,8 +139,6 @@ const NoticeScreen = ({ navigation }) => {
         renderItem={({ item }) => (
           <View style={styles.noticesContainer}>
             <Card
-              isLog={false}
-              navigateTo={"NoticeInfo"}
               navigation={navigation}
               isUnread={item.isUnread}
               title={item.title}
