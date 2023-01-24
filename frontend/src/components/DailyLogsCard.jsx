@@ -10,23 +10,25 @@ const DailyLogsCard = ({ navigation, stars, time }) => {
     navigation.navigate("Log");
   };
 
-  const renderIcon = () => (
+  const renderIcon = (name) => (
     <Ionicons
-      name="star"
+      name={name}
       color={colors.yellow}
       size={16}
       style={{ marginRight: 2 }}
     />
   );
 
-  const renderIcons = (num) => [...Array(num)].map(renderIcon);
+  const renderIcons = (num, name) =>
+    [...Array(num)].map(() => renderIcon(name));
 
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
       <View style={styles.headerRow}>
         <Text style={styles.titleText}>{time}</Text>
         <View style={{ alignItems: "center", flexDirection: "row" }}>
-          {renderIcons(stars)}
+          {renderIcons(stars, "star")}
+          {renderIcons(5 - stars, "star-outline")}
         </View>
       </View>
     </TouchableOpacity>
