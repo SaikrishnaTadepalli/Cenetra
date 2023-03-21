@@ -108,7 +108,7 @@ const RootNavigator = () => {
               };
             }}
           />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
         </>
       ) : (
         <>
@@ -268,8 +268,8 @@ const BottomTabNavigator = ({ navigation, route }) => {
         }}
       />
       <BottomTab.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="Settings"
+        component={SettingsScreen}
         options={({ navigation, route }) => {
           return {
             tabBarIcon: ({ focused, color }) => (
@@ -287,26 +287,9 @@ const BottomTabNavigator = ({ navigation, route }) => {
                     : { backgroundColor: colors.white }
                 }
               >
-                <Ionicons name="person" size={24} color={color} />
+                <Ionicons name="settings-sharp" size={24} color={color} />
               </View>
             ),
-            headerRight: () => {
-              return (
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Settings")}
-                >
-                  <Ionicons
-                    name="settings-outline"
-                    color={colors.darkGrey}
-                    size={24}
-                    style={{
-                      alignSelf: "flex-end",
-                      marginRight: 20,
-                    }}
-                  />
-                </TouchableOpacity>
-              );
-            },
           };
         }}
       />

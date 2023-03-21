@@ -18,6 +18,7 @@ const yellow = "#FAC748";
 const peach = "#F9E9EC";
 const pink = "#F88DAD";
 const red = "#F30000";
+const lightGreyBorderColor = "E7E6E6";
 
 // const primaryPurple = "#7656D5";
 // const lighterPurpleShade = "#FAF9FF";
@@ -111,6 +112,7 @@ export default {
   yellow: yellow,
   darkGrey: darkGrey,
   red: red,
+  lightGreyBorderColor: lightGreyBorderColor,
   // primaryCol: primaryPurple,
   // backgroundShapes: lighterPurpleShade,
   // mapPillBackground: darkGrey,

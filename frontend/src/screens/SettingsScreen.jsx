@@ -1,27 +1,51 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
+import { configureStore } from "redux";
 
 import colors from "../constants/Colors";
-import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import SettingsCard from "../components/SettingsCard";
+import authSlice, { logout } from "../redux/authSlice";
 
-const SettingsScreen = () => {
+import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch } from "../redux/store";
+
+const SettingsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const options = [
+    {
+      id: "1",
+      icon: "person",
+      text: "Profile",
+      screen: "Profile",
+    },
+    {
+      id: "2",
+      icon: "feedback",
+      text: "Leave feedback!",
+    },
+    {
+      id: "3",
+      icon: "chat-bubble",
+      text: "Notification Settings",
+    },
+    {
+      id: "4",
+      icon: "privacy-tip",
+      text: "Privacy",
+    },
+  ];
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.feedbackContainer}>
-        <View style={styles.contentContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <MaterialIcons name="feedback" color={colors.navyBlue} size={24} />
-            <Text style={styles.text}>Leave Feedback!</Text>
-          </View>
-          <Entypo
-            name="chevron-right"
-            color={colors.navyBlue}
-            size={24}
-            style={{ justifyContent: "flex-end" }}
-          />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
+      {options.map((option) => (
+        <SettingsCard
+          key={option.id}
+          icon={option.icon}
+          title={option.text}
+          screen={option.screen}
+          navigation={navigation}
+        />
+      ))}
+      <TouchableOpacity onPress={() => dispatch(logout({ name: "auth" }))}>
         <Text style={styles.logOutText}>Log Out</Text>
       </TouchableOpacity>
     </View>
@@ -38,12 +62,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   feedbackContainer: {
-    backgroundColor: colors.lightPurple,
     borderRadius: 10,
     paddingLeft: 10,
     paddingRight: 20,
     paddingVertical: 16,
     width: "100%",
+    borderColor: colors.darkGrey,
+    borderWidth: 0.5,
   },
   contentContainer: {
     width: "100%",
@@ -54,7 +79,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "InterMedium",
     fontSize: 16,
-    color: colors.navyBlue,
+    color: colors.primaryText,
     marginLeft: 10,
     alignSelf: "center",
   },
