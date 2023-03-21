@@ -39,7 +39,7 @@ export default DailyLogsCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 390,
+    width: "100%",
     minHeight: 55,
     borderColor: colors.lightGrey,
     borderWidth: 1,
