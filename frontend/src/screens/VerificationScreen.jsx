@@ -6,11 +6,14 @@ import {
   View,
 } from "react-native";
 import React from "react";
-
+import { login } from "../redux/authSlice";
 
 import colors from "../constants/Colors";
+import { useDispatch } from "react-redux";
 
 const VerificationScreen = ({ route }) => {
+  const dispatch = useDispatch();
+
   const renderBox = () => (
     <TextInput style={styles.box} keyboardType="number-pad" maxLength={1} />
   );
@@ -27,7 +30,10 @@ const VerificationScreen = ({ route }) => {
         <Text style={styles.codeText}>Enter Code</Text>
       </View>
       <View style={styles.boxContainer}>{renderBoxes(5)}</View>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={() => dispatch(login({ name: "auth" }))}
+      >
         <Text style={styles.buttonText}>Verify</Text>
       </TouchableOpacity>
     </View>
@@ -47,7 +53,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 30,
     color: colors.darkPurple,
-    fontFamily: "InterSemiBold",
+    fontFamily: "InterMedium",
     marginBottom: 10,
   },
   text: {

@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
-import { configureStore } from "redux";
 
 import colors from "../constants/Colors";
 import SettingsCard from "../components/SettingsCard";
-import authSlice, { logout } from "../redux/authSlice";
+import { logout } from "../redux/authSlice";
 
-import { useSelector, useDispatch } from "react-redux";
-import { useAppDispatch } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 const SettingsScreen = ({ navigation }) => {
+  const icons = ["call-outline", "ios-location-outline", "mail-outline"];
   const dispatch = useDispatch();
   const options = [
     {
@@ -45,6 +46,18 @@ const SettingsScreen = ({ navigation }) => {
           navigation={navigation}
         />
       ))}
+      <View style={{ flexDirection: "row" }}>
+        {icons.map((icon) => (
+          <View style={styles.icon}>
+            <Ionicons
+              key={icon}
+              name={icon}
+              size={30}
+              color={colors.navyBlue}
+            />
+          </View>
+        ))}
+      </View>
       <TouchableOpacity onPress={() => dispatch(logout({ name: "auth" }))}>
         <Text style={styles.logOutText}>Log Out</Text>
       </TouchableOpacity>
@@ -82,6 +95,13 @@ const styles = StyleSheet.create({
     color: colors.primaryText,
     marginLeft: 10,
     alignSelf: "center",
+  },
+  icon: {
+    borderColor: Colors.lightGrey,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 8,
+    marginRight: 10,
   },
   logOutText: {
     color: colors.red,

@@ -7,21 +7,12 @@ import {
   NativeModules,
 } from "react-native";
 import React, { useState } from "react";
-import SendSMS from "react-native-sms";
 
 import colors from "../constants/Colors";
-import useSendSMS from "../hooks/useSendSMS";
-
 const WelcomeScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState();
   async function handleClick() {
     navigation.navigate("Verification", { number: phoneNumber });
-    const sendSMS = useSendSMS();
-    try {
-      const func = await sendSMS("4379852844", "message");
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   return (
@@ -57,7 +48,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 30,
-    fontFamily: "InterSemiBold",
+    fontFamily: "InterMedium",
     color: colors.darkPurple,
     marginBottom: 40,
   },
@@ -91,7 +82,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     alignSelf: "center",
-    color: colors.darkPurple,
+    color: colors.primaryText,
     fontFamily: "InterSemiBold",
   },
 });
