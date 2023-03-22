@@ -82,20 +82,20 @@ const LogScreen = ({ navigation }) => {
       <ScrollView horizontal={true} style={styles.imagesContainer}>
         {pictures.map((picture, idx) =>
           idx < 10 ? (
-            <View key={picture.id} style={styles.imageContainer}>
+            <View key={`log-picture-${idx}`} style={styles.imageContainer}>
               <Picture isGallery={false} uri={picture.uri} />
             </View>
           ) : null
         )}
       </ScrollView>
-      {logs.map((log) => (
-        <View key={log.id}>
+      {logs.map((log, idx) => (
+        <View key={`log-title-${idx}`}>
           <Text style={[styles.sectionHeader, { color: log.color }]}>
             {log.title}
           </Text>
           <View style={[styles.divider, { borderColor: log.color }]} />
           {log.data.map((data, idx) => (
-            <View style={styles.logsContainer} key={idx}>
+            <View style={styles.logsContainer} key={`log-info-${idx}`}>
               <LogCard
                 sectionHeaderColor={log.color}
                 header={data.title}

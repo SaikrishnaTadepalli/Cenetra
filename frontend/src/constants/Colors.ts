@@ -13,6 +13,7 @@ const darkGrey = "#6F6D6D";
 const lightPurple = "#EAECFF";
 const navyBlue = "#1D2F6F";
 const blue = "#0582CA";
+const darkPurple = "#4E1786";
 const purple = "#8390FA";
 const yellow = "#FAC748";
 const peach = "#F9E9EC";
@@ -112,6 +113,7 @@ export default {
   yellow: yellow,
   darkGrey: darkGrey,
   red: red,
+  darkPurple: darkPurple,
   lightGreyBorderColor: lightGreyBorderColor,
   // primaryCol: primaryPurple,
   // backgroundShapes: lighterPurpleShade,

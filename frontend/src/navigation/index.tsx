@@ -24,6 +24,7 @@ import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
 import Logo from "../../assets/icons/logo.svg";
 import IndividualChatScreen from "../screens/IndividualChatScreen";
+import VerificationScreen from "../screens/VerificationScreen";
 
 // Understand This
 const MyTheme = {
@@ -64,7 +65,8 @@ export default Navigation;
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const isLoggedIn = false;
+  // useSelector((state: RootState) => state.auth.isLoggedIn);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -116,9 +118,30 @@ const RootNavigator = () => {
             name="Welcome"
             component={WelcomeScreen}
             options={{
-              headerShown: false,
+              headerLeft: () => (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 18,
+                  }}
+                >
+                  <Logo />
+                  <Text
+                    style={{
+                      fontFamily: "InterMedium",
+                      fontSize: 18,
+                      marginLeft: 16,
+                    }}
+                  >
+                    Cenetra
+                  </Text>
+                </View>
+              ),
+              headerTitle: "",
             }}
           />
+          <Stack.Screen name="Verification" component={VerificationScreen} />
         </>
       )}
     </Stack.Navigator>
