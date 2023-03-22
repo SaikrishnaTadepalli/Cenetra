@@ -4,23 +4,40 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  NativeModules,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import SendSMS from "react-native-sms";
+
 import colors from "../constants/Colors";
+import useSendSMS from "../hooks/useSendSMS";
 
 const WelcomeScreen = ({ navigation }) => {
-  const handleClick = () => navigation.navigate("Verification");
+  const [phoneNumber, setPhoneNumber] = useState();
+  async function handleClick() {
+    navigation.navigate("Verification", { number: phoneNumber });
+    const sendSMS = useSendSMS();
+    try {
+      const func = await sendSMS("4379852844", "message");
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.inputHeader}>Student Number</Text>
-        <TextInput style={styles.input} />
+        <TextInput style={styles.input} keyboardType="number-pad" />
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.inputHeader}>Registered Phone Number</Text>
-        <TextInput style={styles.input} />
+        <TextInput
+          style={styles.input}
+          onChangeText={setPhoneNumber}
+          keyboardType="number-pad"
+        />
       </View>
       <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
         <Text style={styles.buttonText}>Register Number</Text>
@@ -61,6 +78,8 @@ const styles = StyleSheet.create({
     borderColor: colors.lightPurple,
     borderWidth: 2,
     borderRadius: 10,
+    paddingHorizontal: 10,
+    fontSize: 15,
   },
   buttonContainer: {
     marginTop: 30,
@@ -73,6 +92,6 @@ const styles = StyleSheet.create({
   buttonText: {
     alignSelf: "center",
     color: colors.darkPurple,
-    fontFamily: "InterRegular",
+    fontFamily: "InterSemiBold",
   },
 });

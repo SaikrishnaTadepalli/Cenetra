@@ -75,14 +75,14 @@ const DailyLogsScreen = ({ navigation }) => {
       <ScrollView horizontal={true} style={styles.imagesContainer}>
         {pictures.map((picture, idx) =>
           idx < 10 ? (
-            <View key={picture.id} style={styles.imageContainer}>
+            <View key={`picture-${idx}`} style={styles.imageContainer}>
               <Picture isGallery={false} uri={picture.uri} />
             </View>
           ) : null
         )}
       </ScrollView>
-      {logs.map((log) => (
-        <View style={styles.logsContainer} key={log.id}>
+      {logs.map((log, idx) => (
+        <View style={styles.logsContainer} key={`daily-logs-card-${idx}`}>
           <DailyLogsCard
             navigation={navigation}
             stars={log.rate}

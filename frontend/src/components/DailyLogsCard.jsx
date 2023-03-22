@@ -10,8 +10,9 @@ const DailyLogsCard = ({ navigation, stars, time }) => {
     navigation.navigate("Log");
   };
 
-  const renderIcon = (name) => (
+  const renderIcon = (name, idx) => (
     <Ionicons
+      key={`${name}-${idx}`}
       name={name}
       color={colors.yellow}
       size={16}
@@ -20,7 +21,7 @@ const DailyLogsCard = ({ navigation, stars, time }) => {
   );
 
   const renderIcons = (num, name) =>
-    [...Array(num)].map(() => renderIcon(name));
+    [...Array(num).keys()].map((idx) => renderIcon(name, idx));
 
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
@@ -39,7 +40,7 @@ export default DailyLogsCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 390,
+    width: "100%",
     minHeight: 55,
     borderColor: colors.lightGrey,
     borderWidth: 1,

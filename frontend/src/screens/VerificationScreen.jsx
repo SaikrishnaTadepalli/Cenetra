@@ -6,25 +6,27 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import Colors from "../constants/Colors";
 
-const VerificationScreen = () => {
+
+import colors from "../constants/Colors";
+
+const VerificationScreen = ({ route }) => {
+  const renderBox = () => (
+    <TextInput style={styles.box} keyboardType="number-pad" maxLength={1} />
+  );
+
+  const renderBoxes = (num) => [...Array(num)].map(renderBox);
+
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Verify your number</Text>
       <Text style={styles.text}>
-        An email was sent to +1 (437) *** **16 with a verification code
+        An email was sent to {route.params.number} with a verification code
       </Text>
-      <View>
+      <View style={{ alignSelf: "flex-start", width: "40%" }}>
         <Text style={styles.codeText}>Enter Code</Text>
       </View>
-      <View style={styles.boxContainer}>
-        <TextInput style={styles.box} />
-        <TextInput style={styles.box} />
-        <TextInput style={styles.box} />
-        <TextInput style={styles.box} />
-        <TextInput style={styles.box} />
-      </View>
+      <View style={styles.boxContainer}>{renderBoxes(5)}</View>
       <TouchableOpacity style={styles.buttonContainer}>
         <Text style={styles.buttonText}>Verify</Text>
       </TouchableOpacity>
@@ -39,28 +41,28 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginTop: "10%",
-    paddingHorizontal: 24,
+    paddingHorizontal: 40,
     width: "100%",
   },
   titleText: {
     fontSize: 30,
-    color: Colors.darkPurple,
+    color: colors.darkPurple,
     fontFamily: "InterSemiBold",
     marginBottom: 10,
   },
   text: {
-    color: Colors.darkPurple,
+    color: colors.darkPurple,
     fontSize: 14,
     fontFamily: "InterLight",
-    width: "80%",
+    width: "85%",
     textAlign: "center",
     marginBottom: 20,
   },
   codeText: {
-    color: Colors.darkPurple,
+    color: colors.darkPurple,
     fontSize: 16,
     fontFamily: "InterRegular",
-    alignSelf: "flex-start",
+    textAlign: "center",
   },
   boxContainer: {
     flexDirection: "row",
@@ -73,11 +75,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     marginRight: 10,
-    borderColor: Colors.lightPurple,
+    borderColor: colors.lightPurple,
+    textAlign: "center",
+    fontSize: 24,
+    fontFamily: "InterSemiBold",
   },
   buttonContainer: {
     marginTop: 30,
-    backgroundColor: Colors.lightPurple,
+    backgroundColor: colors.lightPurple,
     height: 40,
     width: "75%",
     borderRadius: 10,
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     alignSelf: "center",
-    color: Colors.darkPurple,
+    color: colors.darkPurple,
     fontFamily: "InterSemiBold",
   },
 });
