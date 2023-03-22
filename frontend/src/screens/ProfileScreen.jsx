@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 
 import colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import ProfileCard from "../components/ProfileCard";
 
 const ProfileScreen = () => {
-  const icons = ["call", "md-location-sharp", "md-mail"];
+  const [isEditable, setEditable] = useState(false);
   const data = [
     {
       title: "CONTACT INFORMATION",
@@ -83,6 +83,11 @@ const ProfileScreen = () => {
       contentContainerStyle={{ paddingBottom: 50 }}
     >
       <View style={styles.profileContainer}>
+        {!isEditable ? (
+          <TouchableOpacity onPress={() => setEditable(true)}>
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+        ) : null}
         <View style={styles.imageAndChildInfoContainer}>
           <Image
             source={require("../../assets/images/childImage.png")}
@@ -101,9 +106,32 @@ const ProfileScreen = () => {
             sectionHeader={item.title}
             data={item.data}
             key={item.id}
+            isEditable={isEditable}
           />
         ))}
       </View>
+      {isEditable ? (
+        <View
+          style={{
+            flexDirection: "row",
+            marginRight: 10,
+            justifyContent: "center",
+            marginBottom: 10,
+          }}
+        >
+          <TouchableOpacity>
+            <Text style={styles.cancelText} onPress={() => setEditable(false)}>
+              Cancel
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => setEditable(false)}
+          >
+            <Text style={styles.saveText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
       <Text style={styles.footerText}>Last Updated 21 April 2022</Text>
     </ScrollView>
   );
@@ -115,7 +143,13 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     paddingHorizontal: 20,
-    paddingTop: 20,
+  },
+  buttonText: {
+    color: colors.buttonText,
+    fontSize: 15,
+    fontFamily: "InterBold",
+    textAlign: "right",
+    marginBottom: 8,
   },
   profileContainer: {
     paddingVertical: 16,
@@ -138,33 +172,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.navyBlue,
   },
-  teacherName: {
-    fontFamily: "InterMedium",
-    fontSize: 14,
-    color: colors.navyBlue,
-    marginVertical: 10,
-  },
   section: {
     fontFamily: "InterMedium",
     fontSize: 14,
     color: colors.navyBlue,
   },
-  iconsContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 20,
-  },
-  iconContainer: {
-    backgroundColor: colors.lightPurple,
-    borderRadius: 8,
-    height: 50,
-    width: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   footerText: {
     alignSelf: "center",
     color: colors.darkGrey,
+  },
+  saveButton: {
+    marginLeft: 18,
+  },
+  saveText: {
+    color: colors.buttonText,
+    fontSize: 18,
+    textAlign: "center",
+    fontFamily: "InterBold",
+  },
+  cancelText: {
+    color: colors.red,
+    fontSize: 18,
+    fontFamily: "InterBold",
   },
 });

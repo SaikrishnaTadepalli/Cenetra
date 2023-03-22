@@ -1,8 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useState } from "react";
 import Colors from "../constants/Colors";
 
-const ProfileCard = ({ sectionHeader, data }) => {
+const ProfileCard = ({ sectionHeader, data, isEditable }) => {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.infoContainer}>
@@ -10,8 +16,10 @@ const ProfileCard = ({ sectionHeader, data }) => {
         {data.map((item) => (
           <View key={item.id}>
             <Text style={styles.headerText}>{item.title}</Text>
-            <Text>{item.subText1}</Text>
-            {item.subText2 ? <Text>{item.subText2}</Text> : null}
+            <TextInput editable={isEditable}>{item.subText1}</TextInput>
+            {item.subText2 ? (
+              <TextInput editable={isEditable}>{item.subText2}</TextInput>
+            ) : null}
             {data.indexOf(item) !== data.length - 1 ? (
               <View style={styles.divider} />
             ) : null}

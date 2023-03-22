@@ -1,20 +1,22 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 
 import colors from "../constants/Colors";
 
-const Picture = ({ isGallery, uri }) => {
+const Picture = ({ uri, navigation }) => {
   return (
-    <View style={!isGallery ? styles.pictureContainer : null}>
+    <TouchableOpacity
+      style={styles.pictureContainer}
+      onPress={() => navigation.navigate("ImageView", { uri: uri })}
+    >
       <Image
-        style={!isGallery ? styles.pictureSize : styles.galleryPictureSize}
+        style={styles.picture}
         source={{
           uri: uri,
         }}
-        height={isGallery ? 150 : 90}
-        width={isGallery ? 115 : 75}
+        resizeMode="cover"
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -24,18 +26,9 @@ const styles = StyleSheet.create({
   pictureContainer: {
     width: 115,
     height: 130,
-    backgroundColor: colors.background,
-    borderRadius: 20,
-    justifyContent: "center",
   },
-  pictureSize: {
-    width: 75,
-    height: 90,
-    alignSelf: "center",
-    borderRadius: 5,
-  },
-  galleryPictureSize: {
-    width: 115,
-    height: 130,
+  picture: {
+    borderRadius: 10,
+    flex: 1,
   },
 });

@@ -76,7 +76,7 @@ const DailyLogsScreen = ({ navigation }) => {
         {pictures.map((picture, idx) =>
           idx < 10 ? (
             <View key={`picture-${idx}`} style={styles.imageContainer}>
-              <Picture isGallery={false} uri={picture.uri} />
+              <Picture navigation={navigation} uri={picture.uri} />
             </View>
           ) : null
         )}

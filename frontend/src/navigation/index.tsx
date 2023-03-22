@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import { Ionicons, Octicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 
 import colors from "../constants/Colors";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -25,6 +25,7 @@ import NoticeInfoScreen from "../screens/NoticeInfoScreen";
 import Logo from "../../assets/icons/logo.svg";
 import IndividualChatScreen from "../screens/IndividualChatScreen";
 import VerificationScreen from "../screens/VerificationScreen";
+import ImageViewScreen from "../screens/ImageViewScreen";
 
 // Understand This
 const MyTheme = {
@@ -65,8 +66,7 @@ export default Navigation;
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-  const isLoggedIn = false;
-  // useSelector((state: RootState) => state.auth.isLoggedIn);
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -111,6 +111,24 @@ const RootNavigator = () => {
             }}
           />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen
+            name="ImageView"
+            component={ImageViewScreen}
+            options={({ navigation, route }) => {
+              return {
+                headerTitle: "",
+                headerRight: () => (
+                  <TouchableOpacity>
+                    <Ionicons
+                      name="ios-download-outline"
+                      size={28}
+                      color={colors.darkGrey}
+                    />
+                  </TouchableOpacity>
+                ),
+              };
+            }}
+          />
         </>
       ) : (
         <>

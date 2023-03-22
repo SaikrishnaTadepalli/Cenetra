@@ -4,7 +4,7 @@ import React from "react";
 import Picture from "../components/Picture";
 import colors from "../constants/Colors";
 
-const GalleryScreen = () => {
+const GalleryScreen = ({ navigation }) => {
   const pictures = [
     {
       id: "1",
@@ -43,7 +43,9 @@ const GalleryScreen = () => {
       ListFooterComponent={<View />}
       ListFooterComponentStyle={{ height: 20 }}
       numColumns={3}
-      renderItem={({ item }) => <Picture isGallery={true} uri={item.uri} />}
+      renderItem={({ item }) => (
+        <Picture navigation={navigation} uri={item.uri} />
+      )}
     />
   );
 };
