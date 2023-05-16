@@ -1,0 +1,213 @@
+{
+  "notices": [
+    {
+      "date": "Today",
+      "data": [
+        {
+          "subject": "Spring Break",
+          "description": "Spring break will begin on Monday, April 3rd and end on Friday, April 7th. Enjoy your time off!",
+          "id": "1",
+          "time_sent": "9:00 am",
+          "unread": true
+        },
+        {
+          "subject": "School Newsletter",
+          "description": "The latest edition of the school newsletter is now available on the school website. Check it out for important updates and upcoming events.",
+          "id": "2",
+          "time_sent": "3:30 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "Yesterday",
+      "data": [
+        {
+          "subject": "School Bus Delay",
+          "description": "Due to heavy traffic, the school buses will be delayed by approximately 15 minutes this morning. Thank you for your patience.",
+          "id": "3",
+          "time_sent": "7:45 am",
+          "unread": true
+        },
+        {
+          "subject": "Parent Teacher Conferences",
+          "description": "Parent teacher conferences will be held on Thursday, April 13th from 4:00 pm to 7:00 pm. Please sign up for a time slot with your child's teacher.",
+          "id": "4",
+          "time_sent": "2:15 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "26 March 2023",
+      "data": [
+        {
+          "subject": "School Closure",
+          "description": "Due to inclement weather, the school will be closed on Monday, March 27th.",
+          "id": "5",
+          "time_sent": "5:30 pm",
+          "unread": true
+        },
+        {
+          "subject": "Science Fair",
+          "description": "The school will be hosting its annual Science Fair on Friday, April 7th. All students are encouraged to participate.",
+          "id": "6",
+          "time_sent": "10:15 am",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "25 March 2023",
+      "data": [
+        {
+          "subject": "PTA Meeting",
+          "description": "The Parent Teacher Association meeting is scheduled for Wednesday, March 29th at 6:00 pm in the school cafeteria.",
+          "id": "7",
+          "time_sent": "2:00 pm",
+          "unread": false
+        },
+        {
+          "subject": "School Play",
+          "description": "The school drama club will be performing its annual play on Friday, April 14th at 7:00 pm. Tickets are available for purchase in the main office.",
+          "id": "8",
+          "time_sent": "4:30 pm",
+          "unread": true
+        }
+      ]
+    },
+    {
+      "date": "13 March 2023",
+      "data": [
+        {
+          "subject": "Field Trip Reminder",
+          "description": "A friendly reminder that tomorrow's field trip to the Natural History Museum will require students to bring a packed lunch, comfortable walking shoes, and a signed permission slip.",
+          "id": "9",
+          "time_sent": "11:00 am",
+          "unread": true
+        },
+        {
+          "subject": "Spring Concert",
+          "description": "The school's annual Spring Concert will take place on Friday, April 21st at 7:00 pm in the school auditorium. Don't miss out on the great performances by our talented students!",
+          "id": "10",
+          "time_sent": "3:30 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "10 March 2023",
+      "data": [
+        {
+          "subject": "Late Start Wednesday",
+          "description": "This Wednesday, April 5th, will be a late start day. School will begin at 10:00 am instead of the usual 8:00 am start time.",
+          "id": "11",
+          "time_sent": "8:00 am",
+          "unread": true
+        },
+        {
+          "subject": "School Fundraiser",
+          "description": "The school is hosting a fundraiser on Saturday, April 29th from 9:00 am to 12:00 pm. Come out and support our school by participating in fun activities and donating to a great cause.",
+          "id": "5678",
+          "time_sent": "1:30 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "9 Feburary 2023",
+      "data": [
+        {
+          "subject": "Spring Break",
+          "description": "Spring break will begin on Monday, April 3rd and end on Friday, April 7th. Enjoy your time off!",
+          "id": "12",
+          "time_sent": "9:00 am",
+          "unread": true
+        },
+        {
+          "subject": "School Newsletter",
+          "description": "The latest edition of the school newsletter is now available on the school website. Check it out for important updates and upcoming events.",
+          "id": "13",
+          "time_sent": "3:30 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "8 Feburary 2023",
+      "data": [
+        {
+          "subject": "School Bus Delay",
+          "description": "Due to heavy traffic, the school buses will be delayed by approximately 15 minutes this morning. Thank you for your patience.",
+          "id": "14",
+          "time_sent": "7:45 am",
+          "unread": true
+        },
+        {
+          "subject": "Parent Teacher Conferences",
+          "description": "Parent teacher conferences will be held on Thursday, April 13th from 4:00 pm to 7:00 pm. Please sign up for a time slot with your child's teacher.",
+          "id": "15",
+          "time_sent": "2:15 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "1 Feburary 2023",
+      "data": [
+        {
+          "subject": "School Play",
+          "description": "Don't forget to attend the school play on Friday, April 7th at 7:00 pm in the school auditorium. Tickets are available at the front office for $5 each.",
+          "id": "16",
+          "time_sent": "10:30 am",
+          "unread": true
+        },
+        {
+          "subject": "College Visit",
+          "description": "Representatives from the University of California, Los Angeles will be visiting our school on Monday, April 10th at 1:00 pm to talk about their programs and admissions requirements. Interested juniors and seniors are welcome to attend.",
+          "id": "17",
+          "time_sent": "3:00 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "31 January 2023",
+      "data": [
+        {
+          "subject": "AP Exam Information",
+          "description": "Students taking AP exams this year should check their email for important information regarding test dates, times, and locations. If you have any questions, please see your AP teacher.",
+          "id": "18",
+          "time_sent": "11:30 am",
+          "unread": true
+        },
+        {
+          "subject": "Student Council Elections",
+          "description": "Interested in running for student council? Pick up an election packet from the front office and submit your completed forms by Wednesday, April 5th at 3:00 pm.",
+          "id": "19",
+          "time_sent": "2:45 pm",
+          "unread": false
+        }
+      ]
+    },
+    {
+      "date": "30 January 2023",
+      "data": [
+        {
+          "subject": "Field Trip Reminder",
+          "description": "A friendly reminder that tomorrow's field trip to the Natural History Museum will require students to bring a packed lunch, comfortable walking shoes, and a signed permission slip.",
+          "id": "20",
+          "time_sent": "11:00 am",
+          "unread": false
+        },
+        {
+          "subject": "Spring Concert",
+          "description": "The school's annual Spring Concert will take place on Friday, April 21st at 7:00 pm in the school auditorium. Don't miss out on the great performances by our talented students!",
+          "id": "21",
+          "time_sent": "3:30 pm",
+          "unread": false
+        }
+      ]
+    }
+  ]
+}

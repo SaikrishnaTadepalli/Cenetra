@@ -3,8 +3,7 @@ import React, { useState } from "react";
 
 import colors from "../constants/Colors";
 
-const ChatCard = ({ name, subject, time, navigation, isRead }) => {
-  const image = require("../../assets/images/chatImage.jpeg");
+const ChatCard = ({ name, subject, time, navigation, isRead, uri }) => {
   const [isChatRead, setIsChatRead] = useState(isRead);
 
   const handleClick = () => {
@@ -23,10 +22,12 @@ const ChatCard = ({ name, subject, time, navigation, isRead }) => {
         }}
       >
         <Image
-          source={image}
-          height={1}
-          width={1}
-          style={{ height: 40, width: 40, marginRight: 6 }}
+          source={{
+            uri: uri,
+          }}
+          height={30}
+          width={30}
+          style={styles.image}
         />
         <View style={{ flex: 1, marginLeft: 10 }}>
           <View style={styles.headerRow}>
@@ -89,5 +90,11 @@ const styles = StyleSheet.create({
     color: colors.darkGrey,
     fontSize: 14,
     fontFamily: "InterMedium",
+  },
+  image: {
+    height: 50,
+    width: 50,
+    marginRight: 6,
+    borderRadius: 25,
   },
 });

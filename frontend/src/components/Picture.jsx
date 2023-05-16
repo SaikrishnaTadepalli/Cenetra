@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 
-import colors from "../constants/Colors";
-
 const Picture = ({ uri, navigation }) => {
   return (
     <TouchableOpacity
@@ -26,6 +24,7 @@ const styles = StyleSheet.create({
   pictureContainer: {
     width: 115,
     height: 130,
+    marginRight: 8,
   },
   picture: {
     borderRadius: 10,
