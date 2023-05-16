@@ -14,11 +14,16 @@ import { useDispatch } from "react-redux";
 const VerificationScreen = ({ route }) => {
   const dispatch = useDispatch();
 
-  const renderBox = () => (
-    <TextInput style={styles.box} keyboardType="number-pad" maxLength={1} />
+  const renderBox = (idx) => (
+    <TextInput
+      style={styles.box}
+      keyboardType="number-pad"
+      maxLength={1}
+      key={idx}
+    />
   );
 
-  const renderBoxes = (num) => [...Array(num)].map(renderBox);
+  const renderBoxes = (num) => [...Array(num)].map((n, idx) => renderBox(idx));
 
   return (
     <View style={styles.container}>

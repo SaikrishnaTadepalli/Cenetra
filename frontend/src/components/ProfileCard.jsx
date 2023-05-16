@@ -1,30 +1,72 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import React from "react";
 import Colors from "../constants/Colors";
 
-const ProfileCard = ({ sectionHeader, data, isEditable }) => {
+const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
+  const renderText = (infoType, info) => {
+    return (
+      <View style={styles.infoLineContainer}>
+        {infoType !== "" ? (
+          <Text style={styles.infoTypeText}>{infoType}</Text>
+        ) : null}
+        <TextInput editable={isEditable} style={styles.infoInputText}>
+          {info}{" "}
+        </TextInput>
+      </View>
+    );
+  };
+
+  const renderInfo = () => {
+    if (
+      sectionHeader === "PRIMARY CONTACT" ||
+      sectionHeader === "EMERGENCY CONTACTS"
+    ) {
+      return data.map((item, idx) => (
+        <View key={`profile-info${idx}`}>
+          <Text style={styles.headerText}>{item.title}</Text>
+          {renderText("Name:", item.name)}
+          {renderText("Relationship:", item.relationship)}
+          {renderText("Phone Number:", item.phone_number)}
+          {renderText("Email Address:", item.email_address)}
+          {renderText("Home Address:", item.home_address)}
+          {data.indexOf(item) !== data.length - 1 ? (
+            <View style={styles.divider} />
+          ) : null}
+        </View>
+      ));
+    } else if (sectionHeader === "ALLERGIES") {
+      return data.map((item, idx) => (
+        <View key={`profile-info${idx}`}>
+          {renderText("Item:", item.name)}
+          {renderText("Severity:", item.severity)}
+          {data.indexOf(item) !== data.length - 1 ? (
+            <View style={styles.divider} />
+          ) : null}
+        </View>
+      ));
+    } else if (sectionHeader === "MEDICATIONS") {
+      return data.map((item, idx) => (
+        <View key={`profile-info${idx}`}>
+          {renderText("Medicine Name:", item.name)}
+          {renderText("Dosage:", item.dosage)}
+          {renderText("Frequency:", item.frequency)}
+          {data.indexOf(item) !== data.length - 1 ? (
+            <View style={styles.divider} />
+          ) : null}
+        </View>
+      ));
+    } else if (sectionHeader === "BLOOD GROUP") {
+      return data.map((item, idx) => (
+        <View key={`profile-info${idx}`}>{renderText("", item.name)}</View>
+      ));
+    }
+  };
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.infoContainer}>
         <Text style={styles.sectionHeaderText}>{sectionHeader}</Text>
-        {data.map((item) => (
-          <View key={item.id}>
-            <Text style={styles.headerText}>{item.title}</Text>
-            <TextInput editable={isEditable}>{item.subText1}</TextInput>
-            {item.subText2 ? (
-              <TextInput editable={isEditable}>{item.subText2}</TextInput>
-            ) : null}
-            {data.indexOf(item) !== data.length - 1 ? (
-              <View style={styles.divider} />
-            ) : null}
-          </View>
-        ))}
+        {renderInfo()}
       </View>
     </View>
   );
@@ -52,14 +94,32 @@ const styles = StyleSheet.create({
   sectionHeaderText: {
     color: Colors.navyBlue,
     fontFamily: "InterSemiBold",
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 10,
   },
   headerText: {
-    color: Colors.sectionText,
+    color: "black",
     fontFamily: "InterSemiBold",
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 5,
+  },
+  infoLineContainer: {
+    flexDirection: "row",
+    marginBottom: 8,
+    width: "100%",
+  },
+  infoTypeText: {
+    fontSize: 16,
+    fontFamily: "InterMedium",
+    marginRight: 10,
+  },
+  infoInputText: {
+    fontSize: 16,
+    fontFamily: "InterRegular",
+    width: "100%",
+  },
+  healthInfoContainer: {
+    flexDirection: "row",
   },
   divider: {
     borderColor: Colors.lightGrey,

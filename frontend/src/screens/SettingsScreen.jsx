@@ -23,16 +23,19 @@ const SettingsScreen = ({ navigation }) => {
       id: "2",
       icon: "feedback",
       text: "Leave feedback!",
+      screen: "Feedback",
     },
     {
       id: "3",
       icon: "chat-bubble",
       text: "Notification Settings",
+      screen: "NotificationSettings",
     },
     {
       id: "4",
       icon: "privacy-tip",
       text: "Privacy",
+      screen: "Privacy",
     },
   ];
   return (
@@ -47,8 +50,8 @@ const SettingsScreen = ({ navigation }) => {
         />
       ))}
       <View style={{ flexDirection: "row" }}>
-        {icons.map((icon) => (
-          <View style={styles.icon}>
+        {icons.map((icon, idx) => (
+          <View style={styles.icon} key={`settings-${idx}`}>
             <Ionicons
               key={icon}
               name={icon}

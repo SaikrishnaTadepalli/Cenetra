@@ -26,6 +26,9 @@ import Logo from "../../assets/icons/logo.svg";
 import IndividualChatScreen from "../screens/IndividualChatScreen";
 import VerificationScreen from "../screens/VerificationScreen";
 import ImageViewScreen from "../screens/ImageViewScreen";
+import FeedbackScreen from "../screens/FeedbackScreen";
+import NotificationSettingsScreen from "../screens/NotificationSettingsScreen";
+import PrivacyScreen from "../screens/PrivacyScreen";
 
 // Understand This
 const MyTheme = {
@@ -82,7 +85,15 @@ const RootNavigator = () => {
               headerShown: false,
             }}
           />
-          <Stack.Screen name="Gallery" component={GalleryScreen} />
+          <Stack.Screen
+            name="Gallery"
+            component={GalleryScreen}
+            options={({ navigation, route }) => {
+              return {
+                headerTitle: route.params ? route.params.title : "",
+              };
+            }}
+          />
           <Stack.Screen
             name="Log"
             component={LogScreen}
@@ -129,6 +140,12 @@ const RootNavigator = () => {
               };
             }}
           />
+          <Stack.Screen name="Feedback" component={FeedbackScreen} />
+          <Stack.Screen
+            name="NotificationSettings"
+            component={NotificationSettingsScreen}
+          />
+          <Stack.Screen name="Privacy" component={PrivacyScreen} />
         </>
       ) : (
         <>
