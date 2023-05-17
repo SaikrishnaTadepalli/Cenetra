@@ -74,7 +74,7 @@ type RootQuery {
     classes: [Class!]!
     logs(studentId: ID!): [Log!]!
     notices(studentId: ID!): [Notice!]!
-    getS3Url(teacherId: ID!, studentId: ID!): String!
+    getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
     viewMedia(studentId: ID!): [Media!]!
 }
