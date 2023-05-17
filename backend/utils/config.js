@@ -10,14 +10,14 @@ const MONGODB_URI =
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRY = parseInt(process.env.JWT_EXPIRY);
 
-const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
+const S3_CREDENTIALS = process.env.S3_CREDENTIALS;
 
 module.exports = {
   MONGODB_URI,
   PORT,
   JWT_SECRET,
   JWT_EXPIRY,
-  AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY,
+  S3_BUCKET_NAME,
+  S3_CREDENTIALS,
 };

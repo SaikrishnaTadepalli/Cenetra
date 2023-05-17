@@ -41,6 +41,7 @@ const transformMedia = (media) => {
     teacher: teacher.bind(this, media._doc.teacher),
     student: student.bind(this, media._doc.student),
     createdAt: dateToString(media._doc.createdAt),
+    updatedAt: dateToString(media._doc.updatedAt),
   };
 };
 

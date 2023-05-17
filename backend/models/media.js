@@ -9,12 +9,12 @@ const mediaSchema = new Schema(
       ref: "Teacher",
       required: true,
     },
-    students: {
+    student: {
       type: Schema.Types.ObjectId,
       ref: "Student",
       required: true,
     },
-    mediaKey: {
+    fileName: {
       type: String,
       required: true,
     },
