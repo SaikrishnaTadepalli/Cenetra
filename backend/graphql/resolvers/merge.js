@@ -34,6 +34,16 @@ const transformNotice = (notice) => {
   };
 };
 
+const transformMedia = (media) => {
+  return {
+    ...media._doc,
+    _id: media.id,
+    teacher: teacher.bind(this, media._doc.teacher),
+    student: student.bind(this, media._doc.student),
+    createdAt: dateToString(media._doc.createdAt),
+  };
+};
+
 const teacher = async (teacherId) => {
   try {
     const fetchedTeacher = await Teacher.findById(teacherId);
@@ -71,3 +81,4 @@ const students = async (stuIds) => {
 exports.transformClass = transformClass;
 exports.transformLog = transformLog;
 exports.transformNotice = transformNotice;
+exports.transformMedia = transformMedia;
