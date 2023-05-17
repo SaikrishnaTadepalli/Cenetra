@@ -23,17 +23,6 @@ const transformLog = (log) => {
   };
 };
 
-const transformNotice = (notice) => {
-  return {
-    ...notice._doc,
-    _id: notice.id,
-    teacher: teacher.bind(this, notice._doc.teacher),
-    students: students.bind(this, notice._doc.students),
-    createdAt: dateToString(notice._doc.createdAt),
-    updatedAt: dateToString(notice._doc.updatedAt),
-  };
-};
-
 const transformMedia = (media) => {
   return {
     ...media._doc,
@@ -41,6 +30,7 @@ const transformMedia = (media) => {
     teacher: teacher.bind(this, media._doc.teacher),
     student: student.bind(this, media._doc.student),
     createdAt: dateToString(media._doc.createdAt),
+    updatedAt: dateToString(media._doc.updatedAt),
   };
 };
 
@@ -80,5 +70,4 @@ const students = async (stuIds) => {
 
 exports.transformClass = transformClass;
 exports.transformLog = transformLog;
-exports.transformNotice = transformNotice;
 exports.transformMedia = transformMedia;

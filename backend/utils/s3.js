@@ -1,26 +1,39 @@
-const AWS = require("aws-sdk");
+const aws = require("aws-sdk");
+const config = require("./config");
+const crypto = require("crypto");
+const { promisify } = require("util");
 
-// AWS.config.loadFromPath("./credentials.json");
+const region = config.S3_CREDENTIALS.region;
+const bucketName = config.S3_BUCKET_NAME;
+const accessKeyId = config.S3_CREDENTIALS.accessKeyId;
+const secretAccessKey = config.S3_CREDENTIALS.secretAccessKey;
 
-const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
+const s3 = new aws.S3({
+  region,
+  accessKeyId,
+  secretAccessKey,
+  signatureVersion: "v4",
+});
 
-const singleFileUpload = async (file) => {
-  const { filename, mimetype, createReadStream } = await file;
+const randomBytes = promisify(crypto.randomBytes);
 
-  const fileStream = createReadStream();
-  const path = require("path");
+const generateUploadURL = async () => {
+  const rawBytes = await randomBytes(16);
+  const fileName = rawBytes.toString("hex");
 
-  // name of the file in your S3 bucket will be the date in ms plus the extension name
-  const Key = new Date().getTime().toString() + path.extname(filename);
-
-  const uploadParams = {
-    Bucket: "cenetra-media-dev",
-    Key,
-    Body: fileStream,
+  const params = {
+    Bucket: bucketName,
+    Key: fileName,
+    Expires: 300, // 300 Seconds to post to URL before it expires
   };
 
-  const result = await s3.upload(uploadParams).promise();
-  return result.Key;
+  const uploadURL = await s3.getSignedUrlPromise("putObject", params);
+  return {
+    uploadURL: uploadURL,
+    fileName: fileName,
+  };
 };
 
-module.exports = { s3, singleFileUpload };
+module.exports = {
+  generateUploadURL,
+};

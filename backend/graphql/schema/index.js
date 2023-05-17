@@ -1,6 +1,9 @@
 const { buildSchema } = require("graphql");
+const { GraphQLUpload } = require("graphql-upload");
 
 module.exports = buildSchema(`
+scalar Upload
+
 type Teacher {
     _id: ID!
     firstName: String!
@@ -33,21 +36,13 @@ type Log {
     details: String!
 }
 
-type Notice {
-    _id: ID!
-    teacher: Teacher!
-    students: [Student!]!
-    createdAt: String!
-    updatedAt: String!
-    details: String!
-}
-
 type Media {
     _id: ID!
     teacher: Teacher!
     student: Student!
+    fileName: String!
     createdAt: String!
-    mediaKey: String!
+    updatedAt: String!
 }
 
 input TeacherInput {
@@ -69,8 +64,10 @@ type RootQuery {
     students: [Student!]!
     classes: [Class!]!
     logs(studentId: ID!): [Log!]!
-    notices(studentId: ID!): [Notice!]!
-    media(studentId: ID!): [Media!]!
+
+    getS3Url(teacherId: ID!, studentId: ID!): String!
+    getS3ViewUrl(fileName: String!): String!
+    viewMedia(studentId: ID!): [Media!]!
 }
 
 type RootMutation {
@@ -83,9 +80,7 @@ type RootMutation {
 
     createLog(teacherId: ID!, studentId: ID!, details: String!): Log!
 
-    createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
-
-    uploadMedia(teacherId: ID!, studentId: ID!, mediaObj: GraphQlUpload): Media!
+    registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
 }
 
 schema {

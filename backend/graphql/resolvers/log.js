@@ -54,7 +54,7 @@ module.exports = {
 
 /*
 query {
-    logs(studentId: "63bbc056c7b7e5dbe2029c59") {
+    logs(studentId: "6462cf2be55c98895096ea49") {
         _id
         teacher {
             _id
