@@ -60,7 +60,7 @@ module.exports = {
 
 
 query {
-  notices(studentId: "63c33310a828a028b0482f30") {
+  notices(studentId: "6462cf2be55c98895096ea49") {
     _id
     teacher {
         _id
@@ -80,8 +80,8 @@ query {
 
 mutation {
   createNotice(
-    teacherId: "63c3337da828a028b0482f3b"
-    studentIds: ["63c33310a828a028b0482f30", "63c3331ba828a028b0482f33", "63c33324a828a028b0482f36"]
+    teacherId: "6462cfc2e55c98895096ea67"
+    studentIds: ["6462cf2be55c98895096ea49", "6462cf3ce55c98895096ea4c", "6462cf3ce55c98895096ea4c"]
     details: "Notice 1: s1, s2, s3"
     ) {
         _id

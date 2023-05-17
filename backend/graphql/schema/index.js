@@ -36,6 +36,15 @@ type Log {
     details: String!
 }
 
+type Notice {
+    _id: ID!
+    teacher: Teacher!
+    students: [Student!]!
+    createdAt: String!
+    updatedAt: String!
+    details: String!
+}
+
 type Media {
     _id: ID!
     teacher: Teacher!
@@ -64,7 +73,7 @@ type RootQuery {
     students: [Student!]!
     classes: [Class!]!
     logs(studentId: ID!): [Log!]!
-
+    notices(studentId: ID!): [Notice!]!
     getS3Url(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
     viewMedia(studentId: ID!): [Media!]!
@@ -80,6 +89,8 @@ type RootMutation {
 
     createLog(teacherId: ID!, studentId: ID!, details: String!): Log!
 
+    createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
+    
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
 }
 
