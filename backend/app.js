@@ -4,6 +4,7 @@ const graphqlHTTP = require("express-graphql").graphqlHTTP;
 const { graphqlUploadExpress } = require("graphql-upload");
 
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const config = require("./utils/config");
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 
 app.use(
   "/graphql",
+  cors(),
   graphqlUploadExpress({
     maxFileSize: 10 * 1024 * 1024 * 1024, // 10GB in bytes
     maxFiles: 10, // Maximum number of files allowed
