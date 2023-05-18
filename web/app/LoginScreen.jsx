@@ -36,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
         .catch((error) => setIsError(true));
     }
   }
-
+  console.log(students);
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome</Text>
