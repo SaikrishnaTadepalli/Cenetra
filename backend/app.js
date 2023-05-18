@@ -7,7 +7,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const config = require("./utils/config");
-const cors = require("cors");
 
 const graphQlSchema = require("./graphql/schema/index");
 const graphQlResolvers = require("./graphql/resolvers/index");

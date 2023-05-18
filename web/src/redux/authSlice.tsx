@@ -28,13 +28,6 @@ export const loginUser = createAsyncThunk("auth/login", async (teacherID) => {
   return data;
 });
 
-const insertItem = (array, action) => {
-  //console.log(action.item);
-  let newArray = array.slice();
-  newArray.splice(action.index, 0, JSON.parse(JSON.stringify(action.item)));
-  return newArray;
-};
-
 export interface AuthState {
   isLoggedIn: boolean;
   userId: string;

@@ -10,58 +10,107 @@ import { React, useState } from "react";
 
 import colors from "../src/constants/Colors";
 import DragAndDrop from "../src/components/DragAndDrop";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLogs, updateLogs } from "../src/redux/logsSlice";
 
 const inputs = [
   "What food did they eat",
-  "What work did they do",
-  "What games did they play",
-  "Additional Comments",
+  // "What work did they do",
+  // "What games did they play",
+  // "Additional Comments",
 ];
 
-const CreateLogScreen = ({ date }) => {
+const Input = (inputVal, state, setState, isEditable) => {
+  return (
+    <View key={`input-${idx}`}>
+      <Text style={{ marginBottom: 10 }}>{inputVal}</Text>
+      <TextInput
+        style={styles.cardContainer}
+        multiline
+        editable={isEditable}
+        numberOfLines={4}
+        maxLength={200}
+        value={state}
+        onChangeText={setState}
+      />
+    </View>
+  );
+};
+
+const CreateLogScreen = ({ date, id }) => {
   const [isEditable, setEditable] = useState(true);
+  const dispatch = useDispatch();
+  const { userId, updateLogsError } = useSelector((state) => state.auth);
+  const [input1, setInput1] = useState("");
+  const [input2, setInput2] = useState("");
+  const [input3, setInput3] = useState("");
+  const [input4, setInput4] = useState("");
+  const [isCancelled, setIsCancelled] = useState(false);
+  const [isInputEmpty, setIsInputEmpty] = useState(false);
 
   const onSave = () => {
+    if (input1) {
+      setEditable(false);
+      setIsInputEmpty(false);
+      dispatch(
+        updateLogs({
+          teacherID: userId,
+          studentID: id,
+          details: input1,
+        })
+      );
+    } else {
+      setIsInputEmpty(true);
+    }
+  };
+
+  const onCancel = () => {
+    setIsCancelled(true);
     setEditable(false);
   };
+  //console.log(error);
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{date}</Text>
-      <View>
-        <ScrollView contentContainerStyle={styles.listView}>
-          {inputs.map((input, idx) => (
-            <View key={`input-${idx}`}>
-              <Text style={{ marginBottom: 10 }}>{input}</Text>
-              <TextInput
-                style={styles.cardContainer}
-                multiline
-                editable={isEditable}
-                numberOfLines={4}
-                maxLength={200}
-              />
+    <>
+      {!isCancelled ? (
+        <View style={styles.container}>
+          <Text style={styles.header}>{date}</Text>
+          <View>
+            <ScrollView contentContainerStyle={styles.listView}>
+              {inputs.map((input, idx) => (
+                <View key={`input-${idx}`}>
+                  <Text style={{ marginBottom: 10 }}>{input}</Text>
+                  <TextInput
+                    style={styles.cardContainer}
+                    multiline
+                    editable={isEditable}
+                    numberOfLines={4}
+                    maxLength={200}
+                    value={input1}
+                    onChangeText={setInput1}
+                  />
+                </View>
+              ))}
+            </ScrollView>
+            <DragAndDrop />
+            {isInputEmpty && !input1 ? (
+              <Text style={styles.errorText}>
+                Could not save logs. Please fill in at least one text box.
+              </Text>
+            ) : null}
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity>
+                <Text style={styles.cancelText} onPress={onCancel}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+                <Text style={styles.saveText}>Save</Text>
+              </TouchableOpacity>
             </View>
-          ))}
-        </ScrollView>
-        <DragAndDrop />
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 30,
-            alignSelf: "center",
-            marginRight: 100,
-          }}
-        >
-          <TouchableOpacity>
-            <Text style={styles.cancelText} onPress={() => setEditable(false)}>
-              Cancel
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-            <Text style={styles.saveText}>Save</Text>
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </View>
+      ) : null}
+    </>
   );
 };
 
@@ -117,5 +166,17 @@ const styles = StyleSheet.create({
     color: colors.red,
     fontSize: 18,
     fontFamily: "InterBold",
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    marginTop: 30,
+    alignSelf: "center",
+    marginRight: 100,
+  },
+  errorText: {
+    color: colors.red,
+    marginTop: 20,
+    fontSize: 14,
+    //alignSelf: "center",
   },
 });

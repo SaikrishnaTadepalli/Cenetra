@@ -18,7 +18,7 @@ import { fetchStudents } from "../src/redux/authSlice";
 
 const ClassListScreen = () => {
   const names = classList.names;
-  const { students, isLoggedIn } = useSelector((state) => state.auth);
+  const { students } = useSelector((state) => state.auth);
   const state = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [name, setName] = useState(
@@ -31,6 +31,7 @@ const ClassListScreen = () => {
     setStudentID(id);
     dispatch(fetchLogs(id));
   };
+  console.log(students);
 
   return (
     <ScrollView style={styles.container} nestedScrollEnabled={true}>
