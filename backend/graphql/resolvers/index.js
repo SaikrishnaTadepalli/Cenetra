@@ -5,6 +5,7 @@ const teacherResolver = require("./teacher");
 const noticeResolver = require("./notice");
 const mediaResolver = require("./media");
 const profileInfoResolver = require("./profileInfo");
+const verificationCodeResolver = require("./verificationCode");
 
 const rootResolver = {
   ...classResolver,
@@ -14,6 +15,7 @@ const rootResolver = {
   ...noticeResolver,
   ...mediaResolver,
   ...profileInfoResolver,
+  ...verificationCodeResolver,
 };
 
 module.exports = rootResolver;

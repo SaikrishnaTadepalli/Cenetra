@@ -55,6 +55,16 @@ const transformProfile = (profileInfo) => {
   };
 };
 
+const transformVerificationCode = (verificationCode) => {
+  return {
+    ...verificationCode._doc,
+    _id: verificationCode.id,
+    student: student.bind(this, verificationCode._doc.student),
+    createdAt: dateToString(verificationCode._doc.createdAt),
+    updatedAt: dateToString(verificationCode._doc.updatedAt),
+  };
+};
+
 const teacher = async (teacherId) => {
   try {
     const fetchedTeacher = await Teacher.findById(teacherId);
@@ -94,3 +104,4 @@ exports.transformLog = transformLog;
 exports.transformNotice = transformNotice;
 exports.transformMedia = transformMedia;
 exports.transformProfile = transformProfile;
+exports.transformVerificationCode = transformVerificationCode;
