@@ -3,18 +3,19 @@ const config = require("./config");
 
 // Create an instance of AWS.SNS
 const sns = new aws.SNS({
-  region: "YOUR_AWS_REGION",
-  accessKeyId: "YOUR_AWS_ACCESS_KEY_ID",
-  secretAccessKey: "YOUR_AWS_SECRET_ACCESS_KEY",
+  region: config.SNS_REGION,
+  accessKeyId: config.SNS_ACCESS_KEY_ID,
+  secretAccessKey: config.SNS_SECRET_ACCESS_KEY,
 });
 
-exports.sendSMS = async (phoneNumber, message) => {
+const sendSMS = async (phoneNumber, message) => {
   const messageParams = {
     Message: message,
     PhoneNumber: phoneNumber,
   };
 
   try {
+    console.log("Sending SMS: " + phoneNumber + " - " + message);
     const data = await sns.publish(messageParams).promise();
     console.log("SMS sent:", data);
     return data;
@@ -22,4 +23,8 @@ exports.sendSMS = async (phoneNumber, message) => {
     console.log("Error sending SMS:", err);
     throw err;
   }
+};
+
+module.exports = {
+  sendSMS,
 };
