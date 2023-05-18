@@ -4,10 +4,19 @@ const { sendSMS } = require("../../utils/sms");
 
 const { transformVerificationCode } = require("./merge");
 
-const generateVerificationCode = () => {
-  // Generate a random 6-digit code
-  const min = 100000;
-  const max = 999999;
+/*
+
+IMPORTANT NOTES
+
+- Make sure number is of form: +14161234567
+
+- We are currently in SMS sandbox. We need to get out 
+    of it to be able to send messages to anyone
+*/
+
+const generateVerificationCode = (numDigits) => {
+  const min = 10 ** numDigits;
+  const max = 10 ** (numDigits + 1);
   const code = Math.floor(Math.random() * (max - min + 1)) + min;
 
   // Return the generated code
@@ -45,8 +54,8 @@ module.exports = {
         throw new Error("Student not found.");
       }
 
-      // Generate verification code
-      const code = generateVerificationCode();
+      // Generate verification code of length 6
+      const code = generateVerificationCode(6);
 
       // Store the verification code
       const verificationCode = new VerificationCode({
