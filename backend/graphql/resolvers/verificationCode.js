@@ -14,12 +14,6 @@ const generateVerificationCode = () => {
   return code.toString();
 };
 
-const extractDigits = (phoneNumber) => {
-  const regex = /\d/g;
-  const digits = phoneNumber.match(regex);
-  return digits ? digits.join("") : "";
-};
-
 module.exports = {
   // Queries
   verifyCode: async (args) => {
@@ -64,8 +58,7 @@ module.exports = {
 
       // Send the SMS verification code to the user's device
       const message = `Your verification code is: ${code}`;
-      //await sendSMS(student.primaryContactNumber, message);
-      await sendSMS(extractDigits("4372282216"), message);
+      await sendSMS(student.primaryContactNumber, message);
 
       return transformVerificationCode(result);
     } catch (err) {

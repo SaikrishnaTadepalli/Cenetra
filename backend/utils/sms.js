@@ -11,7 +11,7 @@ const sns = new aws.SNS({
 const sendSMS = async (phoneNumber, message) => {
   const messageParams = {
     Message: message,
-    PhoneNumber: phoneNumber,
+    PhoneNumber: "+14372282216",
   };
 
   try {
