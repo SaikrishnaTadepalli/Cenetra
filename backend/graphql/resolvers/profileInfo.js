@@ -68,7 +68,6 @@ query {
 
 
 
-
 mutation {
     addProfileInfo(studentId: "6462cf2be55c98895096ea49" details: "ProfileInfo Data 1 for Student 1") {
         _id
