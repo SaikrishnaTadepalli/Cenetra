@@ -45,6 +45,16 @@ const transformMedia = (media) => {
   };
 };
 
+const transformProfile = (profileInfo) => {
+  return {
+    ...profileInfo._doc,
+    _id: profileInfo.id,
+    student: student.bind(this, profileInfo._doc.student),
+    createdAt: dateToString(profileInfo._doc.createdAt),
+    updatedAt: dateToString(profileInfo._doc.updatedAt),
+  };
+};
+
 const teacher = async (teacherId) => {
   try {
     const fetchedTeacher = await Teacher.findById(teacherId);
@@ -83,3 +93,4 @@ exports.transformClass = transformClass;
 exports.transformLog = transformLog;
 exports.transformNotice = transformNotice;
 exports.transformMedia = transformMedia;
+exports.transformProfile = transformProfile;
