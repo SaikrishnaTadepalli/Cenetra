@@ -116,6 +116,7 @@ type RootQuery {
     verifyCode(studentId: ID!, code: String!): Boolean!
 }
 
+
 type RootMutation {
     createTeacher(teacherInput: TeacherInput!): Teacher!
 
