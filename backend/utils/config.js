@@ -13,6 +13,11 @@ const JWT_EXPIRY = parseInt(process.env.JWT_EXPIRY);
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 const S3_CREDENTIALS = process.env.S3_CREDENTIALS;
 
+const SNS_CREDENTIALS = process.env.SNS_CREDENTIALS;
+const SNS_ACCESS_KEY_ID = process.env.SNS_ACCESS_KEY_ID;
+const SNS_SECRET_ACCESS_KEY = process.env.SNS_SECRET_ACCESS_KEY;
+const SNS_REGION = process.env.SNS_REGION;
+
 module.exports = {
   MONGODB_URI,
   PORT,
@@ -20,4 +25,8 @@ module.exports = {
   JWT_EXPIRY,
   S3_BUCKET_NAME,
   S3_CREDENTIALS,
+  SNS_CREDENTIALS,
+  SNS_ACCESS_KEY_ID,
+  SNS_SECRET_ACCESS_KEY,
+  SNS_REGION,
 };
