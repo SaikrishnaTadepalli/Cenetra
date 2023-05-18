@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "./authSlice";
 import logReducer from "./logsSlice";
+import noticeReducer from "./noticeSlice";
 // import userReducer from "./userSlice";'
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
@@ -15,6 +16,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   log: logReducer,
+  notices: noticeReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
