@@ -3,9 +3,11 @@ import { StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./LoginScreen";
 import Colors from "../src/constants/Colors";
 import ClassListScreen from "./ClassListScreen";
+import { Provider } from "react-redux";
+import { store } from "../src/redux/store";
 
 const App = () => {
-  console.log("header");
+  console.log("header 2");
   return (
     <View style={styles.container}>
       <View style={styles.header}>

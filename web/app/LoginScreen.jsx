@@ -6,32 +6,50 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-
-import colors from "../src/constants/Colors";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
 
+import colors from "../src/constants/Colors";
+import { login, loginUser } from "../src/redux/authSlice";
+import execRequest from "../api";
+import accessCodeMapping from "../api/data";
+
 const LoginScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const router = useRouter();
+  const [accessCode, setAccessCode] = useState("");
+  const [isError, setIsError] = useState(false);
+  const { pending, error, students } = useSelector((state) => state.auth);
 
-  const [phoneNumber, setPhoneNumber] = useState();
   async function handleClick() {
-    router.push("/ClassListScreen");
+    const teacherID = accessCodeMapping[accessCode];
+    if (teacherID) {
+      dispatch(loginUser(teacherID));
+      if (!pending && !error) {
+        router.push("/HomeScreen");
+      }
+      setIsError(false);
+    } else {
+      setIsError(true);
+    }
   }
-
+  console.log(students);
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.inputHeader}>Name</Text>
-        <TextInput style={styles.input} keyboardType="number-pad" />
-      </View>
-      <View style={styles.inputContainer}>
         <Text style={styles.inputHeader}>Unique Access Code</Text>
         <TextInput
           style={styles.input}
-          onChangeText={setPhoneNumber}
+          value={accessCode}
+          onChangeText={setAccessCode}
           keyboardType="number-pad"
         />
+        {isError ? (
+          <Text style={styles.errorText}>
+            Wrong access code. Please try again.
+          </Text>
+        ) : null}
       </View>
       <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
         <Text style={styles.buttonText}>Login</Text>
@@ -89,5 +107,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: colors.primaryText,
     fontWeight: 600,
+  },
+  errorText: {
+    color: colors.red,
+    marginTop: 20,
+    fontSize: 14,
+    alignSelf: "center",
   },
 });

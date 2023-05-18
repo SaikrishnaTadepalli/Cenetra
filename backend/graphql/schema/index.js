@@ -88,6 +88,7 @@ type RootQuery {
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
 }
 
+
 type RootMutation {
     createTeacher(teacherInput: TeacherInput!): Teacher!
 

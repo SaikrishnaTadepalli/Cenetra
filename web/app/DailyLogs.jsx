@@ -10,22 +10,29 @@ import moment from "moment-timezone";
 
 import colors from "../src/constants/Colors";
 import * as logDates from "../data/dates.json";
+import CreateLogScreen from "./CreateLogScreen";
+import { useRouter, useSearchParams } from "expo-router";
 import LogScreen from "./LogScreen";
-import { useSearchParams } from "expo-router";
+import { useSelector } from "react-redux";
 
-const DailyLogsScreen = ({ name }) => {
+const DailyLogsScreen = ({ name, id }) => {
   const dates = logDates.dates;
+  const { logs } = useSelector((state) => state.log);
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
+  const [isOldLogSelected, setIsOldLogSelected] = useState(false);
   const [disabled, setDisabled] = useState(
     moment(dates[0]).format("DD MMMM YYYY") === curDate
   );
-
   const handleClick = () => {
     setDate(curDate);
     setDisabled(!disabled);
+    setIsOldLogSelected(false);
   };
 
+  const onClickLog = () => {
+    setIsOldLogSelected(true);
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{name}'s Logs</Text>
@@ -44,14 +51,28 @@ const DailyLogsScreen = ({ name }) => {
       </View>
       <View style={{ flexDirection: "row" }}>
         <ScrollView contentContainerStyle={styles.listView}>
-          {dates.map((date, idx) => (
-            <TouchableOpacity style={styles.cardContainer} key={`date-${idx}`}>
-              <Text>{moment(date).format("DD MMMM YYYY")}</Text>
-            </TouchableOpacity>
-          ))}
+          {logs.length > 0 ? (
+            logs.map((log, idx) => (
+              <TouchableOpacity
+                style={styles.cardContainer}
+                key={`date-${idx}`}
+                onPress={onClickLog}
+              >
+                <Text>{moment(log.createdAt).format("DD MMMM YYYY")}</Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <View>
+              <Text>No logs are available.</Text>
+            </View>
+          )}
         </ScrollView>
         <View style={{ flex: 1, marginLeft: "-30%" }}>
-          {date !== "" ? <LogScreen date={date} /> : null}
+          {isOldLogSelected ? (
+            <LogScreen />
+          ) : date !== "" ? (
+            <CreateLogScreen date={date} />
+          ) : null}
         </View>
       </View>
     </View>
