@@ -55,7 +55,7 @@ module.exports = {
       }
 
       // Generate verification code of length 6
-      const code = generateVerificationCode(6);
+      const code = generateVerificationCode(4);
 
       // Store the verification code
       const verificationCode = new VerificationCode({
@@ -67,7 +67,7 @@ module.exports = {
 
       // Send the SMS verification code to the user's device
       const message = `Your verification code is: ${code}`;
-      await sendSMS(student.primaryContactNumber, message);
+      //await sendSMS(student.primaryContactNumber, message);
 
       return transformVerificationCode(result);
     } catch (err) {

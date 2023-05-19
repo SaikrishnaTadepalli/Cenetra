@@ -18,7 +18,7 @@ import NoticeScreen from "../screens/NoticeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import GalleryScreen from "../screens/GalleryScreen";
-import WelcomeScreen from "../screens/WelcomeScreen";
+import LoginScreen from "../screens/LoginScreen";
 import { RootState } from "../redux/store";
 import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
@@ -151,7 +151,7 @@ const RootNavigator = () => {
         <>
           <Stack.Screen
             name="Welcome"
-            component={WelcomeScreen}
+            component={LoginScreen}
             options={{
               headerLeft: () => (
                 <View
