@@ -13,16 +13,19 @@ export const fetchNotices = createAsyncThunk(
                 }
             }
             `;
-    const response = await fetch("http://localhost:3000/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query }),
-    });
-    const data = await response.json();
-    console.log(data);
-    return data;
+    try {
+      const response = await fetch("http://localhost:3000/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
@@ -46,7 +49,6 @@ export const createNotices = createAsyncThunk(
         body: JSON.stringify({ query }),
       });
       const data = await response.json();
-      console.log(data);
       return data;
     } catch (error) {
       console.log("error");
@@ -61,7 +63,7 @@ export interface NoticeState {
   createNoticesError: boolean;
   fetchNoticesPending: boolean;
   fetchNoticesError: boolean;
-  //   isNewLogAdded: boolean;
+  isNewNoticeAdded: boolean;
 }
 
 const initialState: NoticeState = {
@@ -70,55 +72,50 @@ const initialState: NoticeState = {
   fetchNoticesPending: null,
   fetchNoticesError: false,
   notices: [],
-  //   isNewLogAdded: false,
+  isNewNoticeAdded: false,
 };
 
 export const noticeSlice = createSlice({
   name: "notices",
   initialState,
   reducers: {
-    setIsNewLogAdded: (state) => {
-      //state.isNewLogAdded = true;
+    setIsNewNoticeAdded: (state, action) => {
+      state.isNewNoticeAdded = action.payload;
     },
   },
-  extraReducers: {
-    [fetchNotices.pending]: (state) => {
-      state.fetchNoticesPending = true;
-      state.fetchNoticesError = false;
-      // state.isNewLogAdded = false;
-    },
-    [fetchNotices.rejected]: (state) => {
-      state.fetchNoticesPending = null;
-      state.fetchNoticesError = true;
-      //state.isNewLogAdded = false;
-    },
-    [fetchNotices.fulfilled]: (state, action) => {
-      state.notices = action.payload.data.notices;
-      state.fetchNoticesPending = false;
-      state.fetchNoticesError = false;
-      //state.isNewLogAdded = false;
-    },
-    [createNotices.pending]: (state) => {
-      state.createNoticesPending = true;
-      state.createNoticesError = false;
-      // state.isNewLogAdded = false;
-    },
-    [createNotices.rejected]: (state) => {
-      console.log(state.createNotices.pending);
-      state.createNoticesPending = null;
-      state.createNoticesError = true;
-    },
-    [createNotices.fulfilled]: (state, action) => {
-      console.log("entered");
-      state.notices = [action.payload.data.createNotice, ...state.notices];
-      state.createNoticesPending = false;
-      state.createNoticesError = false;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchNotices.pending, (state) => {
+        state.fetchNoticesPending = true;
+        state.fetchNoticesError = false;
+      })
+      .addCase(fetchNotices.rejected, (state) => {
+        state.fetchNoticesPending = null;
+        state.fetchNoticesError = true;
+      })
+      .addCase(fetchNotices.fulfilled, (state, action) => {
+        state.notices = action.payload.data.notices;
+        state.fetchNoticesPending = false;
+        state.fetchNoticesError = false;
+      })
+      .addCase(createNotices.pending, (state) => {
+        state.createNoticesPending = true;
+        state.createNoticesError = false;
+      })
+      .addCase(createNotices.rejected, (state) => {
+        state.createNoticesPending = null;
+        state.createNoticesError = true;
+      })
+      .addCase(createNotices.fulfilled, (state, action) => {
+        state.notices = [action.payload.data.createNotice, ...state.notices];
+        state.createNoticesPending = false;
+        state.createNoticesError = false;
+      });
   },
 });
 
-export const { setIsNewLogAdded } = noticeSlice.actions;
+export const { setIsNewNoticeAdded } = noticeSlice.actions;
 
-export const getIsNewLogAdded = (state) => state.log.isNewLogAdded;
+export const getIsNewNoticeAdded = (state) => state.notices.isNewNoticeAdded;
 
 export default noticeSlice.reducer;

@@ -1,9 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useRouter } from "expo-router";
 
 const HomeScreen = () => {
-  const { pending } = useSelector((state) => state.auth);
+  const { pending, isLoggedIn } = useSelector((state) => state.auth);
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   if (!pending && !isLoggedIn) {
+  //     router.push("/LoginScreen");
+  //   }
+  // }, [pending, isLoggedIn]);
+
   return (
     <View style={styles.container}>
       {pending ? (

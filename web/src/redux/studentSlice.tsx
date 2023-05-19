@@ -43,19 +43,10 @@ export const studentSlice = createSlice({
     updateStudents: (state, action) => {
       state.students = action.payload;
     },
-    logout: (state) => {
-      state.isLoggedIn = false;
-      state.userId = "";
-    },
-    permanentlyDeleteUser: (state) => {
-      state.isLoggedIn = false;
-      state.userId = "";
-    },
   },
 });
 
-export const { updateStudents, logout, permanentlyDeleteUser } =
-  studentSlice.actions;
+export const { updateStudents } = studentSlice.actions;
 
 export const fetchStudents = (state) => state.student.students;
 
