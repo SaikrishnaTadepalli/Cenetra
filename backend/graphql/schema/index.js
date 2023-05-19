@@ -62,6 +62,14 @@ type ProfileInfo {
     updatedAt: String!
 }
 
+type VerificationCode {
+    _id: ID!
+    student: Student!
+    code: String!
+    createdAt: String!
+    updatedAt: String!
+}
+
 input TeacherInput {
     firstName: String!
     lastName: String!
@@ -86,8 +94,8 @@ type RootQuery {
     getS3ViewUrl(fileName: String!): String!
     viewMedia(studentId: ID!): [Media!]!
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
+    verifyCode(studentId: ID!, code: String!): Boolean!
 }
-
 
 type RootMutation {
     createTeacher(teacherInput: TeacherInput!): Teacher!
@@ -102,8 +110,10 @@ type RootMutation {
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
     
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
-
+    
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!
+
+    sendSMSCode(studentId: ID!): VerificationCode!
 }
 
 schema {
