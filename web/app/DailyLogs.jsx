@@ -42,7 +42,6 @@ const DailyLogsScreen = ({ name, id }) => {
     setIsOldLogSelected(true);
     setLogID(id);
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{name}'s Logs</Text>

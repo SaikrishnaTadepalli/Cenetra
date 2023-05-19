@@ -18,7 +18,7 @@ import { fetchStudents } from "../src/redux/authSlice";
 
 const ClassListScreen = () => {
   const names = classList.names;
-  const { students } = useSelector((state) => state.auth);
+  const { students, isLoggedIn } = useSelector((state) => state.auth);
   const state = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
