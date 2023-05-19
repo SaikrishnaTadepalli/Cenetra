@@ -5,24 +5,26 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 
 import colors from "../src/constants/Colors";
 import * as logDates from "../data/dates.json";
 import CreateLogScreen from "./CreateLogScreen";
-import { useRouter, useSearchParams } from "expo-router";
+import { useRouter } from "expo-router";
 import LogScreen from "./LogScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsNewLogAdded, setIsNewLogAdded } from "../src/redux/logsSlice";
 
 const DailyLogsScreen = ({ name, id }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const state = useSelector((state) => state);
   const { logs, fetchLogsPending } = state.log;
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldLogSelected, setIsOldLogSelected] = useState(false);
+  const isAddNewLogSelected = getIsNewLogAdded(state);
   const [logID, setLogID] = useState("");
   const isDisabled =
     getIsNewLogAdded(state) ||
@@ -33,14 +35,13 @@ const DailyLogsScreen = ({ name, id }) => {
   const handleClick = () => {
     setDate(curDate);
     setIsOldLogSelected(false);
-    dispatch(setIsNewLogAdded());
+    dispatch(setIsNewLogAdded(true));
   };
 
   const onClickLog = (id) => {
     setIsOldLogSelected(true);
     setLogID(id);
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{name}'s Logs</Text>
@@ -54,7 +55,9 @@ const DailyLogsScreen = ({ name, id }) => {
           onPress={handleClick}
           disabled={isDisabled}
         >
-          <Text style={styles.buttonText}>Add new log</Text>
+          <Text style={styles.buttonText} onPress={handleClick}>
+            Add new log
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
@@ -80,7 +83,7 @@ const DailyLogsScreen = ({ name, id }) => {
           )}
         </ScrollView>
         <View style={{ flex: 1, marginLeft: "-30%" }}>
-          {!isDisabled || isOldLogSelected ? (
+          {isOldLogSelected ? (
             <LogScreen id={logID} />
           ) : date !== "" ? (
             <CreateLogScreen date={date} id={id} />

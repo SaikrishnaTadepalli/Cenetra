@@ -12,24 +12,25 @@ import colors from "../src/constants/Colors";
 import CreateNoticeScreen from "./CreateNoticeScreen";
 import NoticeScreen from "./NoticeScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNotices } from "../src/redux/noticeSlice";
+import { fetchNotices, setIsNewNoticeAdded } from "../src/redux/noticeSlice";
+import { useRouter } from "expo-router";
 
 const NoticesScreen = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const state = useSelector((state) => state);
   const { notices, fetchNoticesPending } = state.notices;
+  const { isLoggedIn } = state.auth;
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldNoticeSelected, setisOldNoticeSelected] = useState(false);
   const [noticeID, setNoticeID] = useState("");
   const isDisabled = false;
-  // notices.length > 0 &&
-  // notices[0] &&
-  // curDate === moment(notices[0].createdAt).format("DD MMMM YYYY");
 
   const handleClick = () => {
     setDate(curDate);
     setisOldNoticeSelected(false);
+    dispatch(setIsNewNoticeAdded(true));
   };
 
   const onClickNotice = (id) => {
@@ -39,6 +40,13 @@ const NoticesScreen = () => {
   useEffect(() => {
     dispatch(fetchNotices("6462cf2be55c98895096ea49"));
   }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/LoginScreen");
+    }
+  }, [isLoggedIn]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Notices</Text>

@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 import * as classList from "../data/names.json";
 import colors from "../src/constants/Colors";
@@ -18,20 +18,28 @@ import { fetchStudents } from "../src/redux/authSlice";
 
 const ClassListScreen = () => {
   const names = classList.names;
-  const { students } = useSelector((state) => state.auth);
+  const { students, isLoggedIn } = useSelector((state) => state.auth);
   const state = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const router = useRouter();
   const [name, setName] = useState(
     students.length > 0 ? students[0].firstName + students[0].lastName : ""
   );
   const [studentID, setStudentID] = useState(students[0]._id);
   const handleClick = (name, id) => {
     //router.push(`/${name}`);
+    //router.push("/LoginScreen");
     setName(name);
     setStudentID(id);
-    dispatch(fetchLogs(id));
+    dispatch(fetchLogs(id))
+      .then(() => {})
+      .catch((error) => console.log(error));
   };
-  console.log(students);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/LoginScreen");
+    }
+  }, [isLoggedIn]);
 
   return (
     <ScrollView style={styles.container} nestedScrollEnabled={true}>

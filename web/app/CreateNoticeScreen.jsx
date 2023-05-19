@@ -5,34 +5,54 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 
 import colors from "../src/constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
-import { createNotices } from "../src/redux/noticeSlice";
+import {
+  createNotices,
+  getIsNewNoticeAdded,
+  setIsNewNoticeAdded,
+} from "../src/redux/noticeSlice";
 
 const CreateNoticeScreen = ({ date, studentID }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
-  const { userId, updateLogsError } = useSelector((state) => state.auth);
+  const { createNoticesError, createNoticesPending } = useSelector(
+    (state) => state.notices
+  );
+  const state = useSelector((state) => state);
+  const { teacherID } = useSelector((state) => state.auth);
   const [subject, setSubject] = useState("");
   const [details, setDetails] = useState("");
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
+  const isAddNewNoticeSelected = getIsNewNoticeAdded(state);
 
   const onSave = () => {
     if (subject && details) {
-      setEditable(false);
-      setIsInputEmpty(false);
-      setIsSaved(true);
       dispatch(
         createNotices({
-          teacherID: userId,
+          teacherID: teacherID,
           studentID: [studentID],
           details: subject,
         })
-      );
+      )
+        .then(() => {
+          setEditable(false);
+          setIsInputEmpty(false);
+          setIsSaved(true);
+          dispatch(setIsNewNoticeAdded(false));
+          setTimeout(() => {
+            setIsSaved(false);
+            setEditable(true);
+            setSubject("");
+            setDetails("");
+          }, 2000);
+        })
+        .catch((error) => console.log(error));
     } else {
       setIsInputEmpty(true);
     }
@@ -41,11 +61,23 @@ const CreateNoticeScreen = ({ date, studentID }) => {
   const onCancel = () => {
     setIsCancelled(true);
     setEditable(false);
+    dispatch(setIsNewNoticeAdded(false));
+    setTimeout(() => {
+      setIsCancelled(false);
+      setEditable(true);
+      setSubject("");
+      setDetails("");
+    }, 2000);
   };
-  //console.log(error);
+
+  const handleRefresh = () => {
+    setIsCancelled(false);
+    setEditable(false);
+  };
   return (
     <>
-      {!isCancelled && !isSaved ? (
+      {createNoticesPending ? <Text>Saving your changes.</Text> : null}
+      {isAddNewNoticeSelected && !createNoticesPending ? (
         <View style={styles.container}>
           <Text style={styles.header}>{date}</Text>
           <View>
@@ -71,7 +103,7 @@ const CreateNoticeScreen = ({ date, studentID }) => {
                 onChangeText={setDetails}
               />
             </View>
-            {isInputEmpty && !subject ? (
+            {isInputEmpty && (!subject || !details) ? (
               <Text style={styles.errorText}>
                 Could not save new notice. Please fill in at least one text box.
               </Text>
@@ -90,6 +122,14 @@ const CreateNoticeScreen = ({ date, studentID }) => {
         </View>
       ) : null}
       {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
+      {isError ? (
+        <View>
+          <Text>There was an error in creating the log. Please try again.</Text>
+          <TouchableOpacity onPress={handleRefresh}>
+            <Text>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </>
   );
 };
