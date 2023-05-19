@@ -15,8 +15,42 @@ module.exports = {
       }
 
       const fetchedLogs = await Log.find({ student: args.studentId });
+      const formattedLogs = fetchedLogs.map((log) => transformLog(log));
 
-      return fetchedLogs.map((log) => transformLog(log));
+      const sortedLogs = formattedLogs.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      return sortedLogs;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  // Assumes that the "args.date" is a dateString such as "2023-05-19"
+  logByDate: async (args) => {
+    try {
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      const targetDate = new Date(args.date);
+      targetDate.setHours(0, 0, 0, 0);
+
+      const nextDay = new Date(targetDate);
+      nextDay.setDate(targetDate.getDate() + 1);
+
+      const fetchedLog = await Log.findOne({
+        student: args.studentId,
+        createdAt: {
+          $gte: targetDate,
+          $lt: nextDay,
+        },
+      });
+
+      return transformLog(fetchedLog);
     } catch (err) {
       throw err;
     }

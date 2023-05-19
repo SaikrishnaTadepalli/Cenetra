@@ -86,14 +86,30 @@ input StudentInput {
 
 type RootQuery {
     teachers: [Teacher!]!
+    teacherById(teacherId: ID!): Teacher!
+
     students: [Student!]!
+    studentById(studentId: ID!): Student!
+    studentByStudentNumber(studentNumber: String!): Student!
+
     classes: [Class!]!
+    classById(classId: ID!): Class!
+    classByTeacherId(teacherId: ID!): Class!
+
     logs(studentId: ID!): [Log!]!
-    notices(studentId: ID!): [Notice!]!
+    logByDate(studentId: ID!, date: String!): [Log!]!
+
+    noticesForStudent(studentId: ID!): [Notice!]!
+    noticesByTeacher(teacherId: ID!): [Notice!]!
+
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
     viewMedia(studentId: ID!): [Media!]!
+    viewMediaByDate(studentId: ID!, date: String!):[Media!]!
+
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
+    getLatestProfileInfo(studentId: ID!): [ProfileInfo!]!
+
     verifyCode(studentId: ID!, code: String!): Boolean!
 }
 
