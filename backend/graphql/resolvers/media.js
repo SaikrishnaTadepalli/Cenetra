@@ -59,6 +59,34 @@ module.exports = {
     }
   },
 
+  viewMediaByDate: async (args) => {
+    try {
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      const targetDate = new Date(args.date);
+      targetDate.setHours(0, 0, 0, 0);
+
+      const nextDay = new Date(targetDate);
+      nextDay.setDate(targetDate.getDate() + 1);
+
+      const fetchedMedia = await Media.find({
+        student: args.studentId,
+        createdAt: {
+          $gte: targetDate,
+          $lt: nextDay,
+        },
+      });
+
+      return fetchedMedia.map((media) => transformMedia(media));
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   registerMedia: async (args) => {
     try {

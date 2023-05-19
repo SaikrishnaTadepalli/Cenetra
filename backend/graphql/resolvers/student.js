@@ -12,6 +12,42 @@ module.exports = {
     }
   },
 
+  studentById: async (args) => {
+    try {
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      return {
+        ...student._doc,
+        _id: student.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  studentByStudentNumber: async (args) => {
+    try {
+      const student = await Student.findOne({
+        studentNumber: args.studentNumber,
+      });
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      return {
+        ...student._doc,
+        _id: student.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   createStudent: async (args) => {
     try {

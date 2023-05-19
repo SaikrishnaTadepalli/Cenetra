@@ -6,7 +6,7 @@ const { transformNotice } = require("./merge");
 
 module.exports = {
   // Queries
-  notices: async (args) => {
+  noticesForStudent: async (args) => {
     try {
       const student = await Student.findById(args.studentId);
 
@@ -15,8 +15,38 @@ module.exports = {
       }
 
       const fetchedNotices = await Notice.find({ students: args.studentId });
+      const formattedNotices = fetchedNotices.map((notice) =>
+        transformNotice(notice)
+      );
 
-      return fetchedNotices.map((notice) => transformNotice(notice));
+      const sortedNotices = formattedNotices.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      return sortedNotices;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  noticesByTeacher: async (args) => {
+    try {
+      const teacher = await Teacher.findById(args.teacherId);
+
+      if (!teacher) {
+        throw error("Teacher does not exist.");
+      }
+
+      const fetchedNotices = await Notice.find({ teacher: args.teacherId });
+      const formattedNotices = fetchedNotices.map((notice) =>
+        transformNotice(notice)
+      );
+
+      const sortedNotices = formattedNotices.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      return sortedNotices;
     } catch (err) {
       throw err;
     }
