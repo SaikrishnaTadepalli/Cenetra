@@ -7,7 +7,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const config = require("./utils/config");
-const cors = require("cors");
 
 const graphQlSchema = require("./graphql/schema/index");
 const graphQlResolvers = require("./graphql/resolvers/index");
@@ -30,14 +29,6 @@ app.use(
   })
 );
 
-// app.get("/products/:id", function (req, res, next) {
-//   res.json({ msg: "This is CORS-enabled for all origins!" });
-// });
-
-// app.listen(3000, function () {
-//   console.log("CORS-enabled web server listening on port 3000");
-// });
-
 mongoose.set("strictQuery", false);
 mongoose
   .connect(config.MONGODB_URI)
@@ -48,4 +39,3 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-//app.listen(config.PORT);
