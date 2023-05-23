@@ -6,15 +6,22 @@ import moment from "moment-timezone";
 import colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
-import { fetchLogs } from "../redux/dailyLogsSlice";
+import { fetchLogs, selectLogByID } from "../redux/dailyLogsSlice";
+import { useSelector } from "react-redux";
 
-const DailyLogsCard = ({ navigation, data, date }) => {
+const DailyLogsCard = ({ navigation, data, date, logID }) => {
   //console.log("dailylogscard", data);
   const pictures = [];
   const stars = 3;
+  const state = useSelector((state) => state);
 
   const handleClick = () => {
-    navigation.navigate("Log", { data: data, pictures: pictures, title: date });
+    const curLog = selectLogByID(state, logID);
+    navigation.navigate("Log", {
+      data: data,
+      pictures: pictures,
+      title: moment(curLog.createdAt).format("DD MMMM YYYY"),
+    });
   };
 
   const renderIcon = (name, idx) => (
@@ -29,12 +36,11 @@ const DailyLogsCard = ({ navigation, data, date }) => {
 
   const renderIcons = (num, name) =>
     [...Array(num).keys()].map((idx) => renderIcon(name, idx));
-
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
       <View style={styles.headerRow}>
         <Text style={styles.titleText}>
-          {moment(date.createdAt).format("DD MMMM YYYY")}
+          {moment(date).format("DD MMMM YYYY")}
         </Text>
         <View style={{ alignItems: "center", flexDirection: "row" }}>
           {renderIcons(stars, "star")}

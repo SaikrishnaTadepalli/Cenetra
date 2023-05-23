@@ -29,6 +29,7 @@ import ImageViewScreen from "../screens/ImageViewScreen";
 import FeedbackScreen from "../screens/FeedbackScreen";
 import NotificationSettingsScreen from "../screens/NotificationSettingsScreen";
 import PrivacyScreen from "../screens/PrivacyScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
 
 // Understand This
 const MyTheme = {
@@ -122,6 +123,7 @@ const RootNavigator = () => {
             }}
           />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen
             name="ImageView"
             component={ImageViewScreen}

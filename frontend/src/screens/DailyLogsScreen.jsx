@@ -12,33 +12,33 @@ import colors from "../constants/Colors";
 import DailyLogsCard from "../components/DailyLogsCard";
 import * as dailyLogs from "../../data/dailyLogs.json";
 import { useDispatch } from "react-redux";
-import { fetchLogs } from "../redux/dailyLogsSlice";
+import { fetchLogs, selectLogByID } from "../redux/dailyLogsSlice";
 import { fetchStudentID } from "../redux/authSlice";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DailyLogsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [studentID, setStudentID] = useState("");
-  const { pending, logs } = useSelector((state) => state.dailyLogs);
-  //var logs = dailyLogs.logs;
-  //console.log(logs);
+  const data = dailyLogs.logs[0].activities;
+  const { logs } = useSelector((state) => state.dailyLogs);
+
   const pictures = [];
   // logs.map((log, idx) =>
   //   log.pictures.map((picture) => pictures.push({ idx: idx, uri: picture }))
   // );
 
   useEffect(() => {
-    console.log("useeffect");
+    //console.log("useeffect");
     const retrieveData = async () => {
-      const data = await AsyncStorage.getItem("studentID");
-      dispatch(fetchLogs(data))
-        .then((response) => console.log(response))
+      const studentID = await AsyncStorage.getItem("studentID");
+      // console.log(studentID);
+      dispatch(fetchLogs(studentID))
+        .then((response) => {})
         .catch((error) => console.log("Error in Daily logs screen", error));
     };
     retrieveData();
   }, []);
-  console.log(logs.length);
+  //console.log(logs.length);
   return (
     <ScrollView style={styles.mainContainer} nestedScrollEnabled={true}>
       <Text style={styles.titleText}>Daily Logs</Text>
@@ -57,13 +57,13 @@ const DailyLogsScreen = ({ navigation }) => {
           ) : null
         )}
       </ScrollView>
-      {console.log("logs", logs)}
       {logs.map((log, idx) => (
         <View style={styles.logsContainer} key={`daily-logs-card-${idx}`}>
           <DailyLogsCard
             navigation={navigation}
             date={log.createdAt}
-            data={log.details}
+            data={data}
+            logID={log._id}
           />
         </View>
       ))}

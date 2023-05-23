@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchLogs = createAsyncThunk(
   "logs/fetchLogs",
   async (studentID, { rejectWithValue }) => {
-    console.log(studentID);
+    //console.log(studentID);
     const query = `
   query {
     logs(studentId: "${studentID}") {
@@ -52,7 +52,7 @@ const initialState: DailyLogsState = {
 };
 
 export const dailyLogsSlice = createSlice({
-  name: "log",
+  name: "dailyLogs",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -72,5 +72,8 @@ export const dailyLogsSlice = createSlice({
       });
   },
 });
+
+export const selectLogByID = (state, logID: string) =>
+  state.dailyLogs.logs.find((log) => log._id === logID);
 
 export default dailyLogsSlice.reducer;

@@ -3,6 +3,7 @@ import React from "react";
 import NoticeCard from "../components/NoticeCard";
 
 const NoticeInfoScreen = ({ route }) => {
+  console.log(route.params.time);
   return (
     <View style={styles.container}>
       <NoticeCard
