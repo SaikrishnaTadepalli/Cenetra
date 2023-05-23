@@ -34,6 +34,7 @@ type Log {
     createdAt: String!
     updatedAt: String!
     details: String!
+    rating: Number!
 }
 
 type Notice {
@@ -43,6 +44,7 @@ type Notice {
     createdAt: String!
     updatedAt: String!
     details: String!
+    read: Boolean!
 }
 
 type Media {
@@ -121,10 +123,11 @@ type RootMutation {
     createClass(teacherId: ID!, details: String): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
 
-    createLog(teacherId: ID!, studentId: ID!, details: String!): Log!
+    createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Number!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
-    
+    markNoticeAsRead(noticeId: ID!): Notice!
+
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
     
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!
