@@ -34,6 +34,7 @@ type Log {
     createdAt: String!
     updatedAt: String!
     details: String!
+    rating: Number!
 }
 
 type Notice {
@@ -43,6 +44,7 @@ type Notice {
     createdAt: String!
     updatedAt: String!
     details: String!
+    read: Boolean!
 }
 
 type Media {
@@ -86,14 +88,31 @@ input StudentInput {
 
 type RootQuery {
     teachers: [Teacher!]!
+    teacherById(teacherId: ID!): Teacher!
+
     students: [Student!]!
+    studentById(studentId: ID!): Student!
+    studentByStudentNumber(studentNumber: String!): Student!
+
     classes: [Class!]!
+    classById(classId: ID!): Class!
+    classByTeacherId(teacherId: ID!): Class!
+
     logs(studentId: ID!): [Log!]!
-    notices(studentId: ID!): [Notice!]!
+    logByDate(studentId: ID!, date: String!): [Log!]!
+
+    noticesForStudent(studentId: ID!): [Notice!]!
+    noticesByTeacher(teacherId: ID!): [Notice!]!
+
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
     viewMedia(studentId: ID!): [Media!]!
+    viewMediaByDate(studentId: ID!, date: String!):[Media!]!
+
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
+
+    getLatestProfileInfo(studentId: ID!): [ProfileInfo!]!
+
     verifyCode(studentId: ID!, code: String!): Boolean!
 }
 
@@ -105,10 +124,12 @@ type RootMutation {
     createClass(teacherId: ID!, details: String): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
 
-    createLog(teacherId: ID!, studentId: ID!, details: String!): Log!
+    createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Number!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
-    
+
+    markNoticeAsRead(noticeId: ID!): Notice!
+
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
     
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!

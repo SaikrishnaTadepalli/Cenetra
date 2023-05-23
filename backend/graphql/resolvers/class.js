@@ -16,6 +16,41 @@ module.exports = {
     }
   },
 
+  classById: async (args) => {
+    try {
+      const fetchedClass = await Class.findOne({ _id: args.classId });
+
+      if (!fetchedClass) {
+        throw error("Class does not exist.");
+      }
+
+      return transformClass(fetchedClass);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  // Assumes that a teacher teaches only 1 class
+  classByTeacherId: async (args) => {
+    try {
+      const fetchedTeacher = await Teacher.findOne({ _id: args.teacherId });
+
+      if (!fetchedTeacher) {
+        throw new Error("Teacher does not exist.");
+      }
+
+      const fetchedClass = await Class.findOne({ teacher: args.teacherId });
+
+      if (!fetchedClass) {
+        throw error("Class does not exist.");
+      }
+
+      return transformClass(fetchedClass);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   createClass: async (args) => {
     try {

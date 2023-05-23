@@ -31,6 +31,36 @@ module.exports = {
     }
   },
 
+  getLatestProfileInfo: async () => {
+    try {
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      const fetchedProfileInfos = await ProfileInfo.find({
+        student: args.studentId,
+      });
+
+      if (fetchedProfileInfos.length === 0) {
+        throw Error("No Profiles For Student");
+      }
+
+      const formattedProfileInfos = fetchedProfileInfos.map((profileInfo) =>
+        transformProfile(profileInfo)
+      );
+
+      const sortedProfileInfos = formattedProfileInfos.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      return sortedProfileInfos[0];
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   addProfileInfo: async (args) => {
     try {
