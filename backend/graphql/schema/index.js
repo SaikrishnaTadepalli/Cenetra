@@ -110,6 +110,7 @@ type RootQuery {
     viewMediaByDate(studentId: ID!, date: String!):[Media!]!
 
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
+
     getLatestProfileInfo(studentId: ID!): [ProfileInfo!]!
 
     verifyCode(studentId: ID!, code: String!): Boolean!
@@ -126,6 +127,7 @@ type RootMutation {
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Number!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
+
     markNoticeAsRead(noticeId: ID!): Notice!
 
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!

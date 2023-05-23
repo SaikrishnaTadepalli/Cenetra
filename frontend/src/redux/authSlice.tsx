@@ -19,7 +19,6 @@ export const authSlice = createSlice({
       state.userId = action.payload;
     },
     logout: (state) => {
-      console.log("dispatched");
       state.isLoggedIn = false;
       state.userId = "";
     },

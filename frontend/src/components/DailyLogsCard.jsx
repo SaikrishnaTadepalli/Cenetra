@@ -5,9 +5,10 @@ import { useState } from "react";
 import colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 
-const DailyLogsCard = ({ navigation, stars, time }) => {
+const DailyLogsCard = ({ navigation, stars, data, date, pictures }) => {
+  //console.log("dailylogscard", data);
   const handleClick = () => {
-    navigation.navigate("Log");
+    navigation.navigate("Log", { data: data, pictures: pictures, title: date });
   };
 
   const renderIcon = (name, idx) => (
@@ -26,7 +27,7 @@ const DailyLogsCard = ({ navigation, stars, time }) => {
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
       <View style={styles.headerRow}>
-        <Text style={styles.titleText}>{time}</Text>
+        <Text style={styles.titleText}>{date}</Text>
         <View style={{ alignItems: "center", flexDirection: "row" }}>
           {renderIcons(stars, "star")}
           {renderIcons(5 - stars, "star-outline")}

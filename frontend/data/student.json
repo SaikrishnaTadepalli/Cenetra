@@ -1,0 +1,86 @@
+{
+  "name": "Emma Smith",
+  "uri": "https://media.istockphoto.com/id/1352096257/photo/portrait-of-small-girl-in-living-room-at-home.jpg?b=1&s=170667a&w=0&k=20&c=qdNyuPQ_IeANA86TQknErCkHlEa7ISeMRGUyPRTHILE=",
+  "student_number": "123456",
+  "lastUpdated": "1 March 2023",
+  "information": [
+    {
+      "sectionHeader": "PRIMARY CONTACT",
+      "section": [
+        {
+          "title": "Primary Conact 1",
+          "name": "John Smith",
+          "relationship": "Father",
+          "phone_number": "+1-555-555-1234",
+          "email_address": "john.smith@example.com",
+          "home_address": "123 Main St, Anytown, USA"
+        },
+        {
+          "title": "Primary Conact 2",
+          "name": "Jane Smith",
+          "relationship": "Mother",
+          "phone_number": "+1-555-555-5678",
+          "email_address": "jane.smith@example.com",
+          "home_address": "123 Main St, Anytown, USA"
+        }
+      ]
+    },
+    {
+      "sectionHeader": "EMERGENCY CONTACTS",
+      "section": [
+        {
+          "title": "Emergency Conact 1",
+          "name": "Mary Jones",
+          "relationship": "Grandmother",
+          "phone_number": "+1-555-555-9012",
+          "email_address": "mary.jones@example.com",
+          "home_address": "456 Maple St, Anytown, USA"
+        },
+        {
+          "title": "Emergency Conact 1",
+          "name": "Bob Johnson",
+          "relationship": "Uncle",
+          "phone_number": "+1-555-555-3456",
+          "email_address": "bob.johnson@example.com",
+          "home_address": "789 Oak St, Anytown, USA"
+        }
+      ]
+    },
+    {
+      "sectionHeader": "ALLERGIES",
+      "section": [
+        {
+          "name": "Peanuts",
+          "severity": "Severe"
+        },
+        {
+          "name": "Eggs",
+          "severity": "Mild"
+        }
+      ]
+    },
+    {
+      "sectionHeader": "MEDICATIONS",
+      "section": [
+        {
+          "name": "Epinephrine",
+          "dosage": "0.3 mg",
+          "frequency": "As needed"
+        },
+        {
+          "name": "Antihistamine",
+          "dosage": "10 mg",
+          "frequency": "Twice a day"
+        }
+      ]
+    },
+    {
+      "sectionHeader": "BLOOD GROUP",
+      "section": [
+        {
+          "name": "O+"
+        }
+      ]
+    }
+  ]
+}

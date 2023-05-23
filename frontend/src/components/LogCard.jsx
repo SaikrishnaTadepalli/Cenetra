@@ -3,19 +3,16 @@ import React from "react";
 
 import colors from "../constants/Colors";
 
-const LogCard = ({ sectionHeaderColor, header, text }) => {
+const LogCard = ({ sectionHeaderColor, name, description }) => {
   return (
     <View style={styles.cardContainer}>
       <View
-        style={[
-          styles.headerContainer,
-          { backgroundColor: sectionHeaderColor },
-        ]}
+        style={[styles.nameContainer, { backgroundColor: sectionHeaderColor }]}
       >
-        <Text style={styles.header}>{header}</Text>
+        <Text style={styles.name}>{name}</Text>
       </View>
-      <View style={styles.mainTextContainer}>
-        <Text style={styles.mainText}>{text}</Text>
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.description}>{description}</Text>
       </View>
     </View>
   );
@@ -31,25 +28,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
   },
-  headerContainer: {
+  nameContainer: {
     width: "100%",
     borderColor: colors.lightGrey,
     borderWidth: 1,
     borderTopStartRadius: 8,
     borderTopEndRadius: 8,
   },
-  header: {
-    color: colors.white,
-    fontFamily: "InterBold",
+  name: {
+    color: colors.black,
+    fontFamily: "InterMedium",
     fontSize: 16,
     textAlign: "left",
     paddingVertical: 8,
     marginLeft: 10,
   },
-  mainTextContainer: {
+  descriptionContainer: {
     paddingVertical: 20,
   },
-  mainText: {
+  description: {
     textAlign: "left",
     marginHorizontal: 10,
     textAlignVertical: "center",
