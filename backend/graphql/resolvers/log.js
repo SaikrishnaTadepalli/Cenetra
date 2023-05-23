@@ -71,10 +71,15 @@ module.exports = {
         throw new error("Teacher does not exist.");
       }
 
+      if (args.rating < 0 || args.rating > 5) {
+        throw new error("Rating Invalid");
+      }
+
       const log = new Log({
         teacher: args.teacherId,
         student: args.studentId,
         details: args.details,
+        rating: args.rating,
       });
 
       const result = await log.save();

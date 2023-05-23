@@ -75,7 +75,26 @@ module.exports = {
         teacher: args.teacherId,
         students: args.studentIds,
         details: args.details,
+        read: false,
       });
+
+      const result = await notice.save();
+
+      return transformNotice(result);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  markNoticeAsRead: async (args) => {
+    try {
+      const notice = await Notice.findById(args.noticeId);
+
+      if (!notice) {
+        throw error("Notice does not exist.");
+      }
+
+      notice.read = true;
 
       const result = await notice.save();
 
