@@ -18,7 +18,7 @@ import NoticeScreen from "../screens/NoticeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import GalleryScreen from "../screens/GalleryScreen";
-import WelcomeScreen from "../screens/WelcomeScreen";
+import LoginScreen from "../screens/LoginScreen";
 import { RootState } from "../redux/store";
 import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
@@ -29,6 +29,7 @@ import ImageViewScreen from "../screens/ImageViewScreen";
 import FeedbackScreen from "../screens/FeedbackScreen";
 import NotificationSettingsScreen from "../screens/NotificationSettingsScreen";
 import PrivacyScreen from "../screens/PrivacyScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
 
 // Understand This
 const MyTheme = {
@@ -122,6 +123,7 @@ const RootNavigator = () => {
             }}
           />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen
             name="ImageView"
             component={ImageViewScreen}
@@ -151,7 +153,7 @@ const RootNavigator = () => {
         <>
           <Stack.Screen
             name="Welcome"
-            component={WelcomeScreen}
+            component={LoginScreen}
             options={{
               headerLeft: () => (
                 <View

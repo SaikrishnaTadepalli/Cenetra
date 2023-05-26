@@ -5,20 +5,40 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Picture from "../components/Picture";
 import colors from "../constants/Colors";
 import DailyLogsCard from "../components/DailyLogsCard";
 import * as dailyLogs from "../../data/dailyLogs.json";
+import { useDispatch } from "react-redux";
+import { fetchLogs, selectLogByID } from "../redux/dailyLogsSlice";
+import { fetchStudentID } from "../redux/authSlice";
+import { useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DailyLogsScreen = ({ navigation }) => {
-  const logs = dailyLogs.logs;
-  //console.log(logs);
+  const dispatch = useDispatch();
+  const data = dailyLogs.logs[0].activities;
+  const { logs } = useSelector((state) => state.dailyLogs);
+
   const pictures = [];
-  logs.map((log, idx) =>
-    log.pictures.map((picture) => pictures.push({ idx: idx, uri: picture }))
-  );
+  // logs.map((log, idx) =>
+  //   log.pictures.map((picture) => pictures.push({ idx: idx, uri: picture }))
+  // );
+
+  useEffect(() => {
+    //console.log("useeffect");
+    const retrieveData = async () => {
+      const studentID = await AsyncStorage.getItem("studentID");
+      // console.log(studentID);
+      dispatch(fetchLogs(studentID))
+        .then((response) => {})
+        .catch((error) => console.log("Error in Daily logs screen", error));
+    };
+    retrieveData();
+  }, []);
+  //console.log(logs.length);
   return (
     <ScrollView style={styles.mainContainer} nestedScrollEnabled={true}>
       <Text style={styles.titleText}>Daily Logs</Text>
@@ -41,10 +61,9 @@ const DailyLogsScreen = ({ navigation }) => {
         <View style={styles.logsContainer} key={`daily-logs-card-${idx}`}>
           <DailyLogsCard
             navigation={navigation}
-            stars={log.rating}
-            date={log.date}
-            data={log.activities}
-            pictures={log.pictures}
+            date={log.createdAt}
+            data={data}
+            logID={log._id}
           />
         </View>
       ))}

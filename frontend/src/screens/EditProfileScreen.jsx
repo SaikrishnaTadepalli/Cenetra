@@ -6,47 +6,54 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState } from "react";
 
 import colors from "../constants/Colors";
-import ProfileCard from "../components/ProfileCard";
+import EditProfileCard from "../components/EditProfileCard";
 import * as studentData from "../../data/student.json";
-import { fetchProfile } from "../redux/studentProfileSlice";
 import { useDispatch } from "react-redux";
+import { updateProfile } from "../redux/studentProfileSlice";
 
-const ProfileScreen = ({ navigation }) => {
-  const [isEditable, setEditable] = useState(false);
+const EditProfileScreen = ({ navigation }) => {
+  const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
 
-  const onPressEdit = () => {
-    () => setEditable(true), navigation.navigate("EditProfile");
+  const onCancel = () => {
+    setEditable(false);
+    navigation.goBack();
   };
-  useEffect(() => {
-    //console.log("useeffect");
-    const retrieveData = async () => {
-      const studentID = await AsyncStorage.getItem("studentID");
-      //console.log(studentID);
-      dispatch(fetchProfile(studentID))
-        .then((response) => {
-          //console.log(response);
-        })
-        .catch((error) => console.log("Error in Profile Screen screen", error));
-    };
-    retrieveData();
-  }, []);
 
+  const onSave = () => {
+    // if (subject && details) {
+    //   dispatch(
+    //     updateProfile({
+    //       studentID: studentID,
+    //       details: " ",
+    //     })
+    //   )
+    //     .then(() => {
+    //       setEditable(false);
+    //       setIsInputEmpty(false);
+    //       setIsSaved(true);
+    //       setTimeout(() => {
+    //         setIsSaved(false);
+    //         setEditable(true);
+    //         setSubject("");
+    //         setDetails("");
+    //         navigation.goBack();
+    //       }, 2000);
+    //     })
+    //     .catch((error) => console.log(error));
+    // } else {
+    //   setIsInputEmpty(true);
+    //  }
+  };
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={{ paddingBottom: 50 }}
     >
       <View style={styles.profileContainer}>
-        {!isEditable ? (
-          <TouchableOpacity onPress={onPressEdit}>
-            <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-        ) : null}
         <View style={styles.imageAndChildInfoContainer}>
           <Image
             source={{ uri: studentData.uri }}
@@ -64,7 +71,7 @@ const ProfileScreen = ({ navigation }) => {
       </View>
       <View style={styles.profileContainer}>
         {studentData.information.map((item, idx) => (
-          <ProfileCard
+          <EditProfileCard
             sectionHeader={item.sectionHeader}
             data={item.section}
             key={idx}
@@ -73,14 +80,28 @@ const ProfileScreen = ({ navigation }) => {
           />
         ))}
       </View>
-      <Text style={styles.footerText}>
-        Last Updated {studentData.lastUpdated}
-      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          marginRight: 10,
+          justifyContent: "center",
+          marginBottom: 10,
+        }}
+      >
+        <TouchableOpacity>
+          <Text style={styles.cancelText} onPress={onCancel}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+          <Text style={styles.saveText}>Save</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
 
-export default ProfileScreen;
+export default EditProfileScreen;
 
 const styles = StyleSheet.create({
   container: {

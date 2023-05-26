@@ -1,15 +1,16 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import moment from "moment-timezone";
 
 import colors from "../constants/Colors";
 
-const LogCard = ({ sectionHeaderColor, name, description }) => {
+const LogCard = ({ sectionHeaderColor, title, description }) => {
   return (
     <View style={styles.cardContainer}>
       <View
         style={[styles.nameContainer, { backgroundColor: sectionHeaderColor }]}
       >
-        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.name}>{title}</Text>
       </View>
       <View style={styles.descriptionContainer}>
         <Text style={styles.description}>{description}</Text>

@@ -55,7 +55,7 @@ const LogScreen = ({ navigation, route }) => {
             <View style={styles.logsContainer} key={`log-info-${idx}`}>
               <LogCard
                 sectionHeaderColor={data.color}
-                name={data.title}
+                title={data.title}
                 description={data.description}
               />
             </View>

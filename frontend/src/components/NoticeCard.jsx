@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import moment from "moment-timezone";
 
 import colors from "../constants/Colors";
 
@@ -8,7 +9,7 @@ const NoticeCard = ({ title, time, text }) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>{title}</Text>
-        <Text style={styles.timeText}>{time}</Text>
+        <Text style={styles.timeText}>{moment(time).format("HH:mm")}</Text>
       </View>
       <Text style={styles.noticeText}>{text}</Text>
     </View>

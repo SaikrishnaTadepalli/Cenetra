@@ -1,26 +1,9 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
 import Colors from "../constants/Colors";
 
-const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
-  const renderButton = (infoType, info) => {
-    return (
-      <View style={styles.infoLineContainer}>
-        {infoType !== "" ? (
-          <Text style={styles.infoTypeText}>{infoType}</Text>
-        ) : null}
-        <TouchableOpacity editable={isEditable}>
-          <Text style={styles.infoInputText}>{info} </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+const EditProfileCard = ({ sectionHeader, data, title, isEditable }) => {
+  const [input, setInput] = useState("");
 
   const renderText = (infoType, info) => {
     return (
@@ -28,7 +11,14 @@ const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
         {infoType !== "" ? (
           <Text style={styles.infoTypeText}>{infoType}</Text>
         ) : null}
-        <Text style={styles.infoInputText}>{info} </Text>
+        <TextInput
+          editable={isEditable}
+          style={styles.infoInputText}
+          value={input}
+          onChangeText={setInput}
+        >
+          {info}{" "}
+        </TextInput>
       </View>
     );
   };
@@ -42,10 +32,10 @@ const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
         <View key={`profile-info${idx}`}>
           <Text style={styles.headerText}>{item.title}</Text>
           {renderText("Name:", item.name)}
-          {renderText("Relationship:", item.relationship)}
-          {renderButton("Phone Number:", item.phone_number)}
-          {renderButton("Email Address:", item.email_address)}
-          {renderButton("Home Address:", item.home_address)}
+          {/* {renderText("Relationship:", item.relationship)}
+          {renderText("Phone Number:", item.phone_number)}
+          {renderText("Email Address:", item.email_address)}
+          {renderText("Home Address:", item.home_address)} */}
           {data.indexOf(item) !== data.length - 1 ? (
             <View style={styles.divider} />
           ) : null}
@@ -89,7 +79,7 @@ const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
   );
 };
 
-export default ProfileCard;
+export default EditProfileCard;
 
 const styles = StyleSheet.create({
   cardContainer: {

@@ -4,40 +4,57 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  NativeModules,
 } from "react-native";
 import React, { useState } from "react";
 
 import colors from "../constants/Colors";
-const WelcomeScreen = ({ navigation }) => {
-  const [phoneNumber, setPhoneNumber] = useState();
-  async function handleClick() {
-    navigation.navigate("Verification", { number: phoneNumber });
-  }
+import { useDispatch } from "react-redux";
+import { fetchStudent, loginUser } from "../redux/authSlice";
+import { useSelector } from "react-redux";
+const LoginScreen = ({ navigation }) => {
+  const [studentNumber, setStudentNumber] = useState();
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+
+  const handleClick = () => {
+    dispatch(loginUser(studentNumber))
+      .then((response) => {
+        if (response.error) {
+          setError(response.payload);
+          setTimeout(() => setError(""), 2000);
+        } else {
+          //const student = fetchStudent(state);
+          navigation.navigate("Verification");
+        }
+      })
+      .catch((error) => {
+        console.error("Error in dispatch to loginUser", error);
+        setError(error);
+      });
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.inputHeader}>Student Number</Text>
-        <TextInput style={styles.input} keyboardType="number-pad" />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputHeader}>Registered Phone Number</Text>
         <TextInput
           style={styles.input}
-          onChangeText={setPhoneNumber}
           keyboardType="number-pad"
+          value={studentNumber}
+          onChangeText={setStudentNumber}
         />
+        {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
       </View>
       <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
-        <Text style={styles.buttonText}>Register Number</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default WelcomeScreen;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -53,7 +70,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   inputContainer: {
-    width: "75%",
+    width: "60%",
     alignItems: "center",
     marginBottom: 20,
   },
@@ -76,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     backgroundColor: colors.lightPurple,
     height: 40,
-    width: "75%",
+    width: "60%",
     borderRadius: 10,
     justifyContent: "center",
   },
@@ -84,5 +101,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: colors.primaryText,
     fontFamily: "InterSemiBold",
+  },
+  errorText: {
+    color: colors.red,
+    marginTop: 10,
+    textAlign: "left",
   },
 });
