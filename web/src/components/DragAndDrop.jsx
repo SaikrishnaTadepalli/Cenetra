@@ -1,13 +1,45 @@
 import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDropzone } from "react-dropzone";
+import { useDispatch, useSelector } from "react-redux";
+import { getUploadUrl } from "../redux/mediaSlice";
 
-const DragAndDrop = () => {
+const DragAndDrop = ({ studentID }) => {
+  const dispatch = useDispatch();
+  const { teacherID } = useSelector((state) => state.auth);
+  var uploadURL;
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    accept: {
-      "image/png": [".png", ".jpg", ".jpeg"],
-    },
+    // accept: {
+    //   "image/png": [".png", ".jpg", ".jpeg"],
+    // },
   });
+  const onUpload = () => {
+    dispatch(getUploadUrl({ teacherID, studentID }))
+      .then(async (response) => {
+        // console.log(response.payload.data);
+        uploadURL = response.payload.data.getS3UploadUrl;
+        console.log(uploadURL);
+        const formData = new FormData();
+        formData.append("file", acceptedFiles[0]);
+        console.log(acceptedFiles[0]);
+        await fetch(uploadURL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": acceptedFiles[0].type,
+          },
+          body: acceptedFiles[0],
+        })
+          .then((response) =>
+            console.log("response from uploading image to s3", response)
+          )
+          .catch((error) =>
+            console.error("error while uploading to s3", error)
+          );
+        const imageURL = uploadURL.split("?")[0];
+        console.log("imageURL", imageURL);
+      })
+      .catch((error) => console.error(error));
+  };
 
   const files = acceptedFiles.map((file) => (
     <View key={file.name}>
@@ -30,9 +62,12 @@ const DragAndDrop = () => {
         </div>
         <Text>or</Text>
         <div {...getRootProps({ className: "dropzone" })} style={styles.upload}>
-          <Text>Upload</Text>
+          <Text>Select Pictures</Text>
         </div>
       </View>
+      <TouchableOpacity onPress={onUpload}>
+        <Text>Upload</Text>
+      </TouchableOpacity>
       <View>{files}</View>
     </View>
   );
