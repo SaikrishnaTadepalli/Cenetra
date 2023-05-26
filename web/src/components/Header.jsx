@@ -22,9 +22,11 @@ const Header = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.text}>Cenetra</Text>
-        <TouchableOpacity onPress={onClickSettings}>
-          <Ionicons name="settings-sharp" size={20} color="white" />
-        </TouchableOpacity>
+        {isLoggedIn ? (
+          <TouchableOpacity onPress={onClickSettings}>
+            <Ionicons name="settings-sharp" size={20} color="white" />
+          </TouchableOpacity>
+        ) : null}
       </View>
       {isLoggedIn ? (
         <View style={{ flexDirection: "row", alignSelf: "flex-start" }}>

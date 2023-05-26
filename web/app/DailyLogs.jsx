@@ -5,33 +5,42 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 
 import colors from "../src/constants/Colors";
 import * as logDates from "../data/dates.json";
 import CreateLogScreen from "./CreateLogScreen";
-import { useRouter, useSearchParams } from "expo-router";
+import { useRouter } from "expo-router";
 import LogScreen from "./LogScreen";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getIsNewLogAdded, setIsNewLogAdded } from "../src/redux/logsSlice";
 
 const DailyLogsScreen = ({ name, id }) => {
-  const dates = logDates.dates;
-  const { logs } = useSelector((state) => state.log);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const state = useSelector((state) => state);
+  const { logs, fetchLogsPending } = state.log;
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldLogSelected, setIsOldLogSelected] = useState(false);
-  const [disabled, setDisabled] = useState(
-    moment(dates[0]).format("DD MMMM YYYY") === curDate
-  );
+  const isAddNewLogSelected = getIsNewLogAdded(state);
+  const [logID, setLogID] = useState("");
+  const isDisabled =
+    getIsNewLogAdded(state) ||
+    (logs.length > 0 &&
+      logs[0] &&
+      curDate === moment(logs[0].createdAt).format("DD MMMM YYYY"));
+
   const handleClick = () => {
     setDate(curDate);
-    setDisabled(!disabled);
     setIsOldLogSelected(false);
+    dispatch(setIsNewLogAdded(true));
   };
 
-  const onClickLog = () => {
+  const onClickLog = (id) => {
     setIsOldLogSelected(true);
+    setLogID(id);
   };
   return (
     <View style={styles.container}>
@@ -39,26 +48,32 @@ const DailyLogsScreen = ({ name, id }) => {
       <View>
         <TouchableOpacity
           style={
-            disabled
+            isDisabled
               ? [styles.buttonContainer, styles.disabled]
               : styles.buttonContainer
           }
           onPress={handleClick}
-          disabled={disabled}
+          disabled={isDisabled}
         >
-          <Text style={styles.buttonText}>Add new log</Text>
+          <Text style={styles.buttonText} onPress={handleClick}>
+            Add new log
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
         <ScrollView contentContainerStyle={styles.listView}>
-          {logs.length > 0 ? (
+          {fetchLogsPending ? (
+            <Text>Retrieving data...</Text>
+          ) : logs.length > 0 ? (
             logs.map((log, idx) => (
               <TouchableOpacity
                 style={styles.cardContainer}
                 key={`date-${idx}`}
-                onPress={onClickLog}
+                onPress={() => onClickLog(log._id)}
               >
-                <Text>{moment(log.createdAt).format("DD MMMM YYYY")}</Text>
+                {log ? (
+                  <Text>{moment(log.createdAt).format("DD MMMM YYYY")}</Text>
+                ) : null}
               </TouchableOpacity>
             ))
           ) : (
@@ -69,9 +84,9 @@ const DailyLogsScreen = ({ name, id }) => {
         </ScrollView>
         <View style={{ flex: 1, marginLeft: "-30%" }}>
           {isOldLogSelected ? (
-            <LogScreen />
+            <LogScreen id={logID} />
           ) : date !== "" ? (
-            <CreateLogScreen date={date} />
+            <CreateLogScreen date={date} id={id} />
           ) : null}
         </View>
       </View>

@@ -24,16 +24,19 @@ const LoginScreen = ({ navigation }) => {
   async function handleClick() {
     const teacherID = accessCodeMapping[accessCode];
     if (teacherID) {
-      dispatch(loginUser(teacherID));
-      if (!pending && !error) {
-        router.push("/HomeScreen");
-      }
-      setIsError(false);
-    } else {
-      setIsError(true);
+      dispatch(loginUser(teacherID))
+        .then((response) => {
+          if (!pending && !error) {
+            router.push("/HomeScreen");
+            setIsError(false);
+          } else if (error) {
+            setIsError(true);
+          }
+        })
+        .catch((error) => setIsError(true));
     }
   }
-  console.log(students);
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome</Text>
@@ -47,9 +50,10 @@ const LoginScreen = ({ navigation }) => {
         />
         {isError ? (
           <Text style={styles.errorText}>
-            Wrong access code. Please try again.
+            Something went wrong. Please try again.
           </Text>
         ) : null}
+        {pending ? <Text>Signing in...</Text> : null}
       </View>
       <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
         <Text style={styles.buttonText}>Login</Text>

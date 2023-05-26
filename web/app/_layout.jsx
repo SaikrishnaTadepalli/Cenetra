@@ -10,7 +10,6 @@ import { persistor, store } from "../src/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 
 const HomeLayout = () => {
-  console.log("header");
   return (
     <>
       <Provider store={store}>

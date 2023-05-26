@@ -17,27 +17,28 @@ export const loginUser = createAsyncThunk("auth/login", async (teacherID) => {
     }
 }
 `;
-  const response = await fetch("http://localhost:3000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query }),
-  });
-  const data = await response.json();
-  return data;
-});
+  try {
+    const response = await fetch("http://localhost:3000/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+    if (response.status !== 200) {
+      console.log(response);
+    }
+    const data = await response.json();
 
-const insertItem = (array, action) => {
-  //console.log(action.item);
-  let newArray = array.slice();
-  newArray.splice(action.index, 0, JSON.parse(JSON.stringify(action.item)));
-  return newArray;
-};
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 export interface AuthState {
   isLoggedIn: boolean;
-  userId: string;
+  teacherID: string;
   students: string[];
   pending: boolean;
   error: boolean;
@@ -45,7 +46,7 @@ export interface AuthState {
 
 const initialState: AuthState = {
   isLoggedIn: true,
-  userId: "",
+  teacherID: "",
   pending: null,
   error: false,
   students: [],
@@ -57,40 +58,41 @@ export const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.isLoggedIn = true;
-      state.userId = action.payload;
+      state.teacherID = action.payload;
     },
     logout: (state) => {
       state.isLoggedIn = false;
-      state.userId = "";
+      state.teacherID = "";
     },
     permanentlyDeleteUser: (state) => {
       state.isLoggedIn = false;
-      state.userId = "";
+      state.teacherID = "";
     },
   },
-  extraReducers: {
-    [loginUser.pending]: (state) => {
-      state.pending = true;
-      state.error = false;
-      state.isLoggedIn = false;
-    },
-    [loginUser.rejected]: (state) => {
-      state.pending = null;
-      state.error = true;
-      state.isLoggedIn = false;
-    },
-    [loginUser.fulfilled]: (state, action) => {
-      state.isLoggedIn = true;
-      state.userId = action.meta.arg;
-      state.pending = false;
-      state.error = false;
-      action.payload.data.classes.forEach((element) => {
-        if (element.teacher._id === action.meta.arg) {
-          state.students = element.students;
-          return;
-        }
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.pending = true;
+        state.error = false;
+        state.isLoggedIn = false;
+      })
+      .addCase(loginUser.rejected, (state) => {
+        state.pending = null;
+        state.error = true;
+        state.isLoggedIn = false;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoggedIn = true;
+        state.teacherID = action.meta.arg;
+        state.pending = false;
+        state.error = false;
+        action.payload.data.classes.forEach((element) => {
+          if (element.teacher._id === action.meta.arg) {
+            state.students = element.students;
+            return;
+          }
+        });
       });
-    },
   },
 });
 

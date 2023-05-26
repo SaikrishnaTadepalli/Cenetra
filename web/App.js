@@ -3,15 +3,16 @@ import { StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./app/LoginScreen";
 import Colors from "./src/constants/Colors";
 import ClassListScreen from "./app/ClassListScreen";
+import { useSelector } from "react-redux";
 
 const App = () => {
+  const { isLoggedIn } = useSelector((state) => state.auth);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.text}>Cenetra</Text>
       </View>
-      {/* <LoginScreen /> */}
-      <ClassListScreen />
+      {isLoggedIn ? <LoginScreen /> : <ClassListScreen />}
     </View>
   );
 };
