@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
-import { getUploadUrl } from "../redux/mediaSlice";
+import { getUploadUrl, uplaodMedia } from "../redux/mediaSlice";
 
 const DragAndDrop = ({ studentID }) => {
   const dispatch = useDispatch();
@@ -18,9 +18,7 @@ const DragAndDrop = ({ studentID }) => {
         // console.log(response.payload.data);
         const data = JSON.parse(response.payload.data.getS3UploadUrl);
         const uploadURL = data.uploadURL;
-        const formData = new FormData();
-        formData.append("file", acceptedFiles[0]);
-        console.log(acceptedFiles[0]);
+        const fileName = data.fileName;
         await fetch(uploadURL, {
           method: "PUT",
           headers: {
@@ -29,13 +27,15 @@ const DragAndDrop = ({ studentID }) => {
           body: acceptedFiles[0],
         })
           .then((response) =>
-            console.log("response from uploading image to s3", response)
+            dispatch(uplaodMedia({ teacherID, studentID, fileName }))
+              .then((response) => console.log("media successfully saved"))
+              .catch((error) =>
+                console.error("error while uploading to database", error)
+              )
           )
           .catch((error) =>
             console.error("error while uploading to s3", error)
           );
-        const imageURL = uploadURL.split("?")[0];
-        console.log("imageURL", imageURL);
       })
       .catch((error) => console.error(error));
   };
@@ -64,7 +64,7 @@ const DragAndDrop = ({ studentID }) => {
           <Text>Select Pictures</Text>
         </div>
       </View>
-      <TouchableOpacity onPress={onUpload}>
+      <TouchableOpacity onPress={onUpload} style={styles.upload}>
         <Text>Upload</Text>
       </TouchableOpacity>
       <View>{files}</View>
