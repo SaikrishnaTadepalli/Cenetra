@@ -5,35 +5,92 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { login } from "../redux/authSlice";
+import React, { useEffect, useState } from "react";
+import { sendSMS, verifyLogin, login } from "../redux/authSlice";
 
 import colors from "../constants/Colors";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from "react-native-confirmation-code-field";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const VerificationScreen = ({ route }) => {
+const VerificationScreen = () => {
   const dispatch = useDispatch();
+  const { curStudentDetails } = useSelector((state) => state.auth);
+  const [value, setValue] = useState("");
+  const [error, setError] = useState("");
+  const ref = useBlurOnFulfill({ value, cellCount: 5 });
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+    value,
+    setValue,
+  });
 
-  const renderBox = () => (
-    <TextInput style={styles.box} keyboardType="number-pad" maxLength={1} />
-  );
+  const handleClick = async () => {
+    //console.log("dispatch", value);
+    dispatch(verifyLogin({ studentID: curStudentDetails._id, code: value }))
+      .then(async (response) => {
+        // console.log("dispatch", response);
+        //console.log("payload", response.payload.data.verifyCode);
+        if (response.error) {
+          setError(response.payload);
+          setTimeout(() => setError(""), 2000);
+        } else if (!response.payload.data.verifyCode) {
+          setError("Invalid login code");
+          setTimeout(() => setError(""), 2000);
+        } else {
+          await AsyncStorage.setItem("studentID", curStudentDetails._id);
+          await AsyncStorage.setItem("isLoggedIn", "true");
+          dispatch(login());
+        }
+      })
+      .catch((error) =>
+        console.error("Error in dispatching verifyLogin", error)
+      );
+  };
 
-  const renderBoxes = (num) => [...Array(num)].map(renderBox);
+  useEffect(() => {
+    dispatch(sendSMS(curStudentDetails._id))
+      .then(() => {})
+      .catch((error) => console.error("Error in sending SMS", error));
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Verify your number</Text>
       <Text style={styles.text}>
-        An email was sent to {route.params.number} with a verification code
+        A message was sent to {curStudentDetails.primaryContactNumber} with a
+        verification code
       </Text>
       <View style={{ alignSelf: "flex-start", width: "40%" }}>
         <Text style={styles.codeText}>Enter Code</Text>
       </View>
-      <View style={styles.boxContainer}>{renderBoxes(5)}</View>
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => dispatch(login({ name: "auth" }))}
-      >
+      <CodeField
+        ref={ref}
+        {...props}
+        // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
+        value={value}
+        onChangeText={setValue}
+        cellCount={5}
+        rootStyle={styles.codeFieldRoot}
+        keyboardType="number-pad"
+        textContentType="oneTimeCode"
+        renderCell={({ index, symbol, isFocused }) => (
+          <Text
+            key={index}
+            style={[styles.box, isFocused && styles.focusCell]}
+            onLayout={getCellOnLayoutHandler(index)}
+          >
+            {symbol || (isFocused ? <Cursor /> : null)}
+          </Text>
+        )}
+      />
+      {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
         <Text style={styles.buttonText}>Verify</Text>
       </TouchableOpacity>
     </View>
@@ -73,18 +130,19 @@ const styles = StyleSheet.create({
   boxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
   },
   box: {
-    height: 50,
+    marginTop: 10,
+    height: 60,
     width: 50,
     borderRadius: 10,
     borderWidth: 2,
     marginRight: 10,
     borderColor: colors.lightPurple,
     textAlign: "center",
+    lineHeight: 58,
     fontSize: 24,
-    fontFamily: "InterSemiBold",
+    fontFamily: "InterMedium",
   },
   buttonContainer: {
     marginTop: 30,
@@ -94,9 +152,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
   },
+  errorText: {
+    color: colors.red,
+    marginTop: 10,
+    textAlign: "left",
+  },
   buttonText: {
     alignSelf: "center",
     color: colors.darkPurple,
     fontFamily: "InterSemiBold",
+  },
+  focusCell: {
+    borderColor: colors.darkPurple,
   },
 });

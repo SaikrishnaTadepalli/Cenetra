@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useState } from "react";
+import moment from "moment-timezone";
 
 import colors from "../constants/Colors";
 
@@ -36,7 +37,7 @@ const Card = ({ navigation, isUnread, title, time, subText }) => {
             {title}
           </Text>
         </View>
-        <Text style={styles.timeText}>{time}</Text>
+        <Text style={styles.timeText}>{moment(time).format("HH:mm")}</Text>
       </View>
       <View>
         <Text style={styles.subText} numberOfLines={1} ellipsizeMode="tail">

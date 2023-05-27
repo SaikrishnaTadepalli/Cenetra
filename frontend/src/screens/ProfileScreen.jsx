@@ -6,77 +6,36 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import colors from "../constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
 import ProfileCard from "../components/ProfileCard";
+import * as studentData from "../../data/student.json";
+import { fetchProfile } from "../redux/studentProfileSlice";
+import { useDispatch } from "react-redux";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const [isEditable, setEditable] = useState(false);
-  const data = [
-    {
-      title: "CONTACT INFORMATION",
-      data: [
-        {
-          id: "1",
-          title: "PARENT 1 CONTACT",
-          subText1: "(000) 000 0000",
-          subText2: "email@gmail.com",
-        },
-        {
-          id: "2",
-          title: "PARENT 2 CONTACT",
-          subText1: "(000) 000 0000",
-          subText2: "email@gmail.com",
-        },
-        {
-          id: "3",
-          title: "ADDRESS",
-          subText1: "Address line 1",
-          subText2: "Address line 2",
-        },
-      ],
-    },
-    {
-      title: "HEALTH INFORMATION",
-      data: [
-        {
-          id: "4",
-          title: "Blood Group",
-          subText1: "B+",
-        },
-        {
-          id: "5",
-          title: "Allergies",
-          subText1: "Peanuts, Carrots",
-        },
-        {
-          id: "6",
-          title: "Medication",
-          subText1: "1. Cough Syrup 10ml",
-          subText2: "2. Some group",
-        },
-      ],
-    },
-    {
-      title: "EMERGENCY CONTACTS",
-      data: [
-        {
-          id: "7",
-          title: "CONTACT 1",
-          subText1: "(000) 000 0000",
-          subText2: "email@gmail.com",
-        },
-        {
-          id: "8",
-          title: "CONTACT 2",
-          subText1: "(000) 000 0000",
-          subText2: "email@gmail.com",
-        },
-      ],
-    },
-  ];
+  const dispatch = useDispatch();
+
+  const onPressEdit = () => {
+    () => setEditable(true), navigation.navigate("EditProfile");
+  };
+  useEffect(() => {
+    //console.log("useeffect");
+    const retrieveData = async () => {
+      const studentID = await AsyncStorage.getItem("studentID");
+      //console.log(studentID);
+      dispatch(fetchProfile(studentID))
+        .then((response) => {
+          //console.log(response);
+        })
+        .catch((error) => console.log("Error in Profile Screen screen", error));
+    };
+    retrieveData();
+  }, []);
+
   return (
     <ScrollView
       style={styles.container}
@@ -84,55 +43,39 @@ const ProfileScreen = () => {
     >
       <View style={styles.profileContainer}>
         {!isEditable ? (
-          <TouchableOpacity onPress={() => setEditable(true)}>
+          <TouchableOpacity onPress={onPressEdit}>
             <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
         ) : null}
         <View style={styles.imageAndChildInfoContainer}>
           <Image
-            source={require("../../assets/images/childImage.png")}
+            source={{ uri: studentData.uri }}
             width={60}
             height={60}
+            style={styles.image}
           />
           <View style={styles.studentDetailsContainer}>
-            <Text style={styles.studentName}>Cashew Patel</Text>
-            <Text style={styles.studentId}>Student Number: 90982047</Text>
+            <Text style={styles.studentName}>{studentData.name}</Text>
+            <Text style={styles.studentId}>
+              Student ID: {studentData.student_number}
+            </Text>
           </View>
         </View>
       </View>
       <View style={styles.profileContainer}>
-        {data.map((item) => (
+        {studentData.information.map((item, idx) => (
           <ProfileCard
-            sectionHeader={item.title}
-            data={item.data}
-            key={item.id}
+            sectionHeader={item.sectionHeader}
+            data={item.section}
+            key={idx}
             isEditable={isEditable}
+            title={item.title}
           />
         ))}
       </View>
-      {isEditable ? (
-        <View
-          style={{
-            flexDirection: "row",
-            marginRight: 10,
-            justifyContent: "center",
-            marginBottom: 10,
-          }}
-        >
-          <TouchableOpacity>
-            <Text style={styles.cancelText} onPress={() => setEditable(false)}>
-              Cancel
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={() => setEditable(false)}
-          >
-            <Text style={styles.saveText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
-      <Text style={styles.footerText}>Last Updated 21 April 2022</Text>
+      <Text style={styles.footerText}>
+        Last Updated {studentData.lastUpdated}
+      </Text>
     </ScrollView>
   );
 };
@@ -194,5 +137,10 @@ const styles = StyleSheet.create({
     color: colors.red,
     fontSize: 18,
     fontFamily: "InterBold",
+  },
+  image: {
+    height: 60,
+    width: 60,
+    borderRadius: 30,
   },
 });

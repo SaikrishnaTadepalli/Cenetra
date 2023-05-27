@@ -115,6 +115,7 @@ type RootQuery {
     verifyCode(studentId: ID!, code: String!): Boolean!
 }
 
+
 type RootMutation {
     createTeacher(teacherInput: TeacherInput!): Teacher!
 
@@ -126,6 +127,7 @@ type RootMutation {
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
+
     markNoticeAsRead(noticeId: ID!): Notice!
 
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
