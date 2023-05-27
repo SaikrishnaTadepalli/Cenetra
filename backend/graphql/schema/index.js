@@ -34,7 +34,7 @@ type Log {
     createdAt: String!
     updatedAt: String!
     details: String!
-    rating: Number!
+    rating: Int!
 }
 
 type Notice {
@@ -110,8 +110,7 @@ type RootQuery {
     viewMediaByDate(studentId: ID!, date: String!):[Media!]!
 
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
-
-    getLatestProfileInfo(studentId: ID!): [ProfileInfo!]!
+    getLatestProfileInfo(studentId: ID!): ProfileInfo!
 
     verifyCode(studentId: ID!, code: String!): Boolean!
 }
@@ -125,7 +124,7 @@ type RootMutation {
     createClass(teacherId: ID!, details: String): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
 
-    createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Number!): Log!
+    createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
 
