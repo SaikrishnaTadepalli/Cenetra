@@ -5,13 +5,15 @@ import moment from "moment-timezone";
 
 import colors from "../constants/Colors";
 
-const Card = ({ navigation, isUnread, title, time, subText }) => {
+const Card = ({ navigation, isUnread, details, time }) => {
   const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
+  const parsedDetails = JSON.parse(details);
+  const subject = parsedDetails.subject;
 
   const handleClick = () => {
     navigation.navigate("NoticeInfo", {
-      title: title,
-      subText: subText,
+      subject,
+      details: parsedDetails.details,
       time: time,
     });
     setIsNoticeUnread(false);
@@ -34,14 +36,14 @@ const Card = ({ navigation, isUnread, title, time, subText }) => {
         >
           <View style={styles.dotContainer} />
           <Text style={styles.titleText} numberOfLines={1} ellipsizeMode="tail">
-            {title}
+            {subject}
           </Text>
         </View>
         <Text style={styles.timeText}>{moment(time).format("HH:mm")}</Text>
       </View>
       <View>
         <Text style={styles.subText} numberOfLines={1} ellipsizeMode="tail">
-          {subText}
+          {parsedDetails.details}
         </Text>
       </View>
     </TouchableOpacity>

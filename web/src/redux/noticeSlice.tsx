@@ -2,16 +2,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchNotices = createAsyncThunk(
   "notices/fetchNotices",
-  async (studentID) => {
+  async (teacherID) => {
     const query = `
-            query {
-                notices(studentId:"${studentID}") {
-                _id
-                details
-                createdAt
-                updatedAt
-                }
-            }
+    query {
+      noticesByTeacher(teacherId: "${teacherID}") {
+        _id
+        details
+        createdAt
+      }
+    }
             `;
     try {
       const response = await fetch("http://localhost:3000/graphql", {
@@ -31,14 +30,16 @@ export const fetchNotices = createAsyncThunk(
 
 export const createNotices = createAsyncThunk(
   "notices/createNotices",
-  async ({ teacherID, studentID, details }) => {
+  async ({ teacherID, studentIDs, details }) => {
     try {
+      const stringifiedDetails = JSON.stringify(details)
+        .replace(/\\/g, "\\\\") // Escape backslashes
+        .replace(/"/g, '\\"'); // Escape double quotes
       const query = `mutation {
-    createNotice(teacherId: "${teacherID}" studentIds: "${studentID}" details: "${details}") {
+    createNotice(teacherId: "${teacherID}" studentIds: [${studentIDs}] details: "${stringifiedDetails}") {
         _id
         details
         createdAt
-        updatedAt
     }
 }`;
       const response = await fetch("http://localhost:3000/graphql", {
@@ -94,7 +95,7 @@ export const noticeSlice = createSlice({
         state.fetchNoticesError = true;
       })
       .addCase(fetchNotices.fulfilled, (state, action) => {
-        state.notices = action.payload.data.notices;
+        state.notices = action.payload.data.noticesByTeacher;
         state.fetchNoticesPending = false;
         state.fetchNoticesError = false;
       })

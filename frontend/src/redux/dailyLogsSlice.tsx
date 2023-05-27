@@ -43,12 +43,14 @@ export interface DailyLogsState {
   loading: boolean;
   error: boolean;
   logs: string[];
+  allPictures: string[];
 }
 
 const initialState: DailyLogsState = {
   loading: null,
   error: false,
   logs: [],
+  allPictures: [],
 };
 
 export const dailyLogsSlice = createSlice({
