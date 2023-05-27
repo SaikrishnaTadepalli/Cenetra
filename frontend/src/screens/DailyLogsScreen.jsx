@@ -28,7 +28,7 @@ const DailyLogsScreen = ({ navigation }) => {
     //console.log("useeffect");
     const retrieveData = async () => {
       const studentID = await AsyncStorage.getItem("studentID");
-      // console.log(studentID);
+      console.log(studentID);
       dispatch(fetchLogs(studentID))
         .then((response) => {})
         .catch((error) => console.log("Error in Daily logs screen", error));
