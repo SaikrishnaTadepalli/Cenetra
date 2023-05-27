@@ -52,6 +52,24 @@ module.exports = {
     }
   },
 
+  getS3ViewURLs: async (args) => {
+    try {
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      const fetchedMedia = await Media.find({ student: args.studentId }).sort({
+        createdAt: -1,
+      });
+
+      return fetchedMedia.map((media) => getViewURL(media.fileName));
+    } catch (err) {
+      throw err;
+    }
+  },
+
   viewMediaByDate: async (args) => {
     try {
       const student = await Student.findById(args.studentId);
