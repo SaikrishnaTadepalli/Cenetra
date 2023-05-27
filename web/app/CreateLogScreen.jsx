@@ -144,7 +144,9 @@ const CreateLogScreen = ({ date, id }) => {
                 </View>
               ))}
             </ScrollView>
-            <DragAndDrop />
+
+            <DragAndDrop studentID={id} />
+            
             {isInputEmpty && !inputs && !rating ? (
               <Text style={styles.errorText}>
                 Could not save logs. Please fill in at least one text box.
