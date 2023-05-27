@@ -16,44 +16,49 @@ import { fetchLogs, selectLogByID } from "../redux/dailyLogsSlice";
 import { fetchStudentID } from "../redux/authSlice";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAllMedia } from "../redux/mediaSlice";
 
 const DailyLogsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const data = dailyLogs.logs[0].activities;
   const { logs } = useSelector((state) => state.dailyLogs);
-
-  const pictures = [];
-  // logs.map((log, idx) =>
-  //   log.pictures.map((picture) => pictures.push({ idx: idx, uri: picture }))
-  // );
+  const { allPictures } = useSelector((state) => state.media);
 
   useEffect(() => {
     //console.log("useeffect");
     const retrieveData = async () => {
       const studentID = await AsyncStorage.getItem("studentID");
-      console.log(studentID);
+      // console.log(studentID);
       dispatch(fetchLogs(studentID))
         .then((response) => {})
         .catch((error) => console.log("Error in Daily logs screen", error));
+      dispatch(getAllMedia(studentID))
+        .then((response) => {})
+        .catch((error) =>
+          console.log("Error in Daily logs screen getting media", error)
+        );
     };
 
     retrieveData();
   }, []);
-  //console.log(logs.length);
   return (
     <ScrollView style={styles.mainContainer} nestedScrollEnabled={true}>
       <Text style={styles.titleText}>Daily Logs</Text>
-      <TouchableOpacity
-        style={styles.buttonText}
-        onPress={() => navigation.navigate("Gallery", { pictures: pictures })}
-      >
-        <Text style={styles.buttonText}>See All</Text>
-      </TouchableOpacity>
+      {allPictures.length > 0 ? (
+        <TouchableOpacity
+          style={styles.buttonText}
+          onPress={() =>
+            navigation.navigate("Gallery", { pictures: allPictures })
+          }
+        >
+          <Text style={styles.buttonText}>See All</Text>
+        </TouchableOpacity>
+      ) : null}
       <ScrollView horizontal={true} style={styles.imagesContainer}>
-        {pictures.map((picture, idx) =>
+        {allPictures.map((picture, idx) =>
           idx < 10 ? (
             <View key={`picture-${idx}`} style={styles.imageContainer}>
-              <Picture navigation={navigation} uri={picture.uri} />
+              <Picture navigation={navigation} uri={picture} />
             </View>
           ) : null
         )}

@@ -2,12 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getMediaByDate = createAsyncThunk(
   "media/getMediaByDate",
-  async ({ teacherID, studentID }, { rejectWithValue }) => {
-    console.log(teacherID, studentID);
+  async ({ studentID, date }, { rejectWithValue }) => {
+    //console.log(studentID, date);
     //const {query, teacherID} = props;
     try {
       const query = `query {
-        getS3UploadUrl(teacherId: "${teacherID}", studentId: "${studentID}")
+        getS3ViewURLByDate(studentId: "${studentID}", date: "2023-05-27T04:21:25.943+00:00") 
       }`;
       const response = await fetch("http://localhost:3000/graphql", {
         method: "POST",
@@ -18,29 +18,28 @@ export const getMediaByDate = createAsyncThunk(
       });
       if (response.status !== 200) {
         if (response.status === 500) {
-          console.error("uploadUrlError while getting s3 upload url");
-          throw new Error("Invalid Login ID");
+          console.error("Error while getting media by date");
+          throw new Error("Invalid date");
         }
       }
       const data = await response.json();
-
+      // console.log("----data-----", data);
       return data;
     } catch (error) {
-      console.error("uploadUrlError in getUploadUrl in web", error);
+      console.error("Error while getting media by date", error);
       return rejectWithValue(error.message);
     }
   }
 );
 
-export const uplaodMedia = createAsyncThunk(
-  "media/uploadMedia",
-  async ({ teacherID, studentID, fileName }, { rejectWithValue }) => {
+export const getAllMedia = createAsyncThunk(
+  "media/getAllMedia",
+  async (studentID, { rejectWithValue }) => {
+    // console.log(studentID);
     try {
-      const query = `mutation {
-        registerMedia(teacherId: "${teacherID}", studentId: "${studentID}" fileName: "${fileName}") {
-          fileName
-        }
-    }`;
+      const query = `query {
+        getS3ViewURLs(studentId: "${studentID}") 
+      }`;
       const response = await fetch("http://localhost:3000/graphql", {
         method: "POST",
         headers: {
@@ -50,38 +49,36 @@ export const uplaodMedia = createAsyncThunk(
       });
       if (response.status !== 200) {
         if (response.status === 500) {
-          console.error("uploadUrlError while fetching student login details");
-          throw new Error("Invalid Login ID");
+          console.error("Error while getting all media");
+          throw new Error("Invalid student ID");
         }
       }
       const data = await response.json();
-
+      // console.log("----data-----", data);
       return data;
     } catch (error) {
-      console.error("uploadUrlError in getUploadUrl in mobile", error);
+      console.error("Error while getting all media", error);
       return rejectWithValue(error.message);
     }
   }
 );
 
 export interface MediaState {
-  uploadUrl: string;
-  uploadUrlLoading: boolean;
-  uploadUrlError: boolean;
-  // SMSLoading: boolean;
-  // SMSError: boolean;
-  // verificationLoading: boolean;
-  // verificationError: boolean;
+  pictures: string[];
+  fetchImagesLoading: boolean;
+  fetchImagesError: boolean;
+  allPictures: string[];
+  fetchAllImagesLoading: boolean;
+  fetchAllImagesError: boolean;
 }
 
 const initialState: MediaState = {
-  uploadUrl: "",
-  uploadUrlLoading: false,
-  uploadUrlError: false,
-  // SMSLoading: false,
-  // SMSError: false,
-  // verificationLoading: false,
-  // verificationError: false,
+  pictures: [],
+  fetchImagesLoading: false,
+  fetchImagesError: false,
+  allPictures: [],
+  fetchAllImagesLoading: false,
+  fetchAllImagesError: false,
 };
 
 export const mediaSlice = createSlice({
@@ -90,18 +87,31 @@ export const mediaSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getUploadUrl.pending, (state) => {
-        state.uploadUrlLoading = true;
-        state.uploadUrlError = false;
+      .addCase(getMediaByDate.pending, (state) => {
+        state.fetchImagesLoading = true;
+        state.fetchImagesError = false;
       })
-      .addCase(getUploadUrl.rejected, (state) => {
-        state.uploadUrlLoading = null;
-        state.uploadUrlError = true;
+      .addCase(getMediaByDate.rejected, (state) => {
+        state.fetchImagesLoading = null;
+        state.fetchImagesError = true;
       })
-      .addCase(getUploadUrl.fulfilled, (state, action) => {
-        state.uploadUrl = action.payload.data.getS3UploadUrl;
-        state.uploadUrlLoading = false;
-        state.uploadUrlError = false;
+      .addCase(getMediaByDate.fulfilled, (state, action) => {
+        state.pictures = action.payload.data.getS3ViewURLByDate;
+        state.fetchImagesLoading = false;
+        state.fetchImagesError = false;
+      })
+      .addCase(getAllMedia.pending, (state) => {
+        state.fetchAllImagesLoading = true;
+        state.fetchAllImagesError = false;
+      })
+      .addCase(getAllMedia.rejected, (state) => {
+        state.fetchAllImagesLoading = null;
+        state.fetchAllImagesError = true;
+      })
+      .addCase(getAllMedia.fulfilled, (state, action) => {
+        state.allPictures = action.payload.data.getS3ViewURLs;
+        state.fetchAllImagesLoading = false;
+        state.fetchAllImagesError = false;
       });
   },
 });
