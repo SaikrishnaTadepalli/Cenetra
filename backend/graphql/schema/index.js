@@ -107,7 +107,9 @@ type RootQuery {
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
     viewMedia(studentId: ID!): [Media!]!
+    getS3ViewURLs(studentId: ID!): [String!]!
     viewMediaByDate(studentId: ID!, date: String!):[Media!]!
+    getS3ViewURLByDate(studentId: ID!, date: String!): [String!]!
 
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
     getLatestProfileInfo(studentId: ID!): ProfileInfo!

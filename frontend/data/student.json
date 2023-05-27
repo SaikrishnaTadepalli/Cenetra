@@ -11,17 +11,17 @@
           "title": "Primary Conact 1",
           "name": "John Smith",
           "relationship": "Father",
-          "phone_number": "+1-555-555-1234",
-          "email_address": "john.smith@example.com",
-          "home_address": "123 Main St, Anytown, USA"
+          "phoneNumber": "+1-555-555-1234",
+          "email": "john.smith@example.com",
+          "address": "123 Main St, Anytown, USA"
         },
         {
           "title": "Primary Conact 2",
           "name": "Jane Smith",
           "relationship": "Mother",
-          "phone_number": "+1-555-555-5678",
-          "email_address": "jane.smith@example.com",
-          "home_address": "123 Main St, Anytown, USA"
+          "phoneNumber": "+1-555-555-5678",
+          "email": "jane.smith@example.com",
+          "address": "123 Main St, Anytown, USA"
         }
       ]
     },
@@ -32,17 +32,17 @@
           "title": "Emergency Conact 1",
           "name": "Mary Jones",
           "relationship": "Grandmother",
-          "phone_number": "+1-555-555-9012",
-          "email_address": "mary.jones@example.com",
-          "home_address": "456 Maple St, Anytown, USA"
+          "phoneNumber": "+1-555-555-9012",
+          "email": "mary.jones@example.com",
+          "address": "456 Maple St, Anytown, USA"
         },
         {
           "title": "Emergency Conact 1",
           "name": "Bob Johnson",
           "relationship": "Uncle",
-          "phone_number": "+1-555-555-3456",
-          "email_address": "bob.johnson@example.com",
-          "home_address": "789 Oak St, Anytown, USA"
+          "phoneNumber": "+1-555-555-3456",
+          "email": "bob.johnson@example.com",
+          "address": "789 Oak St, Anytown, USA"
         }
       ]
     },

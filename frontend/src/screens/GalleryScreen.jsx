@@ -9,13 +9,11 @@ const GalleryScreen = ({ navigation, route }) => {
     <FlatList
       columnWrapperStyle={styles.imagesContainer}
       data={route.params.pictures}
-      keyExtractor={(picture) => `gallery.id${picture.idx}`}
+      keyExtractor={(idx) => `gallery.id${idx}`}
       ListFooterComponent={<View />}
       ListFooterComponentStyle={{ height: 20 }}
       numColumns={3}
-      renderItem={({ item }) => (
-        <Picture navigation={navigation} uri={item.uri} />
-      )}
+      renderItem={({ item }) => <Picture navigation={navigation} uri={item} />}
     />
   );
 };

@@ -4,6 +4,7 @@ import authReducer from "./authSlice";
 import dailyLogsReducer from "./dailyLogsSlice";
 import noticesReducer from "./noticesSlice";
 import studentProfileReducer from "./studentProfileSlice";
+import mediaReducer from "./mediaSlice";
 // import userReducer from "./userSlice";
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     dailyLogs: dailyLogsReducer,
     notices: noticesReducer,
     studentProfile: studentProfileReducer,
+    media: mediaReducer,
     //user: userReducer,
   },
 });

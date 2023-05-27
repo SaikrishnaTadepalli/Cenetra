@@ -4,14 +4,14 @@ import moment from "moment-timezone";
 
 import colors from "../constants/Colors";
 
-const NoticeCard = ({ title, time, text }) => {
+const NoticeCard = ({ subject, details, time }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>{title}</Text>
+        <Text style={styles.headerText}>{subject}</Text>
         <Text style={styles.timeText}>{moment(time).format("HH:mm")}</Text>
       </View>
-      <Text style={styles.noticeText}>{text}</Text>
+      <Text style={styles.noticeText}>{details}</Text>
     </View>
   );
 };

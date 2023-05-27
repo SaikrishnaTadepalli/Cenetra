@@ -10,7 +10,7 @@ import { fetchLogs, selectLogByID } from "../redux/dailyLogsSlice";
 import { useSelector } from "react-redux";
 
 const DailyLogsCard = ({ navigation, data, date, logID }) => {
-  //console.log("dailylogscard", data);
+  // console.log("dailylogscard", date);
   const pictures = [];
   const stars = 3;
   const state = useSelector((state) => state);
@@ -21,6 +21,7 @@ const DailyLogsCard = ({ navigation, data, date, logID }) => {
       data: data,
       pictures: pictures,
       title: moment(curLog.createdAt).format("DD MMMM YYYY"),
+      date: curLog.createdAt,
     });
   };
 

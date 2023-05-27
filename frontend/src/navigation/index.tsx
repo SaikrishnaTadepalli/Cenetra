@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 
@@ -131,7 +131,16 @@ const RootNavigator = () => {
               return {
                 headerTitle: "",
                 headerRight: () => (
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      Alert.alert("Coming soon!", "", [
+                        {
+                          text: "OK",
+                          onPress: () => console.log("OK Pressed"),
+                        },
+                      ]);
+                    }}
+                  >
                     <Ionicons
                       name="ios-download-outline"
                       size={28}
