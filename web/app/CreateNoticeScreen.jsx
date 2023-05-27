@@ -15,14 +15,14 @@ import {
   setIsNewNoticeAdded,
 } from "../src/redux/noticeSlice";
 
-const CreateNoticeScreen = ({ date, studentID }) => {
+const CreateNoticeScreen = ({ date }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const { createNoticesError, createNoticesPending } = useSelector(
     (state) => state.notices
   );
   const state = useSelector((state) => state);
-  const { teacherID } = useSelector((state) => state.auth);
+  const { teacherID, students } = useSelector((state) => state.auth);
   const [subject, setSubject] = useState("");
   const [details, setDetails] = useState("");
   const [isCancelled, setIsCancelled] = useState(false);
@@ -33,11 +33,16 @@ const CreateNoticeScreen = ({ date, studentID }) => {
 
   const onSave = () => {
     if (subject && details) {
+      const newNotice = {
+        subject: subject,
+        details: details,
+      };
+      const studentIDs = students.map(({ _id }) => `"${_id}"`);
       dispatch(
         createNotices({
           teacherID: teacherID,
-          studentID: [studentID],
-          details: subject,
+          studentIDs: studentIDs,
+          details: newNotice,
         })
       )
         .then(() => {

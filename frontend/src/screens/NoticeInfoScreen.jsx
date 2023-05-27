@@ -3,13 +3,12 @@ import React from "react";
 import NoticeCard from "../components/NoticeCard";
 
 const NoticeInfoScreen = ({ route }) => {
-  console.log(route.params.time);
   return (
     <View style={styles.container}>
       <NoticeCard
-        title={route.params.title}
+        subject={route.params.subject}
+        details={route.params.details}
         time={route.params.time}
-        text={route.params.subText}
       />
     </View>
   );

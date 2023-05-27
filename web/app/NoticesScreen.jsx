@@ -20,7 +20,7 @@ const NoticesScreen = () => {
   const router = useRouter();
   const state = useSelector((state) => state);
   const { notices, fetchNoticesPending } = state.notices;
-  const { isLoggedIn } = state.auth;
+  const { isLoggedIn, teacherID } = state.auth;
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldNoticeSelected, setisOldNoticeSelected] = useState(false);
@@ -38,7 +38,7 @@ const NoticesScreen = () => {
     setNoticeID(id);
   };
   useEffect(() => {
-    dispatch(fetchNotices("6462cf2be55c98895096ea49"));
+    dispatch(fetchNotices(teacherID));
   }, []);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const NoticesScreen = () => {
         <ScrollView contentContainerStyle={styles.listView}>
           {fetchNoticesPending ? (
             <Text>Retrieving data...</Text>
-          ) : notices.length > 0 ? (
+          ) : notices && notices.length > 0 ? (
             notices.map((notice, idx) => (
               <TouchableOpacity
                 style={styles.cardContainer}
@@ -89,10 +89,7 @@ const NoticesScreen = () => {
           {isOldNoticeSelected ? (
             <NoticeScreen id={noticeID} />
           ) : date !== "" ? (
-            <CreateNoticeScreen
-              date={date}
-              studentID="6462cf2be55c98895096ea49"
-            />
+            <CreateNoticeScreen date={date} />
           ) : null}
         </View>
       </View>

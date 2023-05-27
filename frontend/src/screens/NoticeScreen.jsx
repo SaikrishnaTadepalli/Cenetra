@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 const NoticeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   //const notices = noticesData.notices;
-  const [notices, setnotices] = useState([]);
+  const [notices, setNotices] = useState([]);
 
   const formatDate = (date) => {
     return moment(date).format("DD MMMM YYYY");
@@ -54,7 +54,7 @@ const NoticeScreen = ({ navigation }) => {
               });
             }
           });
-          setnotices(newNotices);
+          setNotices(newNotices);
         })
         .catch((error) => console.log("Error in notices screen", error));
     };
@@ -75,9 +75,8 @@ const NoticeScreen = ({ navigation }) => {
             <Card
               navigation={navigation}
               isUnread={true}
-              title={item.details}
+              details={item.details}
               time={item.createdAt}
-              subText={item.details}
             />
           </View>
         )}
