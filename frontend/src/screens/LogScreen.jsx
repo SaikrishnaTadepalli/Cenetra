@@ -12,11 +12,13 @@ import Picture from "../components/Picture";
 import colors from "../constants/Colors";
 
 const LogScreen = ({ navigation, route }) => {
-  const logs = route.params.data;
+  const logs = JSON.parse(JSON.parse(route.params.data));
+  const date = route.params.date;
   const pictures = [];
   route.params.pictures.map((picture, idx) =>
     pictures.push({ idx: idx, uri: picture })
   );
+  const colors = ["#F6D9DA", "#C7E9F0", "#E4F4E8", "#F5E5D9", "#F3C4E1"];
 
   return (
     <ScrollView style={styles.container} nestedScrollEnabled={true}>
@@ -45,8 +47,8 @@ const LogScreen = ({ navigation, route }) => {
           ) : null
         )}
       </ScrollView>
-      {logs.map((log, idx) => (
-        <View key={`log-title-${idx}`}>
+      {logs.activities.map((log, index) => (
+        <View key={`log-title-${index}`}>
           <Text style={[styles.sectionHeader, { color: "" }]}>
             {log.sectionHeader}
           </Text>
@@ -54,7 +56,7 @@ const LogScreen = ({ navigation, route }) => {
           {log.sectionActivities.map((data, idx) => (
             <View style={styles.logsContainer} key={`log-info-${idx}`}>
               <LogCard
-                sectionHeaderColor={data.color}
+                sectionHeaderColor={colors[index % 5]}
                 title={data.title}
                 description={data.description}
               />

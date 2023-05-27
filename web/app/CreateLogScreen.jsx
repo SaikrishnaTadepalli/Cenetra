@@ -17,10 +17,10 @@ import {
   updateLogs,
 } from "../src/redux/logsSlice";
 
-const inputs = [
+const inputTexts = [
   "What food did they eat",
-  // "What work did they do",
-  // "What games did they play",
+  "What work did they do",
+  "What games did they play",
   // "Additional Comments",
 ];
 
@@ -49,22 +49,29 @@ const CreateLogScreen = ({ date, id }) => {
     (state) => state.log
   );
   const state = useSelector((state) => state);
-  const [input1, setInput1] = useState("");
-  const [input2, setInput2] = useState("");
-  const [input3, setInput3] = useState("");
-  const [input4, setInput4] = useState("");
+  const [inputs, setInputs] = useState([
+    { name: inputTexts[0], value: "" },
+    { name: inputTexts[1], value: "" },
+    { name: inputTexts[2], value: "" },
+  ]);
+  const [rating, setRating] = useState("");
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewLogSelected = getIsNewLogAdded(state);
 
   const onSave = () => {
-    if (input1) {
+    console.log(inputs);
+    const data = {
+      data: inputs,
+    };
+    if (inputs && rating) {
       dispatch(
         updateLogs({
           teacherID: teacherID,
           studentID: id,
-          details: input1,
+          details: data,
+          rating: rating,
         })
       )
         .then(() => {
@@ -72,7 +79,7 @@ const CreateLogScreen = ({ date, id }) => {
           setIsInputEmpty(false);
           setIsSaved(true);
           setIsCancelled(false);
-          setInput1("");
+          setInputs("");
           setTimeout(() => {
             setIsSaved(false);
             setEditable(true);
@@ -93,8 +100,16 @@ const CreateLogScreen = ({ date, id }) => {
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
-      setInput1("");
+      setInputs("");
     }, 2000);
+  };
+
+  const handleInputChange = (index, value) => {
+    setInputs((prevInputs) => {
+      const updatedInputs = [...prevInputs];
+      updatedInputs[index].value = value;
+      return updatedInputs;
+    });
   };
 
   return (
@@ -105,24 +120,32 @@ const CreateLogScreen = ({ date, id }) => {
         <View style={styles.container}>
           <Text style={styles.header}>{date}</Text>
           <View>
+            <Text>Rating from 1-5</Text>
+            <TextInput
+              style={styles.ratingContainer}
+              editable={isEditable}
+              value={rating}
+              onChangeText={setRating}
+            />
             <ScrollView contentContainerStyle={styles.listView}>
               {inputs.map((input, idx) => (
                 <View key={`input-${idx}`}>
-                  <Text style={{ marginBottom: 10 }}>{input}</Text>
+                  <Text>{input.name}</Text>
                   <TextInput
                     style={styles.cardContainer}
                     multiline
                     editable={isEditable}
                     numberOfLines={4}
                     maxLength={200}
-                    value={input1}
-                    onChangeText={setInput1}
+                    key={input.name}
+                    value={input.value}
+                    onChangeText={(value) => handleInputChange(idx, value)}
                   />
                 </View>
               ))}
             </ScrollView>
             <DragAndDrop />
-            {isInputEmpty && !input1 ? (
+            {isInputEmpty && !inputs && !rating ? (
               <Text style={styles.errorText}>
                 Could not save logs. Please fill in at least one text box.
               </Text>
@@ -164,8 +187,18 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGrey,
     borderWidth: 1,
     borderRadius: 4,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     paddingVertical: 8,
+    justifyContent: "center",
+    backgroundColor: "white",
+    marginBottom: 20,
+  },
+  ratingContainer: {
+    minHeight: 30,
+    borderColor: colors.lightGrey,
+    borderWidth: 1,
+    borderRadius: 4,
+    width: 70,
     justifyContent: "center",
     backgroundColor: "white",
     marginBottom: 20,

@@ -8,14 +8,14 @@ import {
 import React from "react";
 import Colors from "../constants/Colors";
 
-const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
+const ProfileCard = ({ sectionHeader, data, title }) => {
   const renderButton = (infoType, info) => {
     return (
       <View style={styles.infoLineContainer}>
         {infoType !== "" ? (
           <Text style={styles.infoTypeText}>{infoType}</Text>
         ) : null}
-        <TouchableOpacity editable={isEditable}>
+        <TouchableOpacity>
           <Text style={styles.infoInputText}>{info} </Text>
         </TouchableOpacity>
       </View>
@@ -35,7 +35,7 @@ const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
 
   const renderInfo = () => {
     if (
-      sectionHeader === "PRIMARY CONTACT" ||
+      sectionHeader === "PRIMARY CONTACTS" ||
       sectionHeader === "EMERGENCY CONTACTS"
     ) {
       return data.map((item, idx) => (
@@ -43,9 +43,9 @@ const ProfileCard = ({ sectionHeader, data, title, isEditable }) => {
           <Text style={styles.headerText}>{item.title}</Text>
           {renderText("Name:", item.name)}
           {renderText("Relationship:", item.relationship)}
-          {renderButton("Phone Number:", item.phone_number)}
-          {renderButton("Email Address:", item.email_address)}
-          {renderButton("Home Address:", item.home_address)}
+          {renderButton("Phone Number:", item.phoneNumber)}
+          {renderButton("Email Address:", item.email)}
+          {renderButton("Home Address:", item.address)}
           {data.indexOf(item) !== data.length - 1 ? (
             <View style={styles.divider} />
           ) : null}

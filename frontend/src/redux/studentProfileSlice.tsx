@@ -30,7 +30,13 @@ export const fetchProfile = createAsyncThunk(
         }
       }
       const data = await response.json();
-      return data;
+      //console.log(data.data.getLatestProfileInfo);
+      const details = JSON.parse(data.data.getLatestProfileInfo.details);
+      const result = {
+        lastUpdated: data.data.getLatestProfileInfo.createdAt,
+        studentInfo: details,
+      };
+      return result;
     } catch (error) {
       console.error("Error while fetching student profile", error);
       return rejectWithValue(error.message);
@@ -41,14 +47,19 @@ export const fetchProfile = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   "studentProfile/updateProfile",
   async ({ studentID, details }, { rejectWithValue }) => {
+    // console.log("details", details);
     try {
+      const jsonString = JSON.stringify(details)
+        .replace(/\\/g, "\\\\") // Escape backslashes
+        .replace(/"/g, '\\"'); // Escape double quotes
       const query = `mutation{
-        addProfileInfo(studentId: "${studentID}", details: "${details}") {
+        addProfileInfo(studentId: "${studentID}", details: "${jsonString}") {
           details
           createdAt
           updatedAt
         }
         }`;
+      // console.log("------------query--------", query);
       const response = await fetch("http://localhost:3000/graphql", {
         method: "POST",
         headers: {
@@ -59,29 +70,28 @@ export const updateProfile = createAsyncThunk(
       if (response.status !== 200) {
         if (response.status === 500) {
           throw new Error(
-            "Response status 500: Error while fetching student profile"
+            "Response status 500: Error while updating student profile"
           );
         } else if (response.status === 400) {
-          console.log("Response status 400 while fetching student profile");
-          throw new Error("Response status 400 while fetching student profile");
+          throw new Error("Response status 400");
         }
       }
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error while fetching student profile", error);
+      console.error("Error while updating student profile", error);
       return rejectWithValue(error.message);
     }
   }
 );
 
 export interface ProfileState {
-  notices: string[];
+  studentInfo: object;
+  lastUpdated: string;
   updateProfileLoading: boolean;
   updateProfileError: boolean;
   fetchProfileLoading: boolean;
   fetchProfileError: boolean;
-  isNewNoticeAdded: boolean;
 }
 
 const initialState: ProfileState = {
@@ -89,18 +99,14 @@ const initialState: ProfileState = {
   updateProfileError: false,
   fetchProfileLoading: null,
   fetchProfileError: false,
-  notices: [],
-  isNewNoticeAdded: false,
+  studentInfo: {},
+  lastUpdated: "",
 };
 
 export const studentProfileSlice = createSlice({
   name: "studentProfile",
   initialState,
-  reducers: {
-    setIsNewNoticeAdded: (state, action) => {
-      state.isNewNoticeAdded = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.pending, (state) => {
@@ -112,7 +118,16 @@ export const studentProfileSlice = createSlice({
         state.fetchProfileError = true;
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
-        state.notices = action.payload.data.notices;
+        state.studentInfo = action.payload.studentInfo;
+        const date = new Date(action.payload.lastUpdated);
+        state.lastUpdated = date.toLocaleDateString("en-us", {
+          year: "numeric",
+          month: "short",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
         state.fetchProfileLoading = false;
         state.fetchProfileError = false;
       })
@@ -125,7 +140,6 @@ export const studentProfileSlice = createSlice({
         state.updateProfileError = true;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        state.notices = [action.payload.data.createNotice, ...state.notices];
         state.updateProfileLoading = false;
         state.updateProfileError = false;
       });

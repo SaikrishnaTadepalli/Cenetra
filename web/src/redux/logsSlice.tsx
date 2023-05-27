@@ -8,6 +8,7 @@ export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
         details
         createdAt
         updatedAt
+        rating
     }
 }
 `;
@@ -28,15 +29,19 @@ export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
 
 export const updateLogs = createAsyncThunk(
   "logs/updateLogs",
-  async ({ teacherID, studentID, details }) => {
+  async ({ teacherID, studentID, details, rating }) => {
+    // console.log(details);
+    const stringifiedDetails = JSON.stringify(details)
+      .replace(/\\/g, "\\\\") // Escape backslashes
+      .replace(/"/g, '\\"'); // Escape double quotes
     const query = `mutation {
-    createLog(teacherId: "${teacherID}" studentId: "${studentID}" details: "${details}") {
+    createLog(teacherId: "${teacherID}" studentId: "${studentID}" details: "${stringifiedDetails}", rating: ${rating}) {
         _id
         details
         createdAt
-        updatedAt
     }
-}`;
+  }`;
+    // console.log(query);
     try {
       const response = await fetch("http://localhost:3000/graphql", {
         method: "POST",
