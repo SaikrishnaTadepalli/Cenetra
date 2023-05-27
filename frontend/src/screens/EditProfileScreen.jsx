@@ -10,12 +10,26 @@ import React, { useState } from "react";
 
 import colors from "../constants/Colors";
 import EditProfileCard from "../components/EditProfileCard";
-import * as studentData from "../../data/student.json";
+// import * as studentData from "../../data/student.json";
 import { useDispatch } from "react-redux";
 import { updateProfile } from "../redux/studentProfileSlice";
 
-const EditProfileScreen = ({ navigation }) => {
+const EditProfileScreen = ({ navigation, route }) => {
+  const studentData = route.params.studentData;
   const [isEditable, setEditable] = useState(true);
+  const [inputs, setInputs] = useState([
+    { name: "firstName", value: "" },
+    { name: "lastName", value: "" },
+    { name: "email", value: "" },
+  ]);
+
+  const handleInputChange = (index, value) => {
+    setInputs((prevInputs) => {
+      const updatedInputs = [...prevInputs];
+      updatedInputs[index].value = value;
+      return updatedInputs;
+    });
+  };
   const dispatch = useDispatch();
 
   const onCancel = () => {
@@ -77,6 +91,8 @@ const EditProfileScreen = ({ navigation }) => {
             key={idx}
             isEditable={isEditable}
             title={item.title}
+            inputs={inputs}
+            handleInputChange={handleInputChange}
           />
         ))}
       </View>

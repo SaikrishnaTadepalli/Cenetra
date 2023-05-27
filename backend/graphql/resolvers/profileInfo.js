@@ -31,7 +31,7 @@ module.exports = {
     }
   },
 
-  getLatestProfileInfo: async () => {
+  getLatestProfileInfo: async (args) => {
     try {
       const student = await Student.findById(args.studentId);
 

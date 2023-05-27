@@ -20,7 +20,8 @@ const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const onPressEdit = () => {
-    () => setEditable(true), navigation.navigate("EditProfile");
+    () => setEditable(true),
+      navigation.navigate("EditProfile", { studentData: studentData });
   };
   useEffect(() => {
     //console.log("useeffect");

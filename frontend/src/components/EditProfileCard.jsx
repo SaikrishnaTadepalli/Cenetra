@@ -2,10 +2,18 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import Colors from "../constants/Colors";
 
-const EditProfileCard = ({ sectionHeader, data, title, isEditable }) => {
+const EditProfileCard = ({
+  sectionHeader,
+  data,
+  title,
+  isEditable,
+  inputs,
+  handleInputChange,
+}) => {
   const [input, setInput] = useState("");
-
-  const renderText = (infoType, info) => {
+  console.log(inputs);
+  const renderText = (infoType, info, idx) => {
+    console.log(idx);
     return (
       <View style={styles.infoLineContainer}>
         {infoType !== "" ? (
@@ -14,8 +22,9 @@ const EditProfileCard = ({ sectionHeader, data, title, isEditable }) => {
         <TextInput
           editable={isEditable}
           style={styles.infoInputText}
-          value={input}
-          onChangeText={setInput}
+          placeholder={idx ? inputs[idx].name : ""}
+          value={idx ? inputs[idx].value : ""}
+          onChangeText={(value) => handleInputChange(idx, value)}
         >
           {info}{" "}
         </TextInput>
@@ -31,7 +40,7 @@ const EditProfileCard = ({ sectionHeader, data, title, isEditable }) => {
       return data.map((item, idx) => (
         <View key={`profile-info${idx}`}>
           <Text style={styles.headerText}>{item.title}</Text>
-          {renderText("Name:", item.name)}
+          {renderText("Name:", item.name, idx)}
           {/* {renderText("Relationship:", item.relationship)}
           {renderText("Phone Number:", item.phone_number)}
           {renderText("Email Address:", item.email_address)}
@@ -44,8 +53,8 @@ const EditProfileCard = ({ sectionHeader, data, title, isEditable }) => {
     } else if (sectionHeader === "ALLERGIES") {
       return data.map((item, idx) => (
         <View key={`profile-info${idx}`}>
-          {renderText("Item:", item.name)}
-          {renderText("Severity:", item.severity)}
+          {renderText("Item:", item.name, idx)}
+          {renderText("Severity:", item.severity, idx)}
           {data.indexOf(item) !== data.length - 1 ? (
             <View style={styles.divider} />
           ) : null}
