@@ -7,18 +7,17 @@ import { getUploadUrl } from "../redux/mediaSlice";
 const DragAndDrop = ({ studentID }) => {
   const dispatch = useDispatch();
   const { teacherID } = useSelector((state) => state.auth);
-  var uploadURL;
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    // accept: {
-    //   "image/png": [".png", ".jpg", ".jpeg"],
-    // },
+    accept: {
+      "image/png": [".png", ".jpg", ".jpeg"],
+    },
   });
   const onUpload = () => {
     dispatch(getUploadUrl({ teacherID, studentID }))
       .then(async (response) => {
         // console.log(response.payload.data);
-        uploadURL = response.payload.data.getS3UploadUrl;
-        console.log(uploadURL);
+        const data = JSON.parse(response.payload.data.getS3UploadUrl);
+        const uploadURL = data.uploadURL;
         const formData = new FormData();
         formData.append("file", acceptedFiles[0]);
         console.log(acceptedFiles[0]);
