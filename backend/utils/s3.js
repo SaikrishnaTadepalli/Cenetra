@@ -17,6 +17,13 @@ const s3 = new aws.S3({
 
 const randomBytes = promisify(crypto.randomBytes);
 
+const getViewURL = async (fileName) => {
+  let URL =
+    "https://" + config.S3_BUCKET_NAME + ".s3.amazonaws.com/" + fileName;
+
+  return URL;
+};
+
 const generateUploadURL = async () => {
   const rawBytes = await randomBytes(16);
   const fileName = rawBytes.toString("hex");
@@ -36,4 +43,5 @@ const generateUploadURL = async () => {
 
 module.exports = {
   generateUploadURL,
+  getViewURL,
 };

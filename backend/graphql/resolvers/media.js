@@ -3,8 +3,7 @@ const Teacher = require("../../models/teacher");
 const Media = require("../../models/media");
 
 const { transformMedia } = require("./merge");
-const { generateUploadURL } = require("../../utils/s3");
-const config = require("../../utils/config");
+const { generateUploadURL, getViewURL } = require("../../utils/s3");
 
 module.exports = {
   // Queries
@@ -31,13 +30,7 @@ module.exports = {
 
   getS3ViewUrl: async (args) => {
     try {
-      let URL =
-        "https://" +
-        config.S3_BUCKET_NAME +
-        ".s3.amazonaws.com/" +
-        args.fileName;
-
-      return URL;
+      return getViewURL(args.fileName);
     } catch (err) {
       throw err;
     }
@@ -82,6 +75,34 @@ module.exports = {
       });
 
       return fetchedMedia.map((media) => transformMedia(media));
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  getS3ViewURLByDate: async (args) => {
+    try {
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      const targetDate = new Date(args.date);
+      targetDate.setHours(0, 0, 0, 0);
+
+      const nextDay = new Date(targetDate);
+      nextDay.setDate(targetDate.getDate() + 1);
+
+      const fetchedMedia = await Media.find({
+        student: args.studentId,
+        createdAt: {
+          $gte: targetDate,
+          $lt: nextDay,
+        },
+      });
+
+      return fetchedMedia.map((media) => getViewURL(media.fileName));
     } catch (err) {
       throw err;
     }
