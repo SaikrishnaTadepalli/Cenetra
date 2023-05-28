@@ -11,6 +11,7 @@ export const fetchLogs = createAsyncThunk(
         details
         createdAt
         updatedAt
+        rating
     }
 }
 `;

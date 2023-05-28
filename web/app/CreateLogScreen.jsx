@@ -24,24 +24,7 @@ const inputTexts = [
   // "Additional Comments",
 ];
 
-const Input = (inputVal, state, setState, isEditable) => {
-  return (
-    <View key={`input-${idx}`}>
-      <Text style={{ marginBottom: 10 }}>{inputVal}</Text>
-      <TextInput
-        style={styles.cardContainer}
-        multiline
-        editable={isEditable}
-        numberOfLines={4}
-        maxLength={200}
-        value={state}
-        onChangeText={setState}
-      />
-    </View>
-  );
-};
-
-const CreateLogScreen = ({ date, id }) => {
+const CreateLogScreen = ({ date, studentID }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const { teacherID } = useSelector((state) => state.auth);
@@ -49,11 +32,12 @@ const CreateLogScreen = ({ date, id }) => {
     (state) => state.log
   );
   const state = useSelector((state) => state);
-  const [inputs, setInputs] = useState([
+  const initialState = [
     { name: inputTexts[0], value: "" },
     { name: inputTexts[1], value: "" },
     { name: inputTexts[2], value: "" },
-  ]);
+  ];
+  const [inputs, setInputs] = useState(initialState);
   const [rating, setRating] = useState("");
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -62,14 +46,27 @@ const CreateLogScreen = ({ date, id }) => {
 
   const onSave = () => {
     console.log(inputs);
+    const sectionActivities = [];
+    inputs.map((input) => {
+      sectionActivities.push({
+        title: input.name,
+        description: input.value,
+      });
+    });
     const data = {
-      data: inputs,
+      activities: [
+        {
+          sectionHeader: "Morning",
+          sectionActivities: sectionActivities,
+        },
+      ],
     };
+    // console.log(data);
     if (inputs && rating) {
       dispatch(
         updateLogs({
           teacherID: teacherID,
-          studentID: id,
+          studentID: studentID,
           details: data,
           rating: rating,
         })
@@ -79,7 +76,7 @@ const CreateLogScreen = ({ date, id }) => {
           setIsInputEmpty(false);
           setIsSaved(true);
           setIsCancelled(false);
-          setInputs("");
+          setInputs(initialState);
           setTimeout(() => {
             setIsSaved(false);
             setEditable(true);
@@ -100,7 +97,7 @@ const CreateLogScreen = ({ date, id }) => {
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
-      setInputs("");
+      setInputs(initialState);
     }, 2000);
   };
 
@@ -111,13 +108,16 @@ const CreateLogScreen = ({ date, id }) => {
       return updatedInputs;
     });
   };
-
+  // console.log(inputs);
   return (
     <>
       {isSaved ? <Text>Your logs have been saved successfully!</Text> : null}
       {updateLogsPending ? <Text>Saving your changes.</Text> : null}
       {isAddNewLogSelected ? (
-        <View style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={{ paddingBottom: 60 }}
+        >
           <Text style={styles.header}>{date}</Text>
           <View>
             <Text>Rating from 1-5</Text>
@@ -127,43 +127,45 @@ const CreateLogScreen = ({ date, id }) => {
               value={rating}
               onChangeText={setRating}
             />
-            <ScrollView contentContainerStyle={styles.listView}>
-              {inputs.map((input, idx) => (
-                <View key={`input-${idx}`}>
-                  <Text>{input.name}</Text>
-                  <TextInput
-                    style={styles.cardContainer}
-                    multiline
-                    editable={isEditable}
-                    numberOfLines={4}
-                    maxLength={200}
-                    key={input.name}
-                    value={input.value}
-                    onChangeText={(value) => handleInputChange(idx, value)}
-                  />
-                </View>
-              ))}
-            </ScrollView>
+            <View style={styles.listView}>
+              {inputs
+                ? inputs.map((input, idx) => (
+                    <View key={`input-${idx}`}>
+                      <Text>{input.name}</Text>
+                      <TextInput
+                        style={styles.cardContainer}
+                        multiline
+                        editable={isEditable}
+                        numberOfLines={4}
+                        maxLength={200}
+                        key={input.name}
+                        value={input.value}
+                        onChangeText={(value) => handleInputChange(idx, value)}
+                      />
+                    </View>
+                  ))
+                : null}
 
-            <DragAndDrop studentID={id} />
-            
-            {isInputEmpty && !inputs && !rating ? (
-              <Text style={styles.errorText}>
-                Could not save logs. Please fill in at least one text box.
-              </Text>
-            ) : null}
-            <View style={styles.buttonsContainer}>
-              <TouchableOpacity>
-                <Text style={styles.cancelText} onPress={onCancel}>
-                  Cancel
+              <DragAndDrop studentID={studentID} />
+
+              {isInputEmpty && !rating ? (
+                <Text style={styles.errorText}>
+                  Could not save logs. Please fill in at least one text box.
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-                <Text style={styles.saveText}>Save</Text>
-              </TouchableOpacity>
+              ) : null}
+              <View style={styles.buttonsContainer}>
+                <TouchableOpacity>
+                  <Text style={styles.cancelText} onPress={onCancel}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+                  <Text style={styles.saveText}>Save</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       ) : null}
     </>
   );

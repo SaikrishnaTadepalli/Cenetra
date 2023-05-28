@@ -7,7 +7,7 @@ export const getMediaByDate = createAsyncThunk(
     //const {query, teacherID} = props;
     try {
       const query = `query {
-        getS3ViewURLByDate(studentId: "${studentID}", date: "2023-05-27T04:21:25.943+00:00") 
+        getS3ViewURLByDate(studentId: "${studentID}", date: "${date}") 
       }`;
       const response = await fetch("http://localhost:3000/graphql", {
         method: "POST",

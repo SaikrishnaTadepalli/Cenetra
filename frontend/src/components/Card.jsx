@@ -6,7 +6,7 @@ import moment from "moment-timezone";
 import colors from "../constants/Colors";
 
 const Card = ({ navigation, isUnread, details, time }) => {
-  const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
+  const [isNoticeUnread, setIsNoticeUnread] = useState(false);
   const parsedDetails = JSON.parse(details);
   const subject = parsedDetails.subject;
 
@@ -15,6 +15,7 @@ const Card = ({ navigation, isUnread, details, time }) => {
       subject,
       details: parsedDetails.details,
       time: time,
+      title: moment(time).format("DD MMMM YYYY"),
     });
     setIsNoticeUnread(false);
   };

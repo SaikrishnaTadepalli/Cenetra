@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "expo-router";
 
 import * as classList from "../data/names.json";
@@ -13,11 +13,8 @@ import colors from "../src/constants/Colors";
 import DailyLogsScreen from "./DailyLogs";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogs } from "../src/redux/logsSlice";
-import { updateStudents } from "../src/redux/studentSlice";
-import { fetchStudents } from "../src/redux/authSlice";
 
 const ClassListScreen = () => {
-  const names = classList.names;
   const { students, isLoggedIn } = useSelector((state) => state.auth);
   const state = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -26,12 +23,12 @@ const ClassListScreen = () => {
     students.length > 0 ? students[0].firstName + students[0].lastName : ""
   );
   const [studentID, setStudentID] = useState(students[0]._id);
-  const handleClick = (name, id) => {
+  const handleClick = (name, studentID) => {
     //router.push(`/${name}`);
     //router.push("/LoginScreen");
     setName(name);
-    setStudentID(id);
-    dispatch(fetchLogs(id))
+    setStudentID(studentID);
+    dispatch(fetchLogs(studentID))
       .then(() => {})
       .catch((error) => console.log(error));
   };
@@ -42,7 +39,11 @@ const ClassListScreen = () => {
   }, [isLoggedIn]);
 
   return (
-    <ScrollView style={styles.container} nestedScrollEnabled={true}>
+    <ScrollView
+      style={styles.container}
+      nestedScrollEnabled={true}
+      contentContainerStyle={{ paddingBottom: 60 }}
+    >
       <Text style={styles.header}>My Class</Text>
       <View
         style={{
@@ -72,7 +73,7 @@ const ClassListScreen = () => {
             alignContent: "center",
           }}
         >
-          <DailyLogsScreen name={name} id={studentID} />
+          <DailyLogsScreen name={name} studentID={studentID} />
         </View>
       </View>
     </ScrollView>

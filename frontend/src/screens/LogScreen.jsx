@@ -4,8 +4,10 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import LogCard from "../components/LogCard";
@@ -17,23 +19,21 @@ import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
 const LogScreen = ({ navigation, route }) => {
-  const logs = JSON.parse(JSON.parse(route.params.data));
-  const { pictures } = useSelector((state) => state.media);
-
+  const logs = JSON.parse(route.params.data);
+  const { pictures, fetchImagesLoading, fetchImagesError } = useSelector(
+    (state) => state.media
+  );
+  const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
-  const date = route.params.date;
+  const retrieveData = async () => {
+    const studentID = await AsyncStorage.getItem("studentID");
+    dispatch(getMediaByDate({ studentID: studentID, date: route.params.date }))
+      .then((response) => {})
+      .catch((error) => console.log("Error in logs screen", error));
+  };
   useFocusEffect(
     React.useCallback(() => {
       // console.log("use focus effect");
-      const retrieveData = async () => {
-        const studentID = await AsyncStorage.getItem("studentID");
-        dispatch(
-          getMediaByDate({ studentID: studentID, date: route.params.date })
-        )
-          .then((response) => {})
-          .catch((error) => console.log("Error in logs screen", error));
-      };
-
       retrieveData();
       return () => {
         // Clean up any resources if needed
@@ -41,51 +41,88 @@ const LogScreen = ({ navigation, route }) => {
     }, [])
   );
   const colors = ["#F6D9DA", "#C7E9F0", "#E4F4E8", "#F5E5D9", "#F3C4E1"];
-  // console.log(pictures);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    retrieveData();
+    setTimeout(() => setRefreshing(false), 1000);
+  }, []);
   return (
-    <ScrollView style={styles.container} nestedScrollEnabled={true}>
-      {pictures.length > 0 ? (
-        <View style={{ alignSelf: "flex-end" }}>
+    <>
+      {fetchImagesError ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Error while retrieving data</Text>
           <TouchableOpacity
-            style={styles.buttonText}
-            onPress={() =>
-              navigation.navigate("Gallery", {
-                pictures: pictures,
-                title: "Today's gallery",
-              })
-            }
+            onPress={retrieveData}
+            style={{ alignSelf: "center", marginTop: 20 }}
           >
-            <Text style={styles.buttonText}>See All</Text>
+            <Text style={styles.reloadButtonText}>Reload Data</Text>
           </TouchableOpacity>
         </View>
       ) : null}
-      <ScrollView horizontal={true} style={styles.imagesContainer}>
-        {pictures.map((picture, idx) =>
-          idx < 10 ? (
-            <View key={`log-picture-${idx}`} style={styles.imageContainer}>
-              <Picture uri={picture} navigation={navigation} />
-            </View>
-          ) : null
-        )}
-      </ScrollView>
-      {logs.activities.map((log, index) => (
-        <View key={`log-title-${index}`}>
-          <Text style={[styles.sectionHeader, { color: "" }]}>
-            {log.sectionHeader}
-          </Text>
-          <View style={[styles.divider, { borderColor: "" }]} />
-          {log.sectionActivities.map((data, idx) => (
-            <View style={styles.logsContainer} key={`log-info-${idx}`}>
-              <LogCard
-                sectionHeaderColor={colors[index % 5]}
-                title={data.title}
-                description={data.description}
-              />
-            </View>
-          ))}
-        </View>
-      ))}
-    </ScrollView>
+      {fetchImagesLoading && !refreshing ? (
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+          style={styles.indicator}
+        />
+      ) : (
+        !fetchImagesError && (
+          <ScrollView
+            style={styles.container}
+            nestedScrollEnabled={true}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {pictures.length > 0 ? (
+              <View style={{ alignSelf: "flex-end" }}>
+                <TouchableOpacity
+                  style={styles.buttonText}
+                  onPress={() =>
+                    navigation.navigate("Gallery", {
+                      pictures: pictures,
+                      title: "Today's gallery",
+                    })
+                  }
+                >
+                  <Text style={styles.buttonText}>See All</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
+            <ScrollView horizontal={true} style={styles.imagesContainer}>
+              {pictures.map((picture, idx) =>
+                idx < 10 ? (
+                  <View
+                    key={`log-picture-${idx}`}
+                    style={styles.imageContainer}
+                  >
+                    <Picture uri={picture} navigation={navigation} />
+                  </View>
+                ) : null
+              )}
+            </ScrollView>
+            {logs.activities.map((log, index) => (
+              <View key={`log-title-${index}`}>
+                <Text style={[styles.sectionHeader, { color: "" }]}>
+                  {log.sectionHeader}
+                </Text>
+                <View style={[styles.divider, { borderColor: "" }]} />
+                {log.sectionActivities.map((data, idx) => (
+                  <View style={styles.logsContainer} key={`log-info-${idx}`}>
+                    <LogCard
+                      sectionHeaderColor={colors[index % 5]}
+                      title={data.title}
+                      description={data.description}
+                    />
+                  </View>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+        )
+      )}
+    </>
   );
 };
 
@@ -125,5 +162,26 @@ const styles = StyleSheet.create({
   logsContainer: {
     alignItems: "center",
     marginBottom: 12,
+  },
+  indicator: {
+    alignSelf: "center",
+    justifyContent: "center",
+    flex: 1,
+    borderRadius: 999,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignSelf: "center",
+  },
+  errorText: {
+    color: colors.red,
+    fontFamily: "InterMedium",
+    fontSize: 20,
+  },
+  reloadButtonText: {
+    color: colors.black,
+    fontSize: 16,
+    fontFamily: "InterMedium",
   },
 });

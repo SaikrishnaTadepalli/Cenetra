@@ -186,7 +186,6 @@ export const authSlice = createSlice({
         state.isLoggedIn = false;
       })
       .addCase(verifyLogin.fulfilled, (state) => {
-        console.log("2 authslice", state);
         state.verificationLoading = false;
         state.verificationError = false;
       });

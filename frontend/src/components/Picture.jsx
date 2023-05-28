@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   pictureContainer: {
     width: 115,
     height: 130,
-    marginRight: 8,
+    marginHorizontal: 10,
   },
   picture: {
     borderRadius: 10,

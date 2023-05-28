@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
   },
   listView: {
     width: "30%",
+    paddingBottom: 60,
   },
   cardContainer: {
     width: "100%",

@@ -39,6 +39,7 @@ export const updateLogs = createAsyncThunk(
         _id
         details
         createdAt
+        rating
     }
   }`;
     // console.log(query);

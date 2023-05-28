@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import moment from "moment-timezone";
 
 import colors from "../src/constants/Colors";
@@ -16,7 +16,7 @@ import LogScreen from "./LogScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsNewLogAdded, setIsNewLogAdded } from "../src/redux/logsSlice";
 
-const DailyLogsScreen = ({ name, id }) => {
+const DailyLogsScreen = ({ name, studentID }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const state = useSelector((state) => state);
@@ -24,7 +24,6 @@ const DailyLogsScreen = ({ name, id }) => {
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldLogSelected, setIsOldLogSelected] = useState(false);
-  const isAddNewLogSelected = getIsNewLogAdded(state);
   const [logID, setLogID] = useState("");
   const isDisabled =
     getIsNewLogAdded(state) ||
@@ -38,10 +37,11 @@ const DailyLogsScreen = ({ name, id }) => {
     dispatch(setIsNewLogAdded(true));
   };
 
-  const onClickLog = (id) => {
+  const onClickLog = (logID) => {
     setIsOldLogSelected(true);
-    setLogID(id);
+    setLogID(logID);
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{name}'s Logs</Text>
@@ -84,9 +84,9 @@ const DailyLogsScreen = ({ name, id }) => {
         </ScrollView>
         <View style={{ flex: 1, marginLeft: "-30%" }}>
           {isOldLogSelected ? (
-            <LogScreen id={logID} />
+            <LogScreen logID={logID} />
           ) : date !== "" ? (
-            <CreateLogScreen date={date} id={id} />
+            <CreateLogScreen date={date} studentID={studentID} />
           ) : null}
         </View>
       </View>
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
   },
   listView: {
     width: "30%",
+    paddingBottom: 60,
   },
   cardContainer: {
     width: "100%",
