@@ -6,6 +6,8 @@ import { getUploadUrl, uplaodMedia } from "../redux/mediaSlice";
 
 const DragAndDrop = ({ studentID }) => {
   const dispatch = useDispatch();
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { teacherID } = useSelector((state) => state.auth);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -13,31 +15,47 @@ const DragAndDrop = ({ studentID }) => {
     },
   });
   const onUpload = () => {
-    dispatch(getUploadUrl({ teacherID, studentID }))
-      .then(async (response) => {
-        // console.log(response.payload.data);
-        const data = JSON.parse(response.payload.data.getS3UploadUrl);
-        const uploadURL = data.uploadURL;
-        const fileName = data.fileName;
-        await fetch(uploadURL, {
-          method: "PUT",
-          headers: {
-            "Content-Type": acceptedFiles[0].type,
-          },
-          body: acceptedFiles[0],
+    setIsUploading(true);
+
+    acceptedFiles.forEach(async (file, idx) => {
+      dispatch(getUploadUrl({ teacherID, studentID }))
+        .then(async (response) => {
+          // console.log(response.payload.data);
+          const data = JSON.parse(response.payload.data.getS3UploadUrl);
+          const uploadURL = data.uploadURL;
+          const fileName = data.fileName;
+          await new Promise((resolve) => setTimeout(resolve, 15000));
+          await fetch(uploadURL, {
+            method: "PUT",
+            headers: {
+              "Content-Type": file.type,
+            },
+            body: file,
+          })
+            .then((response) => {
+              // console.log(response);
+              if (response.status === 200) {
+                dispatch(uplaodMedia({ teacherID, studentID, fileName }))
+                  .then((response) => {
+                    if (!response.error) {
+                      if (idx === acceptedFiles.length - 1) {
+                        setIsSuccess(true);
+                        setIsUploading(false);
+                        setTimeout(() => setIsSuccess(false), 2000);
+                      }
+                    }
+                  })
+                  .catch((error) =>
+                    console.error("error while uploading to database", error)
+                  );
+              }
+            })
+            .catch((error) =>
+              console.error("error while uploading to s3", error)
+            );
         })
-          .then((response) =>
-            dispatch(uplaodMedia({ teacherID, studentID, fileName }))
-              .then((response) => console.log("media successfully saved"))
-              .catch((error) =>
-                console.error("error while uploading to database", error)
-              )
-          )
-          .catch((error) =>
-            console.error("error while uploading to s3", error)
-          );
-      })
-      .catch((error) => console.error(error));
+        .catch((error) => console.error(error));
+    });
   };
 
   const files = acceptedFiles.map((file) => (
@@ -64,6 +82,8 @@ const DragAndDrop = ({ studentID }) => {
           <Text>Select Pictures</Text>
         </div>
       </View>
+      {isUploading ? <Text>Uploading images....</Text> : null}
+      {isSuccess ? <Text>Successfully uploaded images!</Text> : null}
       <TouchableOpacity onPress={onUpload} style={styles.upload}>
         <Text>Upload</Text>
       </TouchableOpacity>

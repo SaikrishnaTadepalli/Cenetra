@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { fetchLogs, selectLogByID } from "../redux/dailyLogsSlice";
 import { useSelector } from "react-redux";
 
-const DailyLogsCard = ({ navigation, data, date, logID }) => {
+const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
   // console.log("dailylogscard", date);
   const pictures = [];
   const stars = 3;
@@ -37,6 +37,7 @@ const DailyLogsCard = ({ navigation, data, date, logID }) => {
 
   const renderIcons = (num, name) =>
     [...Array(num).keys()].map((idx) => renderIcon(name, idx));
+
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
       <View style={styles.headerRow}>
@@ -44,8 +45,8 @@ const DailyLogsCard = ({ navigation, data, date, logID }) => {
           {moment(date).format("DD MMMM YYYY")}
         </Text>
         <View style={{ alignItems: "center", flexDirection: "row" }}>
-          {renderIcons(stars, "star")}
-          {renderIcons(5 - stars, "star-outline")}
+          {renderIcons(rating, "star")}
+          {renderIcons(5 - rating, "star-outline")}
         </View>
       </View>
     </TouchableOpacity>

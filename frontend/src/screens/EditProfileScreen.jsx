@@ -12,17 +12,17 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import colors from "../constants/Colors";
-import EditProfileCard from "../components/EditProfileCard";
-//import * as studentData from "../../data/student.json";
 import { useDispatch } from "react-redux";
 import { updateProfile } from "../redux/studentProfileSlice";
 import { useSelector } from "react-redux";
 
 const EditProfileScreen = ({ navigation, route }) => {
-  const [isEditable, setEditable] = useState(true);
+  const { updateProfileLoading, updateProfileError } = useSelector(
+    (state) => state.studentProfile
+  );
   const [picture, setPicture] = useState("");
   const studentData = JSON.parse(JSON.stringify(route.params.studentData));
-  // const studentData = route.params.studentData;
+
   const [primaryContacts, setPrimaryContacts] = useState(
     studentData.information[0].section
   );
@@ -41,14 +41,6 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [bloodGroup, setBloodGroup] = useState(
     studentData.information[4].section
   );
-
-  const handleInputChange = (index, value) => {
-    setInputs((prevInputs) => {
-      const updatedInputs = [...prevInputs];
-      updatedInputs[index].value = value;
-      return updatedInputs;
-    });
-  };
 
   const renderText = (infoType, state, setState, idx, property) => {
     return (
@@ -71,7 +63,6 @@ const EditProfileScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const onCancel = () => {
-    setEditable(false);
     navigation.goBack();
   };
 
@@ -97,14 +88,13 @@ const EditProfileScreen = ({ navigation, route }) => {
         details: updatedInfo,
       })
     )
-      .then(() => {
-        setEditable(false);
-        // setIsSaved(true);
-        setTimeout(() => {
-          // setIsSaved(false);
-          setEditable(true);
-          navigation.goBack();
-        }, 2000);
+      .then((response) => {
+        // console.log(response);
+        if (!response.error) {
+          setTimeout(() => {
+            navigation.goBack();
+          }, 1000);
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -298,6 +288,14 @@ const EditProfileScreen = ({ navigation, route }) => {
           </View>
         </View>
       </View>
+      {updateProfileLoading ? (
+        <Text style={{ textAlign: "center", marginBottom: 20, fontSize: 16 }}>
+          Saving changes....
+        </Text>
+      ) : null}
+      {updateProfileError ? (
+        <Text style={styles.errorText}>Error while saving changes.</Text>
+      ) : null}
       <View
         style={{
           flexDirection: "row",
@@ -435,5 +433,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignSelf: "center",
     borderWidth: 0.5,
+  },
+  errorText: {
+    color: colors.red,
+    fontFamily: "InterMedium",
+    fontSize: 16,
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });

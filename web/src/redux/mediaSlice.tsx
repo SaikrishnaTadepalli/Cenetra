@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const getUploadUrl = createAsyncThunk(
   "media/getUploadUrl",
   async ({ teacherID, studentID }, { rejectWithValue }) => {
-    console.log(teacherID, studentID);
+    // console.log(teacherID, studentID);
     //const {query, teacherID} = props;
     try {
       const query = `query {

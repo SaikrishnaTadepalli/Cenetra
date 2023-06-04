@@ -110,7 +110,7 @@ const CreateNoticeScreen = ({ date }) => {
             </View>
             {isInputEmpty && (!subject || !details) ? (
               <Text style={styles.errorText}>
-                Could not save new notice. Please fill in at least one text box.
+                Could not save new notice. Please fill in both text boxes.
               </Text>
             ) : null}
             <View style={styles.buttonsContainer}>

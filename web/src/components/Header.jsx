@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 const Header = () => {
   const pages = ["Home", "Class list", "Notices"];
   const screens = ["HomeScreen", "ClassListScreen", "NoticesScreen"];
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const router = useRouter();
 
   const handleClick = (idx) => {
@@ -19,29 +19,35 @@ const Header = () => {
     router.push("/SettingsScreen");
   };
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.text}>Cenetra</Text>
-        {isLoggedIn ? (
-          <TouchableOpacity onPress={onClickSettings}>
-            <Ionicons name="settings-sharp" size={20} color="white" />
-          </TouchableOpacity>
-        ) : null}
-      </View>
+    <>
       {isLoggedIn ? (
-        <View style={{ flexDirection: "row", alignSelf: "flex-start" }}>
-          {pages.map((page, idx) => (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleClick(idx)}
-              key={`page-${idx}`}
-            >
-              <Text>{page}</Text>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.text}>Cenetra</Text>
+            <TouchableOpacity onPress={onClickSettings}>
+              <Ionicons name="settings-sharp" size={20} color="white" />
             </TouchableOpacity>
-          ))}
+          </View>
+          <View style={{ flexDirection: "row", alignSelf: "flex-start" }}>
+            {pages.map((page, idx) => (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleClick(idx)}
+                key={`page-${idx}`}
+              >
+                <Text>{page}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      ) : null}
-    </View>
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.text}>Cenetra</Text>
+          </View>
+        </View>
+      )}
+    </>
   );
 };
 

@@ -1,5 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  // Linking,
+} from "react-native";
 import React from "react";
+import * as Linking from "expo-linking";
 
 import colors from "../constants/Colors";
 import SettingsCard from "../components/SettingsCard";
@@ -10,7 +17,14 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const SettingsScreen = ({ navigation }) => {
-  const icons = ["call-outline", "ios-location-outline", "mail-outline"];
+  const phoneNumber = "+1234567";
+  const email = "vipasha2002@gmail.com";
+  const maps = "https://google.com";
+  const icons = [
+    { icon: "call-outline", url: `tel:${phoneNumber}` },
+    { icon: "ios-location-outline", url: maps },
+    { icon: "mail-outline", url: `mailto:${email}` },
+  ];
   const dispatch = useDispatch();
   const options = [
     {
@@ -38,6 +52,17 @@ const SettingsScreen = ({ navigation }) => {
       screen: "Privacy",
     },
   ];
+  const handleOpenLink = async () => {
+    const phoneNumber = "+14379852844"; // Replace with your desired URL
+
+    try {
+      await Linking.openURL(`tel:${phoneNumber}`);
+      console.log("log", Linking.openURL(`tel:${phoneNumber}`));
+    } catch (error) {
+      console.error("Failed to open link:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {options.map((option) => (
@@ -51,14 +76,18 @@ const SettingsScreen = ({ navigation }) => {
       ))}
       <View style={{ flexDirection: "row" }}>
         {icons.map((icon, idx) => (
-          <View style={styles.icon} key={`settings-${idx}`}>
+          <TouchableOpacity
+            style={styles.icon}
+            key={`settings-${idx}`}
+            onPress={() => Linking.openURL(icon.url)}
+          >
             <Ionicons
-              key={icon}
-              name={icon}
+              key={icon.icon}
+              name={icon.icon}
               size={30}
               color={colors.navyBlue}
             />
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
       <TouchableOpacity onPress={() => dispatch(logout({ name: "auth" }))}>

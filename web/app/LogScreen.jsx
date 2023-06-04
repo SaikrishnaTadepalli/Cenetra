@@ -2,15 +2,13 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
 import moment from "moment-timezone";
-import { useSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-const LogScreen = ({ id }) => {
+const LogScreen = ({ logID }) => {
   const { logs } = useSelector((state) => state.log);
-  // const { id } = useSearchParams();
-  const log = logs.find((log) => (log ? log._id === id : null));
-  const parsedLog = JSON.parse(log.details);
-  const rating = parseInt(log.rating);
+  const log = logs.find((log) => (log ? log._id === logID : null));
+  const parsedLog = log ? JSON.parse(log.details) : null;
+  const rating = log ? parseInt(log.rating) : 0;
 
   const renderIcon = (name, idx) => (
     <Ionicons
@@ -21,7 +19,6 @@ const LogScreen = ({ id }) => {
       style={{ marginRight: 2 }}
     />
   );
-
   const renderIcons = (num, name) =>
     [...Array(num).keys()].map((idx) => renderIcon(name, idx));
 
@@ -30,23 +27,34 @@ const LogScreen = ({ id }) => {
       <Text style={styles.header}>
         {log ? moment(log.createdAt).format("DD MMMM YYYY") : null}
       </Text>
-      <Text>Rating</Text>
+
       <View
-        style={{ alignItems: "center", flexDirection: "row", marginBottom: 20 }}
+        style={{
+          alignItems: "center",
+          flexDirection: "row",
+          marginBottom: 20,
+          marginTop: 10,
+        }}
       >
-        {renderIcons(5, "star")}
-        {renderIcons(0, "star-outline")}
+        <Text style={{ marginRight: 10 }}>Rating</Text>
+        {renderIcons(rating, "star")}
+        {renderIcons(5 - rating, "star-outline")}
       </View>
-      {parsedLog.data.map((log, idx) => {
-        return (
-          <View>
-            <Text style={styles.headerText}>{log.name}</Text>
-            <View style={styles.cardContainer} key={`log-${idx}`}>
-              <Text style={styles.noticeText}>{log.value}</Text>
+      {parsedLog
+        ? parsedLog.activities.map((log, index) => (
+            <View key={`log-title-${index}`}>
+              <Text style={styles.sectionHeader}>{log.sectionHeader}</Text>
+              {log.sectionActivities.map((data, idx) => (
+                <View key={`log-info-${idx}`}>
+                  <Text style={styles.headerText}>{data.title}</Text>
+                  <View style={styles.cardContainer} key={`log-${idx}`}>
+                    <Text style={styles.noticeText}>{data.description}</Text>
+                  </View>
+                </View>
+              ))}
             </View>
-          </View>
-        );
-      })}
+          ))
+        : null}
     </View>
   );
 };
@@ -72,6 +80,13 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingTop: 10,
     marginBottom: 20,
+  },
+  sectionHeader: {
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: 600,
+    marginBottom: 20,
+    marginTop: 10,
   },
   header: {
     fontSize: 20,
