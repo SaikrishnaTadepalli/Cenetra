@@ -36,9 +36,13 @@ const LogScreen = ({ logID }) => {
           marginTop: 10,
         }}
       >
-        <Text style={{ marginRight: 10 }}>Rating</Text>
-        {renderIcons(rating, "star")}
-        {renderIcons(5 - rating, "star-outline")}
+        {rating > 0 ? (
+          <>
+            <Text style={{ marginRight: 10 }}>Rating</Text>
+            {renderIcons(rating, "star")}
+            {renderIcons(5 - rating, "star-outline")}{" "}
+          </>
+        ) : null}
       </View>
       {parsedLog
         ? parsedLog.activities.map((log, index) => (

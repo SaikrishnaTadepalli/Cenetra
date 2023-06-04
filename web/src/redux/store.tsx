@@ -7,6 +7,7 @@ import noticeReducer from "./noticeSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
 import storage from "redux-persist/lib/storage";
+import studentProfileReducer from "./studentProfileSlice";
 
 const persistConfig = {
   key: "root",
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   log: logReducer,
   notices: noticeReducer,
+  studentProfile: studentProfileReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
