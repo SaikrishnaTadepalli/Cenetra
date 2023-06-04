@@ -75,7 +75,6 @@ const NoticeScreen = ({ navigation }) => {
     retrieveData();
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
-
   return (
     <>
       {error ? (
@@ -119,9 +118,7 @@ const NoticeScreen = ({ navigation }) => {
                 </View>
               )}
               renderSectionHeader={({ section: { date } }) => (
-                <Text style={styles.sectionHeaderText}>
-                  {moment(date).format("DD MMMM YYYY")}
-                </Text>
+                <Text style={styles.sectionHeaderText}>{date}</Text>
               )}
             />
           </View>

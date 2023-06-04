@@ -5,20 +5,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
 
 import colors from "../src/constants/Colors";
-import { login, loginUser } from "../src/redux/authSlice";
-import execRequest from "../api";
+import { loginUser, logout } from "../src/redux/authSlice";
 import accessCodeMapping from "../api/data";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [accessCode, setAccessCode] = useState("");
-  const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
   const { pending, error, students } = useSelector((state) => state.auth);
 
   async function handleClick() {
@@ -28,12 +28,17 @@ const LoginScreen = ({ navigation }) => {
         .then((response) => {
           if (!pending && !error) {
             router.push("/HomeScreen");
-            setIsError(false);
+            setIsError("");
+            setIsVerified(true);
           } else if (error) {
-            setIsError(true);
+            setIsError("Something went wrong. Please try again.");
+            setTimeout(() => setIsError(""), 1000);
           }
         })
         .catch((error) => setIsError(true));
+    } else {
+      setIsError("Invalid access code.");
+      setTimeout(() => setIsError(""), 1000);
     }
   }
 
@@ -48,10 +53,8 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={setAccessCode}
           keyboardType="number-pad"
         />
-        {isError ? (
-          <Text style={styles.errorText}>
-            Something went wrong. Please try again.
-          </Text>
+        {isError !== "" ? (
+          <Text style={styles.errorText}>{isError}</Text>
         ) : null}
         {pending ? <Text>Signing in...</Text> : null}
       </View>

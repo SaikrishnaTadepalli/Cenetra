@@ -19,7 +19,9 @@ import Colors from "../constants/Colors";
 const SettingsScreen = ({ navigation }) => {
   const phoneNumber = "+1234567";
   const email = "vipasha2002@gmail.com";
-  const maps = "https://google.com";
+  const latitude = 37.7749;
+  const longitude = -122.4194;
+  const maps = `http://maps.apple.com/?ll=${latitude},${longitude}`;
   const icons = [
     { icon: "call-outline", url: `tel:${phoneNumber}` },
     { icon: "ios-location-outline", url: maps },

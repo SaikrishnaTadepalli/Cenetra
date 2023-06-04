@@ -9,51 +9,36 @@ import {
   RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import colors from "../constants/Colors";
-import ProfileCard from "../components/ProfileCard";
-import { fetchProfile } from "../redux/studentProfileSlice";
+import colors from "../src/constants/Colors";
+import ProfileCard from "../src/components/ProfileCard";
+import { fetchProfile } from "../src/redux/studentProfileSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
-const ProfileScreen = ({ navigation }) => {
-  // const [isEditable, setEditable] = useState(false);
-  const { studentInfo, lastUpdated } = useSelector(
+const ProfileScreen = ({ curStudentID }) => {
+  const { studentInfo, lastUpdated, studentID } = useSelector(
     (state) => state.studentProfile
   );
   const dispatch = useDispatch();
-  const [refreshing, setRefreshing] = useState(false);
   const { fetchProfileLoading, fetchProfileError } = useSelector(
     (state) => state.studentProfile
   );
 
-  const onPressEdit = () => {
-    navigation.navigate("EditProfile", { studentData: studentInfo });
-  };
   const retrieveData = async () => {
-    const studentID = await AsyncStorage.getItem("studentID");
-    dispatch(fetchProfile(studentID))
+    dispatch(fetchProfile(curStudentID))
       .then((response) => {})
       .catch((error) => console.log("Error in Profile Screen screen", error));
   };
-  useFocusEffect(
-    React.useCallback(() => {
-      retrieveData();
-      return () => {
-        // Clean up any resources if needed
-      };
-    }, [])
-  );
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    retrieveData();
-    setTimeout(() => setRefreshing(false), 1000);
-  }, []);
   return (
     <>
-      {fetchProfileError ? (
+      {(curStudentID !== studentID || curStudentID === "") &&
+      !fetchProfileLoading ? (
+        <View style={styles.errorContainer}>
+          <Text>No profile exists for this student</Text>
+        </View>
+      ) : fetchProfileError ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>Error while retrieving data</Text>
           <TouchableOpacity
@@ -64,25 +49,16 @@ const ProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       ) : null}
-      {fetchProfileLoading && !refreshing ? (
-        <ActivityIndicator
-          size="large"
-          color="#0000ff"
-          style={styles.indicator}
-        />
+      {fetchProfileLoading ? (
+        <Text style={styles.indicator}>Loading student profile....</Text>
       ) : (
-        !fetchProfileError && (
+        !fetchProfileError &&
+        curStudentID !== "" && (
           <ScrollView
             style={styles.container}
             contentContainerStyle={{ paddingBottom: 50 }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
           >
             <View style={styles.profileContainer}>
-              <TouchableOpacity onPress={onPressEdit}>
-                <Text style={styles.buttonText}>Edit</Text>
-              </TouchableOpacity>
               <View style={styles.imageAndChildInfoContainer}>
                 <Image
                   source={{ uri: studentInfo.uri }}
@@ -122,19 +98,17 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    paddingHorizontal: 20,
+    flex: 1,
+    alignSelf: "center",
   },
   buttonText: {
     color: colors.buttonText,
     fontSize: 15,
-    fontFamily: "InterBold",
     textAlign: "right",
     marginBottom: 8,
   },
   profileContainer: {
     paddingVertical: 16,
-    width: "100%",
   },
   imageAndChildInfoContainer: {
     flexDirection: "row",
@@ -144,17 +118,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   studentName: {
-    fontFamily: "InterBold",
     fontSize: 16,
     color: colors.navyBlue,
   },
   studentId: {
-    fontFamily: "InterMedium",
     fontSize: 14,
     color: colors.navyBlue,
   },
   section: {
-    fontFamily: "InterMedium",
     fontSize: 14,
     color: colors.navyBlue,
   },
@@ -169,19 +140,16 @@ const styles = StyleSheet.create({
     color: colors.buttonText,
     fontSize: 18,
     textAlign: "center",
-    fontFamily: "InterBold",
   },
   cancelText: {
     color: colors.red,
     fontSize: 18,
-    fontFamily: "InterBold",
   },
   image: {
     height: 60,
     width: 60,
     borderRadius: 30,
   },
-
   indicator: {
     alignSelf: "center",
     justifyContent: "center",
@@ -195,12 +163,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: colors.red,
-    fontFamily: "InterMedium",
     fontSize: 20,
   },
   reloadButtonText: {
     color: colors.black,
     fontSize: 16,
-    fontFamily: "InterMedium",
   },
 });

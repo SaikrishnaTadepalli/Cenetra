@@ -8,7 +8,6 @@ import {
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "expo-router";
 
-import * as classList from "../data/names.json";
 import colors from "../src/constants/Colors";
 import DailyLogsScreen from "./DailyLogs";
 import { useDispatch, useSelector } from "react-redux";
@@ -84,7 +83,7 @@ export default ClassListScreen;
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: "80%",
   },
   header: {
     fontSize: 20,

@@ -47,6 +47,16 @@ const NoticesScreen = () => {
     }
   }, [isLoggedIn]);
 
+  const renderSubject = (notice) => {
+    const details = JSON.parse(notice.details);
+    const subject = details.subject;
+    return (
+      <Text style={styles.subject} numberOfLines={1} ellipsizeMode="tail">
+        {subject}
+      </Text>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Notices</Text>
@@ -75,7 +85,12 @@ const NoticesScreen = () => {
                 onPress={() => onClickNotice(notice._id)}
               >
                 {notice ? (
-                  <Text>{moment(notice.createdAt).format("DD MMMM YYYY")}</Text>
+                  <>
+                    {renderSubject(notice)}
+                    <Text style={styles.date}>
+                      {moment(notice.createdAt).format("DD MMMM YYYY, HH:mm")}
+                    </Text>
+                  </>
                 ) : null}
               </TouchableOpacity>
             ))
@@ -141,5 +156,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: colors.primaryText,
     fontWeight: 600,
+  },
+  subject: {
+    fontWeight: 600,
+    marginBottom: 10,
+  },
+  date: {
+    fontSize: 10,
   },
 });

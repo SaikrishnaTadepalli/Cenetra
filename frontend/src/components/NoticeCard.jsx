@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     borderColor: colors.lightGrey,
-    borderWidth: 2,
+    borderWidth: 1,
     width: "100%",
     borderRadius: 8,
     paddingBottom: 20,
