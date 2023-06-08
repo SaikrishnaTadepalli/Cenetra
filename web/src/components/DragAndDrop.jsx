@@ -8,7 +8,6 @@ const DragAndDrop = ({ studentID }) => {
   const dispatch = useDispatch();
   const [isUploading, setIsUploading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { teacherID } = useSelector((state) => state.auth);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/png": [".png", ".jpg", ".jpeg"],
@@ -16,6 +15,7 @@ const DragAndDrop = ({ studentID }) => {
   });
   const onUpload = () => {
     setIsUploading(true);
+    const teacherID = localStorage.getItem("teacherID");
 
     acceptedFiles.forEach(async (file, idx) => {
       dispatch(getUploadUrl({ teacherID, studentID }))

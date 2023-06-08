@@ -1,57 +1,99 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { useState } from "react";
 import moment from "moment-timezone";
 
 import colors from "../constants/Colors";
+import typeColorMapping from "../../data/typeColorMapping";
 
-const NoticeCard = ({ subject, details, time }) => {
+const NoticeCard = ({ navigation, isUnread, details, time, type }) => {
+  const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
+  const parsedDetails = JSON.parse(details);
+  const subject = parsedDetails.subject;
+
+  const handleClick = () => {
+    navigation.navigate("NoticeInfo", {
+      subject,
+      details: parsedDetails.details,
+      time: time,
+      title: moment(time).format("DD MMMM YYYY"),
+    });
+    setIsNoticeUnread(false);
+  };
+
+  const cardColor = isNoticeUnread ? colors.lightGrey : colors.white;
+  const dotColor = typeColorMapping[type];
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>{subject}</Text>
+    <TouchableOpacity
+      style={[styles.cardContainer, { backgroundColor: cardColor }]}
+      onPress={handleClick}
+    >
+      <View style={styles.headerRow}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            width: "70%",
+          }}
+        >
+          <View style={[styles.dotContainer, { backgroundColor: dotColor }]} />
+          <Text style={styles.titleText} numberOfLines={1} ellipsizeMode="tail">
+            {subject}
+          </Text>
+        </View>
         <Text style={styles.timeText}>{moment(time).format("HH:mm")}</Text>
       </View>
-      <Text style={styles.noticeText}>{details}</Text>
-    </View>
+      <View>
+        <Text style={styles.subText} numberOfLines={1} ellipsizeMode="tail">
+          {parsedDetails.details}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 export default NoticeCard;
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 20,
+  cardContainer: {
+    width: "100%",
+    minHeight: 55,
     borderColor: colors.lightGrey,
     borderWidth: 1,
-    width: "100%",
-    borderRadius: 8,
-    paddingBottom: 20,
-    paddingTop: 10,
+    borderRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    justifyContent: "center",
   },
-  headerContainer: {
+  headerRow: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    marginHorizontal: 10,
-    marginBottom: 8,
+    marginBottom: 5,
   },
-  headerText: {
-    fontSize: 18,
+  dotContainer: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 8,
+  },
+  titleText: {
+    fontSize: 15,
+    color: colors.primaryText,
     fontFamily: "InterMedium",
-    flexWrap: "wrap",
-    maxWidth: "85%",
+    width: "90%",
   },
   timeText: {
     color: colors.secondaryText,
     fontSize: 14,
     fontFamily: "InterMedium",
-    marginTop: 1,
+    alignSelf: "center",
+    width: "30%",
+    textAlign: "right",
   },
-  noticeText: {
-    fontSize: 16,
-    marginLeft: 10,
-    fontFamily: "InterRegular",
-    maxWidth: "95%",
-    color: colors.primaryText,
+  subText: {
+    color: colors.secondaryText,
+    fontSize: 14,
+    width: "90%",
+    fontFamily: "InterMedium",
   },
 });

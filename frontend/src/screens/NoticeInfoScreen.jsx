@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import NoticeCard from "../components/NoticeCard";
+import NoticeInfoCard from "../components/NoticeInfoCard";
 
 const NoticeInfoScreen = ({ route }) => {
   return (
     <View style={styles.container}>
-      <NoticeCard
+      <NoticeInfoCard
         subject={route.params.subject}
         details={route.params.details}
         time={route.params.time}

@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 
-import Card from "../components/Card";
+import NoticeCard from "../components/NoticeCard";
 import colors from "../constants/Colors";
 import * as noticesData from "../../data/notices.json";
 import { fetchNotices } from "../redux/noticesSlice";
@@ -24,6 +24,7 @@ const NoticeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { loading, error } = useSelector((state) => state.notices);
   const [notices, setNotices] = useState([]);
+  const types = ["Urgent", "Casual", "Serious"];
 
   const formatDate = (date) => {
     return moment(date).format("DD MMMM YYYY");
@@ -37,18 +38,20 @@ const NoticeScreen = ({ navigation }) => {
         var curDate = formatDate(mainData[0].createdAt);
         var data = [];
         const newNotices = [];
-        mainData.forEach((notice) => {
+        mainData.forEach((notice, idx) => {
           if (formatDate(notice.createdAt) === curDate) {
             data.push({
               _id: notice._id,
               createdAt: notice.createdAt,
               updatedAt: notice.updatedAt,
               details: notice.details,
+              type: types[idx % 3],
             });
           } else {
             newNotices.push({
               date: curDate,
               data: data,
+              type: types[idx % 3],
             });
             data = [];
             curDate = formatDate(notice.createdAt);
@@ -57,6 +60,7 @@ const NoticeScreen = ({ navigation }) => {
               createdAt: notice.createdAt,
               updatedAt: notice.updatedAt,
               details: notice.details,
+              type: types[idx % 3],
             });
           }
         });
@@ -109,11 +113,12 @@ const NoticeScreen = ({ navigation }) => {
               ListFooterComponentStyle={{ height: 20 }}
               renderItem={({ item }) => (
                 <View style={styles.noticesContainer}>
-                  <Card
+                  <NoticeCard
                     navigation={navigation}
                     isUnread={true}
                     details={item.details}
                     time={item.createdAt}
+                    type={item.type}
                   />
                 </View>
               )}

@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { React, useEffect, useState } from "react";
 
@@ -14,6 +15,10 @@ import {
   getIsNewNoticeAdded,
   setIsNewNoticeAdded,
 } from "../src/redux/noticeSlice";
+import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
+import { Checkbox } from "react-native-paper";
+import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
+import typeColorMapping from "../api/typeColorMapping";
 
 const CreateNoticeScreen = ({ date }) => {
   const [isEditable, setEditable] = useState(true);
@@ -22,7 +27,10 @@ const CreateNoticeScreen = ({ date }) => {
     (state) => state.notices
   );
   const state = useSelector((state) => state);
-  const { teacherID, students } = useSelector((state) => state.auth);
+  const s = localStorage.getItem("students");
+  const s2 = JSON.parse(s);
+  const students = JSON.parse(s2).students;
+  const [selectedStudents, setSelectedStudents] = useState([]);
   const [subject, setSubject] = useState("");
   const [details, setDetails] = useState("");
   const [isCancelled, setIsCancelled] = useState(false);
@@ -30,14 +38,26 @@ const CreateNoticeScreen = ({ date }) => {
   const [isError, setIsError] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewNoticeSelected = getIsNewNoticeAdded(state);
+  const types = ["Urgent", "Serious", "Casual"];
+  const [selectedValue, setSelectedValue] = useState(types[0]);
+  const studentNames = students.map(
+    (student) => student.firstName + " " + student.lastName
+  );
 
   const onSave = () => {
+    const teacherID = localStorage.getItem("teacherID");
     if (subject && details) {
       const newNotice = {
         subject: subject,
         details: details,
       };
-      const studentIDs = students.map(({ _id }) => `"${_id}"`);
+      const studentIDs = students
+        .filter((student) =>
+          selectedStudents.includes(student.firstName + " " + student.lastName)
+        )
+        .map(({ _id }) => `"${_id}"`);
+      // const studentIDs = students.map(({ _id }) => `"${_id}"`);
+      // console.log(studentIDs);
       dispatch(
         createNotices({
           teacherID: teacherID,
@@ -79,25 +99,59 @@ const CreateNoticeScreen = ({ date }) => {
     setIsCancelled(false);
     setEditable(false);
   };
+
+  const renderFlag = () => {
+    return (
+      <View style={{ flexDirection: "row" }}>
+        {types.map((type) => (
+          <TouchableOpacity
+            style={[
+              styles.noticeTypeContainer,
+              {
+                borderColor: typeColorMapping[type],
+                backgroundColor:
+                  selectedValue === type ? typeColorMapping[type] : "white",
+              },
+            ]}
+            onPress={() => setSelectedValue(type)}
+          >
+            <View
+              style={[
+                styles.dotContainer,
+                { backgroundColor: typeColorMapping[type] },
+              ]}
+            />
+            <Text>{type}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <>
-      {createNoticesPending ? <Text>Saving your changes.</Text> : null}
-      {isAddNewNoticeSelected && !createNoticesPending ? (
-        <View style={styles.container}>
-          <Text style={styles.header}>{date}</Text>
-          <View>
-            <View style={styles.listView}>
-              <Text style={{ marginBottom: 10 }}>Subject</Text>
+      <ScrollView contentContainerStyle={styles.listView}>
+        {createNoticesPending ? <Text>Saving your changes.</Text> : null}
+        {isAddNewNoticeSelected && !createNoticesPending ? (
+          <View style={styles.container}>
+            <Text style={styles.headerText}>Create a new notice</Text>
+            <Text style={styles.date}>{date}</Text>
+            {/* <MultiSelectQuestion
+              question="Select all students to send the notice to."
+              answers={studentNames}
+              checkedItems={selectedStudents}
+              setCheckedItems={setSelectedStudents}
+            /> */}
+            <View>
+              <Text style={styles.inputHeaderText}>Subject</Text>
               <TextInput
                 style={styles.cardContainer}
-                multiline
                 editable={isEditable}
-                numberOfLines={4}
                 maxLength={200}
                 value={subject}
                 onChangeText={setSubject}
               />
-              <Text style={{ marginBottom: 10 }}>Details</Text>
+              <Text style={styles.inputHeaderText}>Details</Text>
               <TextInput
                 style={styles.cardContainer}
                 multiline
@@ -107,34 +161,42 @@ const CreateNoticeScreen = ({ date }) => {
                 value={details}
                 onChangeText={setDetails}
               />
-            </View>
-            {isInputEmpty && (!subject || !details) ? (
-              <Text style={styles.errorText}>
-                Could not save new notice. Please fill in both text boxes.
-              </Text>
-            ) : null}
-            <View style={styles.buttonsContainer}>
-              <TouchableOpacity>
-                <Text style={styles.cancelText} onPress={onCancel}>
-                  Cancel
+              {renderFlag()}
+
+              {isInputEmpty && (!subject || !details) ? (
+                <Text style={styles.errorText}>
+                  Could not save new notice. Please fill in both text boxes.
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-                <Text style={styles.saveText}>Save</Text>
-              </TouchableOpacity>
+              ) : null}
+              <View style={styles.buttonsContainer}>
+                <TouchableOpacity
+                  style={styles.saveButtonContainer}
+                  onPress={onSave}
+                >
+                  <Text style={styles.saveButtonText}>Save</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButtonContainer}
+                  onPress={onCancel}
+                >
+                  <Text style={styles.cancelText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      ) : null}
-      {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
-      {isError ? (
-        <View>
-          <Text>There was an error in creating the log. Please try again.</Text>
-          <TouchableOpacity onPress={handleRefresh}>
-            <Text>Try Again</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
+        ) : null}
+        {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
+        {isError ? (
+          <View>
+            <Text>
+              There was an error in creating the log. Please try again.
+            </Text>
+            <TouchableOpacity onPress={handleRefresh}>
+              <Text>Try Again</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+      </ScrollView>
     </>
   );
 };
@@ -143,16 +205,23 @@ export default CreateNoticeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    //backgroundColor: "red",
+    // backgroundColor: "red",
     width: "80%",
+    height: "100%",
   },
-  header: {
+  headerText: {
+    fontSize: 30,
+    fontFamily: "InterBold",
+    marginBottom: 12,
+  },
+  date: {
     fontSize: 20,
-    fontWeight: 600,
+    fontFamily: "InterSemiBold",
     marginBottom: 30,
   },
   listView: {
     width: "80%",
+    paddingBottom: 60,
   },
   cardContainer: {
     minHeight: 60,
@@ -178,30 +247,87 @@ const styles = StyleSheet.create({
     color: colors.primaryText,
     fontWeight: 600,
   },
-  saveButton: {
-    marginLeft: 18,
+  saveButtonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 120,
+    height: 40,
+    backgroundColor: "#23342C",
+    borderRadius: 100,
+    marginRight: 10,
   },
-  saveText: {
-    color: colors.buttonText,
-    fontSize: 18,
-    textAlign: "center",
-    fontFamily: "InterBold",
+  cancelButtonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 120,
+    height: 40,
+    backgroundColor: "white",
+    borderRadius: 100,
+    borderColor: "black",
+    borderWidth: 1,
+  },
+  saveButtonText: {
+    alignSelf: "center",
+    color: "white",
+    fontFamily: "InterMedium",
+    fontSize: 14,
   },
   cancelText: {
-    color: colors.red,
-    fontSize: 18,
+    color: "black",
+    fontSize: 14,
+    fontFamily: "InterMedium",
     fontFamily: "InterBold",
   },
   buttonsContainer: {
     flexDirection: "row",
     marginTop: 30,
-    alignSelf: "center",
     marginRight: 100,
   },
   errorText: {
     color: colors.red,
     marginTop: 20,
     fontSize: 14,
-    //alignSelf: "center",
+  },
+  studentCardContainer: {
+    width: "20%",
+    minHeight: 40,
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    justifyContent: "center",
+    backgroundColor: "white",
+    marginBottom: 20,
+    marginRight: 10,
+  },
+  checkBoxContainer: {
+    marginLeft: 40,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  dotContainer: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 8,
+  },
+  noticeTypeContainer: {
+    flexDirection: "row",
+    borderWidth: 1,
+    width: 100,
+    height: 30,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  inputHeaderText: {
+    fontFamily: "InterMedium",
+    fontSize: 14,
+    marginBottom: 10,
   },
 });
