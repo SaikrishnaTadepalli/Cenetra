@@ -16,7 +16,7 @@ module.exports = {
 
       const fetchedNotices = await Notice.find({ students: args.studentId });
       const formattedNotices = fetchedNotices.map((notice) =>
-        transformNotice(notice)
+        transformNotice(notice, args.studentId)
       );
 
       const sortedNotices = formattedNotices.sort(
@@ -39,7 +39,7 @@ module.exports = {
 
       const fetchedNotices = await Notice.find({ teacher: args.teacherId });
       const formattedNotices = fetchedNotices.map((notice) =>
-        transformNotice(notice)
+        transformNotice(notice, args.teacherId)
       );
 
       const sortedNotices = formattedNotices.sort(
@@ -71,16 +71,78 @@ module.exports = {
         }
       }
 
+      const readArr = args.studentIds.map((x) => false);
+
       const notice = new Notice({
         teacher: args.teacherId,
         students: args.studentIds,
         details: args.details,
-        read: false,
+        type: args.type,
+        read: readArr,
       });
 
       const result = await notice.save();
 
-      return transformNotice(result);
+      return transformNotice(result, args.teacherId);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  editNotice: async (args) => {
+    try {
+      const fetchedNotice = await Notice.findById(args.noticeId);
+
+      if (!fetchedNotice) {
+        throw new error("Notice does not exist.");
+      }
+
+      for (let i = 0; i < args.studentIds.length; i++) {
+        const fetchedStudent = await Student.findOne({
+          _id: args.studentIds[i],
+        });
+
+        if (!fetchedStudent) {
+          throw new Error(`Student does not exist: ${stuId}.`);
+        }
+      }
+
+      const readArr = args.studentIds.map((x) => false);
+
+      fetchedNotice.students = args.studentIds;
+      fetchedNotice.details = args.details;
+      fetchedNotice.type = args.type;
+      fetchedNotice.read = readArr;
+
+      const result = await fetchedNotice.save();
+
+      return transformNotice(result, args.teacherId);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  deleteNotice: async (args) => {
+    try {
+      const fetchedTeacher = await Teacher.findById(args.teacherId);
+
+      if (!fetchedTeacher) {
+        throw new error("Teacher does not exist.");
+      }
+
+      const fetchedNotice = await Notice.findById(args.noticeId);
+
+      if (!fetchedNotice) {
+        throw new error("Notice does not exist.");
+      }
+
+      if (fetchedNotice.teacher != args.teacherId) {
+        throw new error("This teacher cannot delete this notice.");
+      }
+
+      const deletedNotice = await Notice.findByIdAndRemove(args.noticeId);
+
+      return transformNotice(deletedNotice, args.teacherId);
     } catch (err) {
       throw err;
     }
@@ -88,17 +150,31 @@ module.exports = {
 
   markNoticeAsRead: async (args) => {
     try {
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
       const notice = await Notice.findById(args.noticeId);
 
       if (!notice) {
         throw error("Notice does not exist.");
       }
 
-      notice.read = true;
+      const index = notice.students.indexOf(args.studentId);
+
+      if (index == -1 || index >= notice.read.length) {
+        throw error(
+          "Something Wrong with Read Field of Notice: " + args.noticeId
+        );
+      }
+
+      notice.read = notice.read[index];
 
       const result = await notice.save();
 
-      return transformNotice(result);
+      return transformNotice(result, args.studentId);
     } catch (err) {
       throw err;
     }

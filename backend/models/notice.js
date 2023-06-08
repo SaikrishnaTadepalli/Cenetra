@@ -20,6 +20,10 @@ const noticeSchema = new Schema(
       type: String,
       required: true,
     },
+    type: {
+      type: String,
+      required: true,
+    },
     read: [
       {
         type: Boolean,

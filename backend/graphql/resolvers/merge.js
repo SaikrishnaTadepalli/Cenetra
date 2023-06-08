@@ -23,7 +23,21 @@ const transformLog = (log) => {
   };
 };
 
-const transformNotice = (notice) => {
+const transformNotice = (notice, id) => {
+  let readState = null;
+
+  if (id !== notice.teacher) {
+    const index = notice.students.indexOf(id);
+
+    if (index == -1 || index >= notice.read.length) {
+      throw error(
+        "Something Wrong with Read Field of Notice: " + args.noticeId
+      );
+    }
+
+    readState = notice.read[index];
+  }
+
   return {
     ...notice._doc,
     _id: notice.id,
@@ -31,6 +45,7 @@ const transformNotice = (notice) => {
     students: students.bind(this, notice._doc.students),
     createdAt: dateToString(notice._doc.createdAt),
     updatedAt: dateToString(notice._doc.updatedAt),
+    read: readState,
   };
 };
 
