@@ -89,6 +89,21 @@ module.exports = {
       throw err;
     }
   },
+
+  editLog: async (args) => {
+    try {
+      const fetchedLog = await Log.findById(args.logId);
+
+      fetchedLog.details = args.details;
+      fetchedLog.rating = args.rating;
+
+      const result = await fetchedLog.save();
+
+      return transformLog(result);
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 
 /*
