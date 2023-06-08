@@ -15,6 +15,7 @@ import colors from "../constants/Colors";
 import { useDispatch } from "react-redux";
 import { updateProfile } from "../redux/studentProfileSlice";
 import { useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
 
 const EditProfileScreen = ({ navigation, route }) => {
   const { updateProfileLoading, updateProfileError } = useSelector(
@@ -99,7 +100,14 @@ const EditProfileScreen = ({ navigation, route }) => {
       .catch((error) => console.log(error));
   };
 
-  const formatData = () => {};
+  const formatObject = (type) => {
+    if (type === "ALLERGIES") {
+      return { item: "", severity: "" };
+    } else if (type === "MEDICATIONS") {
+      return { name: "", dosage: "", frequency: "" };
+    }
+  };
+
   const updateItem = (state, setState, idx, property, newData) => {
     setState((prevInputs) => {
       const updatedInputs = [...prevInputs];
@@ -107,8 +115,22 @@ const EditProfileScreen = ({ navigation, route }) => {
       return updatedInputs;
     });
   };
-  const addItem = (state, setState, newData) => {};
-  const deleteItem = (state, setState, idx) => {};
+
+  const addItem = (setState, type) => {
+    const newObject = formatObject(type);
+    setState((prevInputs) => {
+      const updatedInputs = [...prevInputs, newObject];
+      return updatedInputs;
+    });
+  };
+
+  const deleteItem = (setState, idx) => {
+    setState((prevInputs) => {
+      const updatedInputs = [...prevInputs];
+      updatedInputs.splice(idx, 1);
+      return updatedInputs;
+    });
+  };
 
   return (
     <ScrollView
@@ -134,7 +156,9 @@ const EditProfileScreen = ({ navigation, route }) => {
       <View style={styles.profileContainer}>
         <View style={styles.cardContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.sectionHeaderText}>PRIMARY CONTACT</Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeaderText}>PRIMARY CONTACTS</Text>
+            </View>
             {primaryContacts.map((item, idx) => (
               <View key={`profile-info${idx}`}>
                 <Text style={styles.headerText}>{item.title}</Text>
@@ -183,7 +207,9 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.cardContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.sectionHeaderText}>EMERGENCY CONTACTS</Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeaderText}>EMERGENCY CONTACTS</Text>
+            </View>
             {emergencyContacts.map((item, idx) => (
               <View key={`profile-info${idx}`}>
                 <Text style={styles.headerText}>{item.title}</Text>
@@ -232,17 +258,36 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.cardContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.sectionHeaderText}>ALLERGIES</Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeaderText}>ALLERGIES</Text>
+              <TouchableOpacity
+                onPress={() => addItem(setAllergies, "ALLERGIES")}
+              >
+                <Ionicons size={24} color={colors.navyBlue} name="add-sharp" />
+              </TouchableOpacity>
+            </View>
             {allergies.map((item, idx) => (
               <View key={`profile-info${idx}`}>
                 {renderText("Item:", allergies, setAllergies, idx, "name")}
-                {renderText(
-                  "Severity:",
-                  allergies,
-                  setAllergies,
-                  idx,
-                  "severity"
-                )}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "85%",
+                  }}
+                >
+                  {renderText(
+                    "Severity:",
+                    allergies,
+                    setAllergies,
+                    idx,
+                    "severity"
+                  )}
+                  <TouchableOpacity
+                    onPress={() => deleteItem(setAllergies, idx)}
+                  >
+                    <Text style={styles.deleteText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
                 {allergies.indexOf(item) !== allergies.length - 1 ? (
                   <View style={styles.divider} />
                 ) : null}
@@ -252,7 +297,14 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.cardContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.sectionHeaderText}>MEDICATIONS</Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeaderText}>MEDICATIONS</Text>
+              <TouchableOpacity
+                onPress={() => addItem(setMedications, "MEDICATIONS")}
+              >
+                <Ionicons size={28} color={colors.navyBlue} name="add-sharp" />
+              </TouchableOpacity>
+            </View>
             {medications.map((item, idx) => (
               <View key={`profile-info${idx}`}>
                 {renderText("Name:", medications, setMedications, idx, "name")}
@@ -263,13 +315,20 @@ const EditProfileScreen = ({ navigation, route }) => {
                   idx,
                   "dosage"
                 )}
-                {renderText(
-                  "Frequency:",
-                  medications,
-                  setMedications,
-                  idx,
-                  "frequency"
-                )}
+                <View style={{ flexDirection: "row", width: "85%" }}>
+                  {renderText(
+                    "Frequency:",
+                    medications,
+                    setMedications,
+                    idx,
+                    "frequency"
+                  )}
+                  <TouchableOpacity
+                    onPress={() => deleteItem(setMedications, idx)}
+                  >
+                    <Text style={styles.deleteText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
                 {medications.indexOf(item) !== medications.length - 1 ? (
                   <View style={styles.divider} />
                 ) : null}
@@ -279,7 +338,9 @@ const EditProfileScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.cardContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.sectionHeaderText}>BLOOD GROUP</Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeaderText}>BLOOD GROUP</Text>
+            </View>
             {bloodGroup.map((item, idx) => (
               <View key={`profile-info${idx}`}>
                 {renderText("", bloodGroup, setBloodGroup, idx, "name")}
@@ -382,6 +443,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: "100%",
+    paddingHorizontal: 10,
     backgroundColor: "white",
     paddingVertical: 16,
     borderColor: colors.lightGrey,
@@ -394,13 +456,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   infoContainer: {
-    marginLeft: 10,
+    // marginLeft: 10,
   },
   sectionHeaderText: {
     color: colors.navyBlue,
     fontFamily: "InterSemiBold",
     fontSize: 16,
-    marginBottom: 10,
   },
   headerText: {
     color: "black",
@@ -421,7 +482,7 @@ const styles = StyleSheet.create({
   infoInputText: {
     fontSize: 16,
     fontFamily: "InterRegular",
-    width: "100%",
+    width: "90%",
   },
   healthInfoContainer: {
     flexDirection: "row",
@@ -440,5 +501,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     alignSelf: "center",
     marginBottom: 20,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    justifyContent: "space-between",
+    marginRight: 10,
+  },
+  deleteText: {
+    color: colors.red,
+    fontSize: 16,
+    fontFamily: "InterRegular",
   },
 });

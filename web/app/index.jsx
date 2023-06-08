@@ -9,11 +9,9 @@ import HomeScreen from "./HomeScreen";
 
 const App = () => {
   console.log("header 2");
-  const { isLoggedIn } = useSelector((state) => state.auth);
   return (
     <View style={styles.container}>
-      {isLoggedIn ? <HomeScreen /> : <LoginScreen />}
-      {/* <ClassListScreen /> */}
+      <LoginScreen />
     </View>
   );
 };
@@ -25,8 +23,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    // justifyContent: "center",
-    // alignContent: "center",
   },
   header: {
     height: 50,

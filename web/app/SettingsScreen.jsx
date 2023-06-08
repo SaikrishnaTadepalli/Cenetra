@@ -9,9 +9,10 @@ import { useRouter } from "expo-router";
 const SettingsScreen = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   const handleClick = () => {
+    localStorage.setItem("isLoggedIn", "false");
     dispatch(logout());
     router.push("/LoginScreen");
   };

@@ -14,8 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchLogs } from "../src/redux/logsSlice";
 
 const ClassListScreen = () => {
-  const { students, isLoggedIn } = useSelector((state) => state.auth);
+  const s = localStorage.getItem("students");
+  const s2 = JSON.parse(s);
+  const students = JSON.parse(s2).students;
   const state = useSelector((state) => state.auth);
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
   const dispatch = useDispatch();
   const router = useRouter();
   const [name, setName] = useState(

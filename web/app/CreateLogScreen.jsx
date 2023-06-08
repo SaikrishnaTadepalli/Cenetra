@@ -7,6 +7,7 @@ import {
   TextInput,
 } from "react-native";
 import { React, useEffect, useState } from "react";
+// import { StarRating } from "react-native-star-rating";
 
 import colors from "../src/constants/Colors";
 import DragAndDrop from "../src/components/DragAndDrop";
@@ -16,6 +17,10 @@ import {
   setIsNewLogAdded,
   updateLogs,
 } from "../src/redux/logsSlice";
+import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
+import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
+import OpenEndedQuestion from "../src/components/OpenEndedQuestion";
+import { IconButton } from "react-native-paper";
 
 const inputTexts = [
   "What food did they eat",
@@ -27,7 +32,6 @@ const inputTexts = [
 const CreateLogScreen = ({ date, studentID }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
-  const { teacherID } = useSelector((state) => state.auth);
   const { updateLogsPending, updateLogsSuccessful } = useSelector(
     (state) => state.log
   );
@@ -38,14 +42,23 @@ const CreateLogScreen = ({ date, studentID }) => {
     { name: inputTexts[2], value: "" },
   ];
   const [inputs, setInputs] = useState(initialState);
-  const [rating, setRating] = useState("");
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewLogSelected = getIsNewLogAdded(state);
+  const answers = ["Answer 1", "Answer 2", "Answer 3"];
+  const choices = ["Choice 1", "Choice 2", "Choice 3"];
+  const [checkedItems, setCheckedItems] = useState([]);
+  const [filledStars, setFilledStars] = useState(0);
+  const [selectedValue, setSelectedValue] = useState([
+    { name: choices[0], value: "" },
+    { name: choices[1], value: "" },
+    { name: choices[2], value: "" },
+  ]);
 
   const onSave = () => {
-    console.log(inputs);
+    // console.log(inputs);
+    const teacherID = localStorage.getItem("teacherID");
     const sectionActivities = [];
     inputs.map((input) => {
       sectionActivities.push({
@@ -62,13 +75,13 @@ const CreateLogScreen = ({ date, studentID }) => {
       ],
     };
     // console.log(data);
-    if (inputs && rating) {
+    if (inputs && filledStars) {
       dispatch(
         updateLogs({
           teacherID: teacherID,
           studentID: studentID,
           details: data,
-          rating: rating,
+          rating: filledStars,
         })
       )
         .then(() => {
@@ -77,6 +90,7 @@ const CreateLogScreen = ({ date, studentID }) => {
           setIsSaved(true);
           setIsCancelled(false);
           setInputs(initialState);
+          setFilledStars(0);
           setTimeout(() => {
             setIsSaved(false);
             setEditable(true);
@@ -98,6 +112,7 @@ const CreateLogScreen = ({ date, studentID }) => {
       setIsCancelled(false);
       setEditable(true);
       setInputs(initialState);
+      setFilledStars(0);
     }, 2000);
   };
 
@@ -108,7 +123,40 @@ const CreateLogScreen = ({ date, studentID }) => {
       return updatedInputs;
     });
   };
-  // console.log(inputs);
+
+  const handleRadioButton = (index, value) => {
+    console.log(index, value);
+    setSelectedValue((prevInputs) => {
+      const updatedInputs = [...prevInputs];
+      updatedInputs[index].value = value;
+      return updatedInputs;
+    });
+  };
+
+  const handleStarPress = (num) => {
+    setFilledStars(num);
+  };
+
+  const renderStars = () => {
+    const stars = [];
+
+    for (let i = 1; i <= 5; i++) {
+      const isFilled = i <= filledStars;
+      const starIconName = isFilled ? "star" : "star-outline";
+
+      stars.push(
+        <IconButton
+          key={i}
+          icon={starIconName}
+          iconColor={isFilled ? colors.yellow : colors.yellow}
+          onPress={() => handleStarPress(i)}
+          style={{ marginRight: -15 }}
+        />
+      );
+    }
+    return stars;
+  };
+
   return (
     <>
       {isSaved ? <Text>Your logs have been saved successfully!</Text> : null}
@@ -120,35 +168,42 @@ const CreateLogScreen = ({ date, studentID }) => {
         >
           <Text style={styles.header}>{date}</Text>
           <View>
-            <Text>Rating from 1-5</Text>
-            <TextInput
-              style={styles.ratingContainer}
-              editable={isEditable}
-              value={rating}
-              onChangeText={setRating}
-            />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
+              <Text>Fill in a rating</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                {renderStars()}
+              </View>
+            </View>
             <View style={styles.listView}>
-              {inputs
-                ? inputs.map((input, idx) => (
-                    <View key={`input-${idx}`}>
-                      <Text>{input.name}</Text>
-                      <TextInput
-                        style={styles.cardContainer}
-                        multiline
-                        editable={isEditable}
-                        numberOfLines={4}
-                        maxLength={200}
-                        key={input.name}
-                        value={input.value}
-                        onChangeText={(value) => handleInputChange(idx, value)}
-                      />
-                    </View>
-                  ))
-                : null}
-
+              <OpenEndedQuestion
+                inputs={inputs}
+                handleInputChange={handleInputChange}
+              />
+              <MultiSelectQuestion
+                question="Question 1"
+                answers={answers}
+                checkedItems={checkedItems}
+                setCheckedItems={setCheckedItems}
+              />
+              <MultipleChoiceQuestion
+                headerText="Question 1"
+                choices={choices}
+                selectedValue={selectedValue}
+                setSelectedValue={setSelectedValue}
+              />
               <DragAndDrop studentID={studentID} />
 
-              {isInputEmpty && !rating ? (
+              {isInputEmpty && !filledStars ? (
                 <Text style={styles.errorText}>
                   Could not save logs. Please fill in at least one text box.
                 </Text>
@@ -181,7 +236,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: 600,
-    marginBottom: 30,
+    marginBottom: 10,
   },
   listView: {
     width: "80%",

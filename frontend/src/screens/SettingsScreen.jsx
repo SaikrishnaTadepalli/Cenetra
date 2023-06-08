@@ -17,10 +17,10 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const SettingsScreen = ({ navigation }) => {
-  const phoneNumber = "+1234567";
-  const email = "vipasha2002@gmail.com";
-  const latitude = 37.7749;
-  const longitude = -122.4194;
+  const phoneNumber = "+91 76206 33298";
+  const email = "yhiigroup@gmail.com";
+  const latitude = 15.361291547403729;
+  const longitude = 75.15513588749864;
   const maps = `http://maps.apple.com/?ll=${latitude},${longitude}`;
   const icons = [
     { icon: "call-outline", url: `tel:${phoneNumber}` },

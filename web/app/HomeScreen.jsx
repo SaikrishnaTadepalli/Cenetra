@@ -14,8 +14,11 @@ import ProfileScreen from "./ProfileScreen";
 import { fetchProfile } from "../src/redux/studentProfileSlice";
 
 const HomeScreen = () => {
-  const { pending, isLoggedIn, students } = useSelector((state) => state.auth);
+  const { loginLoading } = useSelector((state) => state.auth);
   const [studentID, setStudentID] = useState("");
+  const s = localStorage.getItem("students");
+  const s2 = JSON.parse(s);
+  const students = JSON.parse(s2).students;
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -27,14 +30,14 @@ const HomeScreen = () => {
   };
 
   // useEffect(() => {
-  //   if (!pending && !isLoggedIn) {
+  //   if (!loginLoading && !isLoggedIn) {
   //     router.push("/LoginScreen");
   //   }
-  // }, [router, pending, isLoggedIn]);
+  // }, [router, loginLoading, isLoggedIn]);
 
   return (
     <View style={styles.container}>
-      {pending ? (
+      {loginLoading ? (
         <Text style={styles.text}>Loading details...</Text>
       ) : (
         <>

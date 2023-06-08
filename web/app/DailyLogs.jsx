@@ -9,7 +9,6 @@ import React, { useState, useRef } from "react";
 import moment from "moment-timezone";
 
 import colors from "../src/constants/Colors";
-import * as logDates from "../data/dates.json";
 import CreateLogScreen from "./CreateLogScreen";
 import { useRouter } from "expo-router";
 import LogScreen from "./LogScreen";
@@ -26,10 +25,9 @@ const DailyLogsScreen = ({ name, studentID }) => {
   const [isOldLogSelected, setIsOldLogSelected] = useState(false);
   const [logID, setLogID] = useState("");
   const isDisabled =
-    getIsNewLogAdded(state) ||
-    (logs.length > 0 &&
-      logs[0] &&
-      curDate === moment(logs[0].createdAt).format("DD MMMM YYYY"));
+    logs.length > 0 &&
+    logs[0] &&
+    curDate === moment(logs[0].createdAt).format("DD MMMM YYYY");
 
   const handleClick = () => {
     setDate(curDate);
@@ -84,7 +82,12 @@ const DailyLogsScreen = ({ name, studentID }) => {
         </ScrollView>
         <View style={{ flex: 1, marginLeft: "-30%" }}>
           {isOldLogSelected ? (
-            <LogScreen logID={logID} />
+            <LogScreen
+              logID={logID}
+              setIsOldLogSelected={setIsOldLogSelected}
+              setDate={setDate}
+              curDate={curDate}
+            />
           ) : date !== "" ? (
             <CreateLogScreen date={date} studentID={studentID} />
           ) : null}
