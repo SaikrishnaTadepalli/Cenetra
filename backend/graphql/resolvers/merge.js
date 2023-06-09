@@ -24,29 +24,33 @@ const transformLog = (log) => {
 };
 
 const transformNotice = (notice, id) => {
-  let readState = null;
+  try {
+    let readState = null;
 
-  if (id !== notice.teacher) {
-    const index = notice.students.indexOf(id);
+    if (JSON.stringify(id) !== JSON.stringify(notice.teacher)) {
+      const index = notice.students.indexOf(id);
 
-    if (index == -1 || index >= notice.read.length) {
-      throw error(
-        "Something Wrong with Read Field of Notice: " + args.noticeId
-      );
+      if (index == -1 || index >= notice.read.length) {
+        throw new Error(
+          "Something Wrong with Read Field of Notice: " + notice.id
+        );
+      }
+
+      readState = notice.read[index];
     }
 
-    readState = notice.read[index];
+    return {
+      ...notice._doc,
+      _id: notice.id,
+      teacher: teacher.bind(this, notice._doc.teacher),
+      students: students.bind(this, notice._doc.students),
+      createdAt: dateToString(notice._doc.createdAt),
+      updatedAt: dateToString(notice._doc.updatedAt),
+      read: readState,
+    };
+  } catch (err) {
+    throw err;
   }
-
-  return {
-    ...notice._doc,
-    _id: notice.id,
-    teacher: teacher.bind(this, notice._doc.teacher),
-    students: students.bind(this, notice._doc.students),
-    createdAt: dateToString(notice._doc.createdAt),
-    updatedAt: dateToString(notice._doc.updatedAt),
-    read: readState,
-  };
 };
 
 const transformMedia = (media) => {

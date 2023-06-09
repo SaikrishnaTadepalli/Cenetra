@@ -44,7 +44,7 @@ type Notice {
     createdAt: String!
     updatedAt: String!
     details: String!
-    type: String!
+    noticeType: String!
     read: Boolean
 }
 
@@ -105,8 +105,8 @@ type RootQuery {
     logs(studentId: ID!): [Log!]!
     logByDate(studentId: ID!, date: String!): [Log!]!
 
-    noticesForStudent(studentId: ID!): [Notice!]!
-    noticesByTeacher(teacherId: ID!): [Notice!]!
+    noticesForStudent(studentId: ID!): [[Notice!]!]!
+    noticesByTeacher(teacherId: ID!): [[Notice!]!]!
 
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
@@ -133,8 +133,8 @@ type RootMutation {
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
     editLog(logId: ID!, details: String!, rating: Int!): Log!
 
-    createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!, type: String!): Notice!
-    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, type: String!): Notice!
+    createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
+    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
     deleteNotice(teacherId: ID!, noticeId: ID!): Notice!
     markNoticeAsRead(studentId: ID!, noticeId: ID!): Notice!
 

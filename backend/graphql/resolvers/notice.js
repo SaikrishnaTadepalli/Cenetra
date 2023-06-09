@@ -49,7 +49,7 @@ module.exports = {
       const teacher = await Teacher.findById(args.teacherId);
 
       if (!teacher) {
-        throw error("Teacher does not exist.");
+        throw new Error("Teacher does not exist.");
       }
 
       const fetchedNotices = await Notice.find({
@@ -103,15 +103,15 @@ module.exports = {
         teacher: args.teacherId,
         students: args.studentIds,
         details: args.details,
-        type: args.type,
+        noticeType: args.noticeType,
         read: readArr,
       });
 
       const result = await notice.save();
 
-      const message = `A New Log has been Uploded!`;
+      const message = `A New Notice has been Uploded!`;
       fetchedStudents.map(async (fetchedStudent) => {
-        await sendSMS(fetchedStudent.primaryContactNumber, message);
+        //await sendSMS(fetchedStudent.primaryContactNumber, message);
       });
 
       return transformNotice(result, args.teacherId);
@@ -142,12 +142,12 @@ module.exports = {
 
       fetchedNotice.students = args.studentIds;
       fetchedNotice.details = args.details;
-      fetchedNotice.type = args.type;
+      fetchedNotice.noticeType = args.noticeType;
       fetchedNotice.read = readArr;
 
       const result = await fetchedNotice.save();
 
-      return transformNotice(result, args.teacherId);
+      return transformNotice(result, fetchedNotice.teacher);
     } catch (err) {
       throw err;
     }
@@ -195,13 +195,16 @@ module.exports = {
 
       const index = notice.students.indexOf(args.studentId);
 
-      if (index == -1 || index >= notice.read.length) {
+      if (index === -1 || index >= notice.read.length) {
         throw error(
           "Something Wrong with Read Field of Notice: " + args.noticeId
         );
       }
 
-      notice.read = notice.read[index];
+      let newRead = notice.read;
+      newRead[index] = true;
+
+      notice.read = newRead;
 
       const result = await notice.save();
 

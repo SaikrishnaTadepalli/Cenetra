@@ -20,7 +20,7 @@ const noticeSchema = new Schema(
       type: String,
       required: true,
     },
-    type: {
+    noticeType: {
       type: String,
       required: true,
     },
