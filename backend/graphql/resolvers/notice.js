@@ -5,6 +5,21 @@ const Notice = require("../../models/notice");
 const { sendSMS } = require("../../utils/sms");
 const { transformNotice } = require("./merge");
 
+const groupObjectsByDate = (objects) => {
+  return objects.reduce((result, obj) => {
+    const createdAtDate = obj.createdAt.split("T")[0];
+    const lastGroup = result[result.length - 1];
+
+    if (lastGroup?.[0].createdAt.startsWith(createdAtDate)) {
+      lastGroup.push(obj);
+    } else {
+      result.push([obj]);
+    }
+
+    return result;
+  }, []);
+};
+
 module.exports = {
   // Queries
   noticesForStudent: async (args) => {
@@ -15,16 +30,15 @@ module.exports = {
         throw error("Student does not exist.");
       }
 
-      const fetchedNotices = await Notice.find({ students: args.studentId });
+      const fetchedNotices = await Notice.find({
+        students: args.studentId,
+      }).sort({ createdAt: -1 });
+
       const formattedNotices = fetchedNotices.map((notice) =>
         transformNotice(notice, args.studentId)
       );
 
-      const sortedNotices = formattedNotices.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-
-      return sortedNotices;
+      return groupObjectsByDate(formattedNotices);
     } catch (err) {
       throw err;
     }
@@ -38,16 +52,15 @@ module.exports = {
         throw error("Teacher does not exist.");
       }
 
-      const fetchedNotices = await Notice.find({ teacher: args.teacherId });
+      const fetchedNotices = await Notice.find({
+        teacher: args.teacherId,
+      }).sort({ createdAt: -1 });
+
       const formattedNotices = fetchedNotices.map((notice) =>
         transformNotice(notice, args.teacherId)
       );
 
-      const sortedNotices = formattedNotices.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-
-      return sortedNotices;
+      return groupObjectsByDate(formattedNotices);
     } catch (err) {
       throw err;
     }
