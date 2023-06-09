@@ -1,7 +1,8 @@
 const Student = require("../../models/student");
+const Teacher = require("../../models/teacher");
 const VerificationCode = require("../../models/verificationCode");
-const { sendSMS } = require("../../utils/sms");
 
+const { sendSMS } = require("../../utils/sms");
 const { transformVerificationCode } = require("./merge");
 
 /*
@@ -29,7 +30,7 @@ module.exports = {
     try {
       const verificationCode = await VerificationCode.findOne({
         code: args.code,
-        student: args.studentId,
+        user: args.userId,
       });
 
       if (!verificationCode) {
@@ -46,7 +47,7 @@ module.exports = {
   },
 
   // Mutations
-  sendSMSCode: async (args) => {
+  sendSMSCodeStudent: async (args) => {
     try {
       const student = await Student.findById(args.studentId);
 
@@ -54,12 +55,17 @@ module.exports = {
         throw new Error("Student not found.");
       }
 
+      await VerificationCode.findOneAndDelete({
+        user: args.studentId,
+      });
+
       // Generate verification code of length 6
-      const code = generateVerificationCode(4);
+      const code = generateVerificationCode(6);
 
       // Store the verification code
       const verificationCode = new VerificationCode({
-        student: args.studentId,
+        user: args.studentId,
+        userType: "Student",
         code: code,
       });
 
@@ -68,6 +74,40 @@ module.exports = {
       // Send the SMS verification code to the user's device
       const message = `Your verification code is: ${code}`;
       //await sendSMS(student.primaryContactNumber, message);
+
+      return transformVerificationCode(result);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  sendSMSCodeTeacher: async (args) => {
+    try {
+      const teacher = await Teacher.findById(args.teacherId);
+
+      if (!teacher) {
+        throw new Error("Teacher not found.");
+      }
+
+      await VerificationCode.findOneAndDelete({
+        user: args.teacherId,
+      });
+
+      // Generate verification code of length 6
+      const code = generateVerificationCode(6);
+
+      // Store the verification code
+      const verificationCode = new VerificationCode({
+        user: args.teacherId,
+        userType: "Teacher",
+        code: code,
+      });
+
+      const result = await verificationCode.save();
+
+      // Send the SMS verification code to the user's device
+      const message = `Your verification code is: ${code}`;
+      //await sendSMS(teacher.phoneNumber, message);
 
       return transformVerificationCode(result);
     } catch (err) {

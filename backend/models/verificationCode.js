@@ -4,9 +4,14 @@ const Schema = mongoose.Schema;
 
 const verificationCodeSchema = new Schema(
   {
-    student: {
+    user: {
       type: Schema.Types.ObjectId,
-      ref: "Student",
+      refPath: "userType",
+      required: true,
+    },
+    userType: {
+      type: String,
+      enum: ["Student", "Teacher"],
       required: true,
     },
     code: {

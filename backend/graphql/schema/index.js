@@ -65,9 +65,12 @@ type ProfileInfo {
     updatedAt: String!
 }
 
+union User = Student | Teacher
+
 type VerificationCode {
     _id: ID!
-    student: Student!
+    user: User!
+    userType: String!
     code: String!
     createdAt: String!
     updatedAt: String!
@@ -115,7 +118,7 @@ type RootQuery {
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
     getLatestProfileInfo(studentId: ID!): ProfileInfo!
 
-    verifyCode(studentId: ID!, code: String!): Boolean!
+    verifyCode(userId: ID!, code: String!): Boolean!
 }
 
 
@@ -131,7 +134,8 @@ type RootMutation {
     editLog(logId: ID!, details: String!, rating: Int!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!, type: String!): Notice!
-
+    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, type: String!): Notice!
+    deleteNotice(teacherId: ID!, noticeId: ID!): Notice!
     markNoticeAsRead(studentId: ID!, noticeId: ID!): Notice!
 
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
@@ -139,6 +143,9 @@ type RootMutation {
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!
 
     sendSMSCode(studentId: ID!): VerificationCode!
+
+    sendSMSCodeStudent(studentId: ID!): VerificationCode!
+    sendSMSCodeTeacher(teacherId: ID!): VerificationCode!
 }
 
 schema {

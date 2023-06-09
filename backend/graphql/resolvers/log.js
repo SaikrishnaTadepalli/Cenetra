@@ -2,6 +2,7 @@ const Student = require("../../models/student");
 const Teacher = require("../../models/teacher");
 const Log = require("../../models/log");
 
+const { sendSMS } = require("../../utils/sms");
 const { transformLog } = require("./merge");
 
 module.exports = {
@@ -83,6 +84,9 @@ module.exports = {
       });
 
       const result = await log.save();
+
+      const message = `A New Log has been Uploded`;
+      await sendSMS(fetchedStudent.primaryContactNumber, message);
 
       return transformLog(result);
     } catch (err) {

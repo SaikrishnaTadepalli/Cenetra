@@ -2,6 +2,7 @@ const Student = require("../../models/student");
 const Teacher = require("../../models/teacher");
 const Notice = require("../../models/notice");
 
+const { sendSMS } = require("../../utils/sms");
 const { transformNotice } = require("./merge");
 
 module.exports = {
@@ -61,15 +62,27 @@ module.exports = {
         throw new error("Teacher does not exist.");
       }
 
-      for (let i = 0; i < args.studentIds.length; i++) {
+      const fetchedStudents = args.studentIds.map(async (studentId) => {
         const fetchedStudent = await Student.findOne({
-          _id: args.studentIds[i],
+          _id: studentId,
         });
 
         if (!fetchedStudent) {
-          throw new Error(`Student does not exist: ${stuId}.`);
+          throw new Error(`Student does not exist: ${studentId}.`);
         }
-      }
+
+        return fetchedStudent;
+      });
+
+      // for (let i = 0; i < args.studentIds.length; i++) {
+      //   const fetchedStudent = await Student.findOne({
+      //     _id: args.studentIds[i],
+      //   });
+
+      //   if (!fetchedStudent) {
+      //     throw new Error(`Student does not exist: ${stuId}.`);
+      //   }
+      // }
 
       const readArr = args.studentIds.map((x) => false);
 
@@ -82,6 +95,11 @@ module.exports = {
       });
 
       const result = await notice.save();
+
+      const message = `A New Log has been Uploded!`;
+      fetchedStudents.map(async (fetchedStudent) => {
+        await sendSMS(fetchedStudent.primaryContactNumber, message);
+      });
 
       return transformNotice(result, args.teacherId);
     } catch (err) {

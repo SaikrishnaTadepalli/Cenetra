@@ -71,13 +71,21 @@ const transformProfile = (profileInfo) => {
 };
 
 const transformVerificationCode = (verificationCode) => {
-  return {
+  let rtn = {
     ...verificationCode._doc,
     _id: verificationCode.id,
-    student: student.bind(this, verificationCode._doc.student),
+    user: null,
     createdAt: dateToString(verificationCode._doc.createdAt),
     updatedAt: dateToString(verificationCode._doc.updatedAt),
   };
+
+  if (verificationCode.userType === "Student") {
+    rtn.user = student.bind(this, verificationCode._doc.user);
+  } else {
+    rtn.user = teacher.bind(this, verificationCode._doc.user);
+  }
+
+  return rtn;
 };
 
 const teacher = async (teacherId) => {
