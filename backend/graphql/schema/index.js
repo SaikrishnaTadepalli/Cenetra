@@ -2,7 +2,6 @@ const { buildSchema } = require("graphql");
 const { GraphQLUpload } = require("graphql-upload");
 
 module.exports = buildSchema(`
-scalar Upload
 
 type Teacher {
     _id: ID!
@@ -69,7 +68,7 @@ union User = Student | Teacher
 
 type VerificationCode {
     _id: ID!
-    user: User!
+    userId: ID!
     userType: String!
     code: String!
     createdAt: String!

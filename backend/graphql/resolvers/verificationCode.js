@@ -16,8 +16,8 @@ IMPORTANT NOTES
 */
 
 const generateVerificationCode = (numDigits) => {
-  const min = 10 ** numDigits;
-  const max = 10 ** (numDigits + 1);
+  const min = 10 ** (numDigits - 1);
+  const max = 10 ** numDigits - 1;
   const code = Math.floor(Math.random() * (max - min + 1)) + min;
 
   // Return the generated code
@@ -60,7 +60,7 @@ module.exports = {
       });
 
       // Generate verification code of length 6
-      const code = generateVerificationCode(6);
+      const code = generateVerificationCode(5);
 
       // Store the verification code
       const verificationCode = new VerificationCode({
@@ -94,7 +94,7 @@ module.exports = {
       });
 
       // Generate verification code of length 6
-      const code = generateVerificationCode(6);
+      const code = generateVerificationCode(5);
 
       // Store the verification code
       const verificationCode = new VerificationCode({

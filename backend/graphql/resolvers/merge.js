@@ -78,7 +78,7 @@ const transformVerificationCode = (verificationCode) => {
   let rtn = {
     ...verificationCode._doc,
     _id: verificationCode.id,
-    user: null,
+    userId: verificationCode.user,
     createdAt: dateToString(verificationCode._doc.createdAt),
     updatedAt: dateToString(verificationCode._doc.updatedAt),
   };
