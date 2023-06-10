@@ -20,10 +20,16 @@ const noticeSchema = new Schema(
       type: String,
       required: true,
     },
-    read: {
-      type: Boolean,
+    noticeType: {
+      type: String,
       required: true,
     },
+    read: [
+      {
+        type: Boolean,
+        required: true,
+      },
+    ],
   },
   { timestamps: true }
 );

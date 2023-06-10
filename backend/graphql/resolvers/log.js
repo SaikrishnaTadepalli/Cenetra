@@ -2,6 +2,7 @@ const Student = require("../../models/student");
 const Teacher = require("../../models/teacher");
 const Log = require("../../models/log");
 
+const { sendSMS } = require("../../utils/sms");
 const { transformLog } = require("./merge");
 
 module.exports = {
@@ -83,6 +84,24 @@ module.exports = {
       });
 
       const result = await log.save();
+
+      const message = `A New Log has been Uploded`;
+      //await sendSMS(fetchedStudent.primaryContactNumber.toString(), message);
+
+      return transformLog(result);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  editLog: async (args) => {
+    try {
+      const fetchedLog = await Log.findById(args.logId);
+
+      fetchedLog.details = args.details;
+      fetchedLog.rating = args.rating;
+
+      const result = await fetchedLog.save();
 
       return transformLog(result);
     } catch (err) {

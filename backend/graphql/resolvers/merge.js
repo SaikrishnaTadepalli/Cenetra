@@ -23,15 +23,34 @@ const transformLog = (log) => {
   };
 };
 
-const transformNotice = (notice) => {
-  return {
-    ...notice._doc,
-    _id: notice.id,
-    teacher: teacher.bind(this, notice._doc.teacher),
-    students: students.bind(this, notice._doc.students),
-    createdAt: dateToString(notice._doc.createdAt),
-    updatedAt: dateToString(notice._doc.updatedAt),
-  };
+const transformNotice = (notice, id) => {
+  try {
+    let readState = null;
+
+    if (JSON.stringify(id) !== JSON.stringify(notice.teacher)) {
+      const index = notice.students.indexOf(id);
+
+      if (index == -1 || index >= notice.read.length) {
+        throw new Error(
+          "Something Wrong with Read Field of Notice: " + notice.id
+        );
+      }
+
+      readState = notice.read[index];
+    }
+
+    return {
+      ...notice._doc,
+      _id: notice.id,
+      teacher: teacher.bind(this, notice._doc.teacher),
+      students: students.bind(this, notice._doc.students),
+      createdAt: dateToString(notice._doc.createdAt),
+      updatedAt: dateToString(notice._doc.updatedAt),
+      read: readState,
+    };
+  } catch (err) {
+    throw err;
+  }
 };
 
 const transformMedia = (media) => {
@@ -56,13 +75,21 @@ const transformProfile = (profileInfo) => {
 };
 
 const transformVerificationCode = (verificationCode) => {
-  return {
+  let rtn = {
     ...verificationCode._doc,
     _id: verificationCode.id,
-    student: student.bind(this, verificationCode._doc.student),
+    userId: verificationCode.user,
     createdAt: dateToString(verificationCode._doc.createdAt),
     updatedAt: dateToString(verificationCode._doc.updatedAt),
   };
+
+  if (verificationCode.userType === "Student") {
+    rtn.user = student.bind(this, verificationCode._doc.user);
+  } else {
+    rtn.user = teacher.bind(this, verificationCode._doc.user);
+  }
+
+  return rtn;
 };
 
 const teacher = async (teacherId) => {

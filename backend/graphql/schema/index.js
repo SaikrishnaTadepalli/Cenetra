@@ -2,7 +2,6 @@ const { buildSchema } = require("graphql");
 const { GraphQLUpload } = require("graphql-upload");
 
 module.exports = buildSchema(`
-scalar Upload
 
 type Teacher {
     _id: ID!
@@ -44,7 +43,8 @@ type Notice {
     createdAt: String!
     updatedAt: String!
     details: String!
-    read: Boolean!
+    noticeType: String!
+    read: Boolean
 }
 
 type Media {
@@ -64,9 +64,12 @@ type ProfileInfo {
     updatedAt: String!
 }
 
+union User = Student | Teacher
+
 type VerificationCode {
     _id: ID!
-    student: Student!
+    userId: ID!
+    userType: String!
     code: String!
     createdAt: String!
     updatedAt: String!
@@ -101,8 +104,8 @@ type RootQuery {
     logs(studentId: ID!): [Log!]!
     logByDate(studentId: ID!, date: String!): [Log!]!
 
-    noticesForStudent(studentId: ID!): [Notice!]!
-    noticesByTeacher(teacherId: ID!): [Notice!]!
+    noticesForStudent(studentId: ID!): [[Notice!]!]!
+    noticesByTeacher(teacherId: ID!): [[Notice!]!]!
 
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
@@ -114,7 +117,7 @@ type RootQuery {
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
     getLatestProfileInfo(studentId: ID!): ProfileInfo!
 
-    verifyCode(studentId: ID!, code: String!): Boolean!
+    verifyCode(userId: ID!, code: String!): Boolean!
 }
 
 
@@ -127,16 +130,21 @@ type RootMutation {
     addStudentToClass(classId: ID!, studentId: ID!): Class!
 
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
+    editLog(logId: ID!, details: String!, rating: Int!): Log!
 
-    createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!): Notice!
-
-    markNoticeAsRead(noticeId: ID!): Notice!
+    createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
+    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
+    deleteNotice(teacherId: ID!, noticeId: ID!): Notice!
+    markNoticeAsRead(studentId: ID!, noticeId: ID!): Notice!
 
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
     
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!
 
     sendSMSCode(studentId: ID!): VerificationCode!
+
+    sendSMSCodeStudent(studentId: ID!): VerificationCode!
+    sendSMSCodeTeacher(teacherId: ID!): VerificationCode!
 }
 
 schema {
