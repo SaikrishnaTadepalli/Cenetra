@@ -5,16 +5,6 @@ const VerificationCode = require("../../models/verificationCode");
 const { sendSMS } = require("../../utils/sms");
 const { transformVerificationCode } = require("./merge");
 
-/*
-
-IMPORTANT NOTES
-
-- Make sure number is of form: +14161234567
-
-- We are currently in SMS sandbox. We need to get out 
-    of it to be able to send messages to anyone
-*/
-
 const generateVerificationCode = (numDigits) => {
   const min = 10 ** (numDigits - 1);
   const max = 10 ** numDigits - 1;
