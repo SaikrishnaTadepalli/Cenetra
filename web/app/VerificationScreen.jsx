@@ -33,8 +33,13 @@ const VerificationScreen = () => {
   const [error, setError] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
   const ref = useBlurOnFulfill({ value, cellCount: 5 });
-  const { verificationLoading, verificationError, loginError, loginLoading } =
-    useSelector((state) => state.auth);
+  const {
+    verificationLoading,
+    verificationError,
+    loginError,
+    loginLoading,
+    teacherInfo,
+  } = useSelector((state) => state.auth);
   const teacherID = localStorage.getItem("teacherID");
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
@@ -94,13 +99,13 @@ const VerificationScreen = () => {
       })
       .catch((error) => console.error("Error in sending SMS", error));
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.verificationContainer}>
         <Text style={styles.titleText}>Verify your number</Text>
         <Text style={styles.text}>
-          Enter Verification code sent to +91 88XXX XX076
+          Enter Verification code sent to{" "}
+          {teacherInfo && teacherInfo.phoneNumber}
         </Text>
         <View style={{ alignSelf: "flex-start", width: "41%" }}>
           <Text style={styles.codeText}>Enter Code</Text>

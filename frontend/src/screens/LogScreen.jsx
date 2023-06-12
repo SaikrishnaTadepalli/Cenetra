@@ -47,6 +47,7 @@ const LogScreen = ({ navigation, route }) => {
     retrieveData();
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
+
   return (
     <>
       {fetchImagesError ? (
@@ -103,37 +104,30 @@ const LogScreen = ({ navigation, route }) => {
               )}
             </ScrollView>
             {logs.radioButtonQuestions.map((radioButtonQuestion, index) => (
-              <View
-                key={`radio-button-question-${index}`}
-                style={{
-                  marginBottom: 20,
-                }}
-              >
-                <Text>{radioButtonQuestion.question}</Text>
-                <Text>{radioButtonQuestion.answer}</Text>
+              <View key={`radio-button-question-${index}`}>
+                <LogCard
+                  question={radioButtonQuestion.question}
+                  answer={radioButtonQuestion.answer}
+                  type="radiobutton"
+                />
               </View>
             ))}
             {logs.checkBoxQuestions.map((checkBoxQuestion, index) => (
               <View key={`multi-select-question-${index}`}>
-                <Text>{checkBoxQuestion.question}</Text>
-                <Text>{checkBoxQuestion.answer}</Text>
+                <LogCard
+                  question={checkBoxQuestion.question}
+                  answer={checkBoxQuestion.answer}
+                  type="checkbox"
+                />
               </View>
             ))}
             {logs.openEndedQuestions.map((openEndedQuestion, index) => (
-              <View
-                key={`open-ended-question-${index}`}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 20,
-                }}
-              >
-                <Text style={styles.question}>
-                  {openEndedQuestion.question}
-                </Text>
-                <View style={styles.openEndedAnswerContainer}>
-                  <Text style={styles.answer}>{openEndedQuestion.answer}</Text>
-                </View>
+              <View key={`open-ended-question-${index}`}>
+                <LogCard
+                  question={openEndedQuestion.question}
+                  answer={openEndedQuestion.answer}
+                  type="openended"
+                />
               </View>
             ))}
           </ScrollView>

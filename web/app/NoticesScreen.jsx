@@ -130,7 +130,7 @@ const NoticesScreen = () => {
     const details = JSON.parse(item.details);
     const subject = details.subject;
     const date = formatDate(item.createdAt);
-    const dotColor = typeColorMapping[item.type];
+    const dotColor = typeColorMapping[item.type].dotColor;
     return (
       <>
         {isExpanded[date] ? (

@@ -16,6 +16,7 @@ import {
   loginUser,
   logout,
   sendSMS,
+  getTeacherID,
 } from "../src/redux/authSlice";
 import accessCodeMapping from "../api/data";
 
@@ -25,22 +26,31 @@ const LoginScreen = () => {
   const [accessCode, setAccessCode] = useState("");
   const [isError, setIsError] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-  const students = [];
-  const { loginLoading, loginError } = useSelector((state) => state.auth);
+  const { loginLoading, loginError, teacherInfoLoading, teacherInfoError } =
+    useSelector((state) => state.auth);
 
   async function handleClick() {
-    const teacherID = accessCodeMapping[accessCode];
-    if (teacherID) {
-      router.push("/VerificationScreen");
-      localStorage.setItem("teacherID", teacherID);
-      setIsDisabled(true);
-      dispatch(sendSMS(teacherID))
-        .then(() => {})
-        .catch((error) => console.error("Error in sending SMS", error));
-    } else {
-      setIsError("Invalid access code.");
-      setTimeout(() => setIsError(""), 1000);
-    }
+    dispatch(getTeacherID(accessCode)).then((response) => {
+      if (!teacherInfoLoading && !teacherInfoError) {
+        router.push("/VerificationScreen");
+        const teacherID = response.payload.data.teacherByTeacherNumber._id;
+        // console.log(teacherID);
+        localStorage.setItem("teacherID", teacherID);
+        setIsDisabled(true);
+        dispatch(sendSMS(teacherID))
+          .then(() => {})
+          .catch((error) => console.error("Error in sending SMS", error));
+      } else {
+        setIsError("Invalid access code.");
+        setTimeout(() => setIsError(""), 1000);
+      }
+    });
+
+    // if (teacherID) {
+    // } else {
+    //   setIsError("Invalid access code.");
+    //   setTimeout(() => setIsError(""), 1000);
+    // }
   }
 
   return (

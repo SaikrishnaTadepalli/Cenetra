@@ -1,5 +1,45 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
+export const getTeacherID = createAsyncThunk(
+  "auth/getTeacherID",
+  async (teacherNum, { rejectWithValue }) => {
+    const query = `query{
+    teacherByTeacherNumber(teacherNumber: "${teacherNum}") {
+        _id
+        firstName
+        lastName
+        teacherNumber
+        phoneNumber
+    }
+  }`;
+    console.log(query);
+    try {
+      const response = await fetch("http://localhost:3000/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          console.error("Error while getting teacher ID");
+          throw new Error("Invalid Access code");
+        } else if (response.status === 400) {
+          console.log("Invalid teacher number");
+          throw new Error("Invalid or wrong teacher number");
+        }
+      }
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      console.error("Catch: error getting teacher info", error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const loginUser = createAsyncThunk("auth/login", async (teacherID) => {
   //const {query, teacherID} = props;
   const query = `
@@ -111,7 +151,7 @@ export const verifyLogin = createAsyncThunk(
 
 export interface AuthState {
   isLoggedIn: boolean;
-  teacherID: string;
+  teacherInfo: string;
   students: string[];
   loginLoading: boolean;
   loginError: boolean;
@@ -119,11 +159,13 @@ export interface AuthState {
   SMSError: boolean;
   verificationLoading: boolean;
   verificationError: boolean;
+  teacherInfoLoading: boolean;
+  teacherInfoError: boolean;
 }
 
 const initialState: AuthState = {
   isLoggedIn: true,
-  teacherID: "",
+  teacherInfo: "",
   loginLoading: null,
   loginError: false,
   students: [],
@@ -131,6 +173,8 @@ const initialState: AuthState = {
   SMSError: false,
   verificationLoading: false,
   verificationError: false,
+  teacherInfoLoading: false,
+  teacherInfoError: false,
 };
 
 export const authSlice = createSlice({
@@ -139,16 +183,16 @@ export const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.isLoggedIn = true;
-      state.teacherID = action.payload;
+      state.teacherInfo = action.payload;
     },
     logout: (state) => {
       state.isLoggedIn = false;
-      state.teacherID = "";
+      state.teacherInfo = "";
       localStorage.setItem("isLoggedIn", "false");
     },
     permanentlyDeleteUser: (state) => {
       state.isLoggedIn = false;
-      state.teacherID = "";
+      state.teacherInfo = "";
     },
     setStudents: (state, action) => {
       state.students = action.payload;
@@ -156,6 +200,19 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getTeacherID.pending, (state) => {
+        state.teacherInfoLoading = true;
+        state.teacherInfoError = false;
+      })
+      .addCase(getTeacherID.rejected, (state) => {
+        state.teacherInfoLoading = null;
+        state.teacherInfoError = true;
+      })
+      .addCase(getTeacherID.fulfilled, (state, action) => {
+        state.teacherInfoLoading = false;
+        state.teacherInfoError = false;
+        state.teacherInfo = action.payload.data.teacherByTeacherNumber;
+      })
       .addCase(loginUser.pending, (state) => {
         state.loginLoading = true;
         state.loginError = false;
@@ -170,7 +227,6 @@ export const authSlice = createSlice({
         state.loginLoading = false;
         state.loginError = false;
         state.isLoggedIn = true;
-        state.teacherID = action.meta.arg;
       })
       .addCase(sendSMS.pending, (state) => {
         state.SMSLoading = true;

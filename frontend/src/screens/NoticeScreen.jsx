@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
+import { Ionicons } from "@expo/vector-icons";
 
 import NoticeCard from "../components/NoticeCard";
 import colors from "../constants/Colors";
@@ -25,11 +26,13 @@ const NoticeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { loading, error } = useSelector((state) => state.notices);
   const [notices, setNotices] = useState([]);
+  const [isExpanded, setIsExpanded] = useState({});
   const types = ["Urgent", "Casual", "Serious"];
 
   const formatDate = (date) => {
-    return moment(date).format("DD MMMM YYYY");
+    return moment(date).format("MMMM D, YYYY");
   };
+
   const retrieveData = async () => {
     const data = await AsyncStorage.getItem("studentID");
     dispatch(fetchNotices(data))
@@ -78,6 +81,38 @@ const NoticeScreen = ({ navigation }) => {
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
 
+  const handleExpandNoticeSection = async (buttonId) => {
+    setIsExpanded((prevState) => ({
+      ...prevState,
+      [buttonId]: !prevState[buttonId],
+    }));
+  };
+
+  const renderSectionHeader = ({ section: { date } }) => {
+    const style = () => {
+      return !isExpanded[date]
+        ? { borderBottomColor: "black", borderBottomWidth: 1, marginBottom: 20 }
+        : null;
+    };
+
+    return (
+      <TouchableOpacity
+        style={[styles.sectionHeader, style()]}
+        onPress={() => handleExpandNoticeSection(date)}
+      >
+        <Text style={styles.sectionHeaderText}>{date}</Text>
+        <Ionicons
+          name={
+            isExpanded[date]
+              ? "chevron-up-circle-outline"
+              : "chevron-down-circle-outline"
+          }
+          size={20}
+          color="black"
+        />
+      </TouchableOpacity>
+    );
+  };
   return (
     <>
       {error ? (
@@ -112,20 +147,22 @@ const NoticeScreen = ({ navigation }) => {
               ListFooterComponent={<View />}
               ListFooterComponentStyle={{ height: 20 }}
               renderItem={({ item }) => (
-                <View style={styles.noticesContainer}>
-                  <NoticeCard
-                    navigation={navigation}
-                    isRead={item.isRead}
-                    details={item.details}
-                    time={item.createdAt}
-                    type={item.type}
-                    noticeID={item._id}
-                  />
-                </View>
+                <>
+                  {isExpanded[formatDate(item.createdAt)] ? (
+                    <View style={styles.noticesContainer}>
+                      <NoticeCard
+                        navigation={navigation}
+                        isRead={item.isRead}
+                        details={item.details}
+                        date={item.createdAt}
+                        type={item.type}
+                        noticeID={item._id}
+                      />
+                    </View>
+                  ) : null}
+                </>
               )}
-              renderSectionHeader={({ section: { date } }) => (
-                <Text style={styles.sectionHeaderText}>{date}</Text>
-              )}
+              renderSectionHeader={renderSectionHeader}
             />
           </View>
         )
@@ -153,8 +190,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
   sectionHeaderText: {
-    color: colors.sectionText,
+    color: "#23342C",
     fontSize: 18,
     fontFamily: "InterMedium",
     marginBottom: 12,
