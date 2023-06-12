@@ -155,26 +155,3 @@ module.exports = {
     }
   },
 };
-
-/*
-
-
-
-
-
-
-mutation {
-    registerMedia(teacherId: "6462cfc2e55c98895096ea67" studentId: "6462cf2be55c98895096ea49" fileName: "person.jpg") {
-        teacher {
-            _id 
-            firstName
-        }
-        student {
-            _id
-            firstName
-        }
-        fileName
-    }
-}
-
-*/

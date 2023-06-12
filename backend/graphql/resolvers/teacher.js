@@ -1,5 +1,29 @@
 const Teacher = require("../../models/teacher");
 
+const getNewNum = (numDigits) => {
+  const min = 10 ** (numDigits - 1);
+  const max = 10 ** numDigits - 1;
+  return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+};
+
+const CreateTeacherNumber = async () => {
+  let number = getNewNum(8);
+
+  while (true) {
+    const fetchedTeacher = await Teacher.findOne({
+      teacherNumber: number,
+    });
+
+    if (!fetchedTeacher) {
+      break;
+    }
+
+    number = getNewNum(8);
+  }
+
+  return number;
+};
+
 module.exports = {
   // Queries
   teachers: async () => {
@@ -29,6 +53,25 @@ module.exports = {
     }
   },
 
+  teacherByTeacherNumber: async (args) => {
+    try {
+      const teacher = await Teacher.findOne({
+        teacherNumber: args.teacherNumber,
+      });
+
+      if (!teacher) {
+        throw error("Teacher does not exist.");
+      }
+
+      return {
+        ...teacher._doc,
+        _id: teacher.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   createTeacher: async (args) => {
     try {
@@ -40,7 +83,10 @@ module.exports = {
         throw new Error("Teacher exists already.");
       }
 
+      const newTeacherNumber = await CreateTeacherNumber();
+
       const newTeacher = new Teacher({
+        teacherNumber: newTeacherNumber,
         firstName: args.teacherInput.firstName,
         lastName: args.teacherInput.lastName,
         email: args.teacherInput.email,
@@ -58,36 +104,3 @@ module.exports = {
     }
   },
 };
-
-/*
-
-
-query {
-  teachers {
-      _id
-      firstName
-      lastName
-      email
-      phoneNumber
-  }
-}
-
-
-
-mutation {
-  createTeacher(teacherInput: {
-      firstName: "t-f1"
-      lastName: "t-l1"
-      email: "t-e1"
-      phoneNumber: "t-p1"
-  }) {
-      _id
-      firstName
-      lastName
-      email
-      phoneNumber
-  }
-}
-
-
-*/

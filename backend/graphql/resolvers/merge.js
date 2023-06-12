@@ -1,5 +1,6 @@
 const Student = require("../../models/student");
 const Teacher = require("../../models/teacher");
+const Admin = require("../../models/admin");
 
 const { dateToString } = require("../../utils/date");
 
@@ -112,6 +113,19 @@ const student = async (stuId) => {
     return {
       ...fetchedStudent._doc,
       _id: fetchedStudent.id,
+    };
+  } catch (err) {
+    throw err;
+  }
+};
+
+const admin = async (adminId) => {
+  try {
+    const fetchedAdmin = await Admin.findById(adminId);
+
+    return {
+      ...fetchedAdmin._doc,
+      _id: fetchedAdmin.id,
     };
   } catch (err) {
     throw err;

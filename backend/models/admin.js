@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const teacherSchema = new Schema({
-  teacherNumber: {
+const adminSchema = new Schema({
+  adminNumber: {
     type: String,
     required: true,
   },
@@ -15,14 +15,14 @@ const teacherSchema = new Schema({
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-  },
   phoneNumber: {
     type: String,
     required: true,
   },
+  permissionLevel: {
+    type: Number,
+    required: true,
+  },
 });
 
-module.exports = mongoose.model("Teacher", teacherSchema);
+module.exports = mongoose.model("Admin", adminSchema);

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const profileInfoSchema = new Schema(
+const profileInfoPendingSchema = new Schema(
   {
     student: {
       type: Schema.Types.ObjectId,
@@ -17,4 +17,4 @@ const profileInfoSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("ProfileInfo", profileInfoSchema);
+module.exports = mongoose.model("ProfileInfoPending", profileInfoPendingSchema);

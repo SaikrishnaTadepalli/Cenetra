@@ -1,5 +1,29 @@
 const Student = require("../../models/student");
 
+const getNewNum = (numDigits) => {
+  const min = 10 ** (numDigits - 1);
+  const max = 10 ** numDigits - 1;
+  return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+};
+
+const CreateStudentNumber = async () => {
+  let number = getNewNum(8);
+
+  while (true) {
+    const fetchedStudent = await Student.findOne({
+      studentNumber: number,
+    });
+
+    if (!fetchedStudent) {
+      break;
+    }
+
+    number = getNewNum(8);
+  }
+
+  return number;
+};
+
 module.exports = {
   // Queries
   students: async () => {
@@ -59,8 +83,10 @@ module.exports = {
         throw new Error("Student exists already.");
       }
 
+      const newStudentNumber = await CreateStudentNumber();
+
       const newStudent = new Student({
-        studentNumber: args.studentInput.studentNumber,
+        studentNumber: newStudentNumber,
         firstName: args.studentInput.firstName,
         lastName: args.studentInput.lastName,
         primaryContactNumber: args.studentInput.primaryContactNumber,
@@ -77,35 +103,3 @@ module.exports = {
     }
   },
 };
-
-/*
-
-
-query {
-  students {
-      _id
-      firstName
-      lastName
-      studentNumber
-      primaryContactNumber
-  }
-}
-
-
-mutation {
-  createStudent(studentInput: {
-      firstName: "s-f1"
-      lastName: "s-l1"
-      studentNumber: "s-s1"
-      primaryContactNumber: "s-p1"
-  }) {
-      _id
-      firstName
-      lastName
-      studentNumber
-      primaryContactNumber
-  }
-}
-
-
-*/

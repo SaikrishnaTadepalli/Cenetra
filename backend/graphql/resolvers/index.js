@@ -2,6 +2,7 @@ const classResolver = require("./class");
 const logResolver = require("./log");
 const studentResolver = require("./student");
 const teacherResolver = require("./teacher");
+const adminResolver = require("./admin");
 const noticeResolver = require("./notice");
 const mediaResolver = require("./media");
 const profileInfoResolver = require("./profileInfo");
@@ -12,6 +13,7 @@ const rootResolver = {
   ...logResolver,
   ...studentResolver,
   ...teacherResolver,
+  ...adminResolver,
   ...noticeResolver,
   ...mediaResolver,
   ...profileInfoResolver,
