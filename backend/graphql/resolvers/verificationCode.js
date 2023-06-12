@@ -105,23 +105,3 @@ module.exports = {
     }
   },
 };
-
-/*
-
-query {
-    verifyCode(studentId: "6462cf2be55c98895096ea49" code: "493794") 
-}
-
-
-mutation {
-    sendSMSCode(studentId: "6462cf2be55c98895096ea49")  {
-        _id
-        student {
-            _id
-            firstName
-        }
-        code
-    }
-}
-
-*/

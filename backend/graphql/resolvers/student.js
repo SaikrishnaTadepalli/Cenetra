@@ -103,35 +103,3 @@ module.exports = {
     }
   },
 };
-
-/*
-
-
-query {
-  students {
-      _id
-      firstName
-      lastName
-      studentNumber
-      primaryContactNumber
-  }
-}
-
-
-mutation {
-  createStudent(studentInput: {
-      firstName: "s-f1"
-      lastName: "s-l1"
-      studentNumber: "s-s1"
-      primaryContactNumber: "s-p1"
-  }) {
-      _id
-      firstName
-      lastName
-      studentNumber
-      primaryContactNumber
-  }
-}
-
-
-*/

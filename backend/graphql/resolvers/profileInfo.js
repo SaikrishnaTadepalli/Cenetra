@@ -186,30 +186,3 @@ module.exports = {
     }
   },
 };
-
-/*
-query {
-    getProfileInfo(studentId: "6462cf2be55c98895096ea49") {
-        _id
-        student {
-            _id
-            firstName
-        }
-        details
-    }
-}
-
-
-
-mutation {
-    addProfileInfo(studentId: "6462cf2be55c98895096ea49" details: "ProfileInfo Data 1 for Student 1") {
-        _id
-        student {
-            _id
-            firstName
-        }
-        details
-    }
-}
-
-*/

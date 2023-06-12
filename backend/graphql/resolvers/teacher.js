@@ -104,36 +104,3 @@ module.exports = {
     }
   },
 };
-
-/*
-
-
-query {
-  teachers {
-      _id
-      firstName
-      lastName
-      email
-      phoneNumber
-  }
-}
-
-
-
-mutation {
-  createTeacher(teacherInput: {
-      firstName: "t-f1"
-      lastName: "t-l1"
-      email: "t-e1"
-      phoneNumber: "t-p1"
-  }) {
-      _id
-      firstName
-      lastName
-      email
-      phoneNumber
-  }
-}
-
-
-*/
