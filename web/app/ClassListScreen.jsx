@@ -7,11 +7,14 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "expo-router";
+import moment from "moment-timezone";
 
 import colors from "../src/constants/Colors";
 import DailyLogsScreen from "./DailyLogs";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogs } from "../src/redux/logsSlice";
+import CreateLogScreen from "./CreateLogScreen";
+import LogScreen from "./LogScreen";
 
 const ClassListScreen = () => {
   const s = localStorage.getItem("students");
@@ -21,15 +24,24 @@ const ClassListScreen = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const dispatch = useDispatch();
   const router = useRouter();
-  const [name, setName] = useState(
-    students.length > 0 ? students[0].firstName + students[0].lastName : ""
-  );
-  const [studentID, setStudentID] = useState(students[0]._id);
+  const [name, setName] = useState("");
+  const [studentID, setStudentID] = useState("");
+  const [date, setDate] = useState("");
+  const [isOldLogSelected, setIsOldLogSelected] = useState(false);
+  const [isStudentNameSelected, setIsStudentNameSelected] = useState(false);
+  const [logID, setLogID] = useState("");
+  const curDate = moment().format("MMMM D, YYYY");
+
+  const onClickLog = (logID) => {
+    setIsOldLogSelected(true);
+    setLogID(logID);
+  };
   const handleClick = (name, studentID) => {
     //router.push(`/${name}`);
     //router.push("/LoginScreen");
     setName(name);
     setStudentID(studentID);
+    setIsStudentNameSelected(true);
     dispatch(fetchLogs(studentID))
       .then(() => {})
       .catch((error) => console.log(error));
@@ -39,23 +51,34 @@ const ClassListScreen = () => {
       router.push("/LoginScreen");
     }
   }, [isLoggedIn]);
-
+  // console.log(isOldLogSelected);
   return (
-    <ScrollView
+    <View
       style={styles.container}
       nestedScrollEnabled={true}
-      contentContainerStyle={{ paddingBottom: 60 }}
+      // contentContainerStyle={{ paddingBottom: 60 }}
+      showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.header}>My Class</Text>
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        <ScrollView contentContainerStyle={styles.listView}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Class List</Text>
+        <Text style={styles.subHeaderText}>My Class</Text>
+      </View>
+      <View style={{ flexDirection: "row", height: "100%" }}>
+        <ScrollView
+          contentContainerStyle={styles.listView}
+          showsVerticalScrollIndicator={false}
+        >
           {students.map((student, idx) => (
             <TouchableOpacity
-              style={styles.buttonContainer}
+              style={[
+                styles.cardContainer,
+                {
+                  backgroundColor:
+                    student._id === studentID
+                      ? "rgba(187, 157, 191, 0.4)"
+                      : "rgba(217, 217, 217, 0.3)",
+                },
+              ]}
               key={`name-${idx}`}
               onPress={() =>
                 handleClick(
@@ -64,21 +87,68 @@ const ClassListScreen = () => {
                 )
               }
             >
-              <Text>{student.firstName + " " + student.lastName}</Text>
+              <Text
+                style={[
+                  styles.nameText,
+                  {
+                    color: student._id === studentID ? "#4F0059" : "#5E5E5E",
+                  },
+                ]}
+              >
+                {student.firstName + " " + student.lastName}
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
         <View
           style={{
-            flex: 2,
-            marginLeft: "-20%",
-            alignContent: "center",
+            flexDirection: "row",
+            height: "100%",
+            width: "50%",
+            marginTop: -45,
+            // backgroundColor: "pink",
           }}
         >
-          <DailyLogsScreen name={name} studentID={studentID} />
+          <View style={styles.verticalDivider} />
+          {isStudentNameSelected ? (
+            <DailyLogsScreen
+              name={name}
+              studentID={studentID}
+              setIsStudentNameSelected={setIsStudentNameSelected}
+              setIsOldLogSelected={setIsOldLogSelected}
+              setDate={setDate}
+              setLogID={setLogID}
+            />
+          ) : name === "" ? (
+            <View style={styles.emptyStateContainer}>
+              <Text style={styles.emptyStateMessage}>
+                Select a name to view a log.
+              </Text>
+            </View>
+          ) : (
+            <View>
+              {isOldLogSelected ? (
+                <LogScreen
+                  logID={logID}
+                  setIsOldLogSelected={setIsOldLogSelected}
+                  setDate={setDate}
+                  curDate={curDate}
+                  name={name}
+                  setLogID={setLogID}
+                />
+              ) : (
+                <CreateLogScreen
+                  date={curDate}
+                  studentID={studentID}
+                  name={name}
+                  logID={logID}
+                />
+              )}
+            </View>
+          )}
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -86,31 +156,55 @@ export default ClassListScreen;
 
 const styles = StyleSheet.create({
   container: {
-    width: "80%",
+    // width: "50%",
+    // height: "100%",
+    // backgroundColor: "pink",
   },
-  header: {
-    fontSize: 20,
+  headerContainer: {
     marginLeft: 30,
-    marginTop: 60,
-    fontWeight: 600,
-    alignSelf: "flex-start",
     marginBottom: 20,
+    marginTop: 60,
+  },
+  headerText: {
+    fontSize: 40,
+    fontFamily: "InterBold",
+    marginBottom: 34,
+  },
+  subHeaderText: {
+    fontSize: 24,
+    fontFamily: "InterSemiBold",
+  },
+  nameText: {
+    fontFamily: "InterMedium",
+    fontSize: 14,
   },
   listView: {
     width: "30%",
     marginLeft: 30,
     //flex: 1,
   },
-  buttonContainer: {
-    width: "100%",
-    minHeight: 40,
-    borderColor: colors.lightGrey,
-    borderWidth: 1,
+  cardContainer: {
+    width: 300,
+    height: 50,
     borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
     justifyContent: "center",
-    backgroundColor: "white",
-    marginBottom: 20,
+    marginBottom: 10,
+    paddingLeft: 10,
+  },
+  verticalDivider: {
+    borderLeftColor: "#D9D9D980",
+    borderLeftWidth: 1,
+    marginRight: 50,
+    marginLeft: "-45%",
+  },
+  emptyStateMessage: {
+    color: "#99B8BE",
+    fontFamily: "InterMedium",
+    fontSize: 16,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    alignSelf: "center",
+    alignItems: "center",
   },
 });

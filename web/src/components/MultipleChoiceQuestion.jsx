@@ -10,10 +10,11 @@ import { RadioButton } from "react-native-paper";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 const MultipleChoiceQuestion = ({
-  headerText,
-  choices,
+  question,
+  answers,
   selectedValue,
   setSelectedValue,
+  disabled,
 }) => {
   const theme = {
     ...DefaultTheme,
@@ -22,28 +23,56 @@ const MultipleChoiceQuestion = ({
   return (
     <>
       <PaperProvider theme={theme}>
-        <Text style={styles.headerText}>{headerText}</Text>
-        {choices.map((choice, idx) => (
-          <RadioButton.Group
-            onValueChange={(value) => setSelectedValue(value)}
-            value={selectedValue}
-            key={`multiple-choice-${idx}`}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            width: "100%",
+            // backgroundColor: "blue",
+          }}
+        >
+          <Text style={[styles.question, { width: disabled ? "70%" : "30%" }]}>
+            {question}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              width: !disabled ? "60%" : "30%",
+              flexWrap: "wrap",
+            }}
           >
-            <TouchableOpacity
-              onPress={() => setSelectedValue(choice)}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <RadioButton.Item
-                value={choice}
-                status={choice === selectedValue ? "checked" : "unchecked"}
-              />
-              <Text>{choice}</Text>
-            </TouchableOpacity>
-          </RadioButton.Group>
-        ))}
+            {answers.map((choice, idx) => (
+              <RadioButton.Group
+                onValueChange={() => setSelectedValue(choice)}
+                value={selectedValue}
+                key={`multiple-choice-${idx}`}
+              >
+                <TouchableOpacity
+                  onPress={() => setSelectedValue(choice)}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                  disabled={disabled}
+                >
+                  {!disabled && (
+                    <RadioButton.Item
+                      value={choice}
+                      status={
+                        choice === selectedValue ? "checked" : "unchecked"
+                      }
+                    />
+                  )}
+                  {disabled && selectedValue === choice ? (
+                    <Text style={styles.answer}>{choice}</Text>
+                  ) : (
+                    !disabled && <Text style={styles.answer}>{choice}</Text>
+                  )}
+                </TouchableOpacity>
+              </RadioButton.Group>
+            ))}
+          </View>
+        </View>
       </PaperProvider>
     </>
   );
@@ -52,10 +81,16 @@ const MultipleChoiceQuestion = ({
 export default MultipleChoiceQuestion;
 
 const styles = StyleSheet.create({
-  headerText: {
+  question: {
     // alignSelf: "center",
-    fontSize: 18,
-    fontWeight: 600,
-    marginVertical: 20,
+    fontSize: 16,
+    fontFamily: "InterMedium",
+    // marginTop: 30,
+    // backgroundColor: "pink",
+  },
+  answer: {
+    fontSize: 15,
+    fontFamily: "InterRegular",
+    marginLeft: 20,
   },
 });

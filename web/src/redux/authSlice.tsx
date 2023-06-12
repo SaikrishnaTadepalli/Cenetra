@@ -26,21 +26,27 @@ export const loginUser = createAsyncThunk("auth/login", async (teacherID) => {
       body: JSON.stringify({ query }),
     });
     if (response.status !== 200) {
-      console.log(response);
+      if (response.status === 500) {
+        console.error("Error while logging in teacher");
+        throw new Error("Network error");
+      } else if (response.status === 400) {
+        console.log("Invalid access code");
+        throw new Error("Invalid or wrong access code for teacher");
+      }
     }
     const data = await response.json();
 
     return data;
   } catch (error) {
-    console.log(error);
+    console.log("Catch: Error while logging in teacher", error);
   }
 });
 
 export const sendSMS = createAsyncThunk(
   "auth/sendSMS",
-  async (studentID, { rejectWithValue }) => {
+  async (teacherID, { rejectWithValue }) => {
     const query = `mutation {
-      sendSMSCode(studentId: "${studentID}")  {
+      sendSMSCodeTeacher(teacherId: "${teacherID}")  {
           code
       }
   }`;
@@ -54,15 +60,14 @@ export const sendSMS = createAsyncThunk(
       });
       if (response.status !== 200) {
         if (response.status === 500) {
-          console.error("error while sending SMS code");
-          throw new Error("Invalid student ID");
+          console.error("error while sending SMS code to teacher");
+          throw new Error("Invalid teacher ID");
         }
       }
       const data = await response.json();
-
       return data;
     } catch (error) {
-      console.error("loginError in sending smsCODE in mobile", error);
+      console.error("Catch: error while sending SMS code to teacher", error);
       return rejectWithValue(error.message);
     }
   }
@@ -70,11 +75,12 @@ export const sendSMS = createAsyncThunk(
 
 export const verifyLogin = createAsyncThunk(
   "auth/verify",
-  async ({ studentID, code }, { rejectWithValue }) => {
-    //console.log(studentID, code);
+  async ({ teacherID, code }, { rejectWithValue }) => {
+    // console.log(teacherID, code);
     const query = `query {
-      verifyCode(studentId: "${studentID}" code: "${code}")
+      verifyCode(userId: "${teacherID}" code: "${code}")
   }`;
+    console.log(query);
     try {
       const response = await fetch("http://localhost:3000/graphql", {
         method: "POST",
@@ -83,22 +89,21 @@ export const verifyLogin = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
-      //console.log("verifyCode", response);
+      // console.log("verifyCode", response);
       if (response.status !== 200) {
         if (response.status === 500) {
-          console.error("Error while verifying code");
+          console.error("Error while verifying code for teacher");
           throw new Error("Network error");
         } else if (response.status === 400) {
           console.log("Invalid code");
-          throw new Error("Invalid or wrong verification code");
+          throw new Error("Invalid or wrong verification code for teacher");
         }
       }
 
       const data = await response.json();
-
       return data;
     } catch (error) {
-      console.log("Invalid verification code on mobile", error);
+      console.log("Catch: Invalid verification code on web", error);
       return rejectWithValue(error.message);
     }
   }
@@ -162,10 +167,10 @@ export const authSlice = createSlice({
         state.isLoggedIn = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoggedIn = true;
-        state.teacherID = action.meta.arg;
         state.loginLoading = false;
         state.loginError = false;
+        state.isLoggedIn = true;
+        state.teacherID = action.meta.arg;
       })
       .addCase(sendSMS.pending, (state) => {
         state.SMSLoading = true;

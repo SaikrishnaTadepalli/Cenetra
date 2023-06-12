@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 
 const NoticeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -33,44 +34,41 @@ const NoticeScreen = ({ navigation }) => {
     const data = await AsyncStorage.getItem("studentID");
     dispatch(fetchNotices(data))
       .then((response) => {
-        // console.log(response.payload.data);
-        const mainData = response.payload.data.noticesForStudent;
-        var curDate = formatDate(mainData[0].createdAt);
-        var data = [];
+        console.log(response.payload.data);
         const newNotices = [];
+        const mainData = response.payload.data.noticesForStudent;
         mainData.forEach((notice, idx) => {
-          if (formatDate(notice.createdAt) === curDate) {
+          const curDate = formatDate(notice[0].createdAt);
+          const data = [];
+          notice.forEach((item, idx) => {
             data.push({
-              _id: notice._id,
-              createdAt: notice.createdAt,
-              updatedAt: notice.updatedAt,
-              details: notice.details,
-              type: types[idx % 3],
+              _id: item._id,
+              createdAt: item.createdAt,
+              details: item.details,
+              type: item.noticeType,
+              isRead: item.read,
             });
-          } else {
-            newNotices.push({
-              date: curDate,
-              data: data,
-              type: types[idx % 3],
-            });
-            data = [];
-            curDate = formatDate(notice.createdAt);
-            data.push({
-              _id: notice._id,
-              createdAt: notice.createdAt,
-              updatedAt: notice.updatedAt,
-              details: notice.details,
-              type: types[idx % 3],
-            });
-          }
+          });
+          newNotices.push({
+            date: curDate,
+            data: data,
+          });
         });
         setNotices(newNotices);
       })
       .catch((error) => console.log("Error in notices screen", error));
   };
 
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     retrieveData();
+  //     return () => {
+  //       // Clean up any resources if needed
+  //     };
+  //   }, [])
+  // );
+
   useEffect(() => {
-    //console.log("useeffect");
     retrieveData();
   }, []);
 
@@ -79,6 +77,7 @@ const NoticeScreen = ({ navigation }) => {
     retrieveData();
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
+
   return (
     <>
       {error ? (
@@ -102,6 +101,7 @@ const NoticeScreen = ({ navigation }) => {
         !error && (
           <View style={styles.mainContainer}>
             <Text style={styles.titleText}>Notice Board</Text>
+            {notices.length === 0 && <Text>No notices are available.</Text>}
             <SectionList
               sections={notices}
               stickySectionHeadersEnabled={false}
@@ -115,10 +115,11 @@ const NoticeScreen = ({ navigation }) => {
                 <View style={styles.noticesContainer}>
                   <NoticeCard
                     navigation={navigation}
-                    isUnread={true}
+                    isRead={item.isRead}
                     details={item.details}
                     time={item.createdAt}
                     type={item.type}
+                    noticeID={item._id}
                   />
                 </View>
               )}

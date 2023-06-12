@@ -102,21 +102,38 @@ const LogScreen = ({ navigation, route }) => {
                 ) : null
               )}
             </ScrollView>
-            {logs.activities.map((log, index) => (
-              <View key={`log-title-${index}`}>
-                <Text style={[styles.sectionHeader, { color: "" }]}>
-                  {log.sectionHeader}
+            {logs.radioButtonQuestions.map((radioButtonQuestion, index) => (
+              <View
+                key={`radio-button-question-${index}`}
+                style={{
+                  marginBottom: 20,
+                }}
+              >
+                <Text>{radioButtonQuestion.question}</Text>
+                <Text>{radioButtonQuestion.answer}</Text>
+              </View>
+            ))}
+            {logs.checkBoxQuestions.map((checkBoxQuestion, index) => (
+              <View key={`multi-select-question-${index}`}>
+                <Text>{checkBoxQuestion.question}</Text>
+                <Text>{checkBoxQuestion.answer}</Text>
+              </View>
+            ))}
+            {logs.openEndedQuestions.map((openEndedQuestion, index) => (
+              <View
+                key={`open-ended-question-${index}`}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 20,
+                }}
+              >
+                <Text style={styles.question}>
+                  {openEndedQuestion.question}
                 </Text>
-                <View style={[styles.divider, { borderColor: "" }]} />
-                {log.sectionActivities.map((data, idx) => (
-                  <View style={styles.logsContainer} key={`log-info-${idx}`}>
-                    <LogCard
-                      sectionHeaderColor={colors[index % 5]}
-                      title={data.title}
-                      description={data.description}
-                    />
-                  </View>
-                ))}
+                <View style={styles.openEndedAnswerContainer}>
+                  <Text style={styles.answer}>{openEndedQuestion.answer}</Text>
+                </View>
               </View>
             ))}
           </ScrollView>

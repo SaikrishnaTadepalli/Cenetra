@@ -38,53 +38,33 @@ const ProfileCard = ({ sectionHeader, data, title }) => {
       sectionHeader === "PRIMARY CONTACTS" ||
       sectionHeader === "EMERGENCY CONTACTS"
     ) {
-      return data.map((item, idx) => (
-        <View key={`profile-info${idx}`}>
-          <Text style={styles.headerText}>{item.title}</Text>
-          {renderText("Name:", item.name)}
-          {renderText("Relationship:", item.relationship)}
-          {renderButton("Phone Number:", item.phoneNumber)}
-          {renderButton("Email Address:", item.email)}
-          {renderButton("Home Address:", item.address)}
-          {data.indexOf(item) !== data.length - 1 ? (
-            <View style={styles.divider} />
-          ) : null}
+      return (
+        <View style={{ flexDirection: "row" }}>
+          {data.map((item, idx) => (
+            <View key={`profile-info${idx}`} style={styles.cardContainer}>
+              <Text style={styles.headerText}>{item.title} information</Text>
+              {renderText("Name:", item.name)}
+              {renderText("Relationship:", item.relationship)}
+              {renderText("Phone Number:", item.phoneNumber)}
+              {renderText("Email:", item.email)}
+              <View style={styles.infoLineContainer}>
+                <Text style={[styles.infoTypeText, { width: "48%" }]}>
+                  Home address:
+                </Text>
+                <Text style={styles.infoInputText}>
+                  123, Salt Park , Bridgerton Ave sometown, Canada{" "}
+                </Text>
+              </View>
+            </View>
+          ))}
         </View>
-      ));
-    } else if (sectionHeader === "ALLERGIES") {
-      return data.map((item, idx) => (
-        <View key={`profile-info${idx}`}>
-          {renderText("Item:", item.name)}
-          {renderText("Severity:", item.severity)}
-          {data.indexOf(item) !== data.length - 1 ? (
-            <View style={styles.divider} />
-          ) : null}
-        </View>
-      ));
-    } else if (sectionHeader === "MEDICATIONS") {
-      return data.map((item, idx) => (
-        <View key={`profile-info${idx}`}>
-          {renderText("Medicine Name:", item.name)}
-          {renderText("Dosage:", item.dosage)}
-          {renderText("Frequency:", item.frequency)}
-          {data.indexOf(item) !== data.length - 1 ? (
-            <View style={styles.divider} />
-          ) : null}
-        </View>
-      ));
-    } else if (sectionHeader === "BLOOD GROUP") {
-      return data.map((item, idx) => (
-        <View key={`profile-info${idx}`}>{renderText("", item.name)}</View>
-      ));
+      );
     }
   };
 
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.infoContainer}>
-        <Text style={styles.sectionHeaderText}>{sectionHeader}</Text>
-        {renderInfo()}
-      </View>
+    <View>
+      <View style={styles.infoContainer}>{renderInfo()}</View>
     </View>
   );
 };
@@ -93,17 +73,24 @@ export default ProfileCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: "100%",
-    backgroundColor: "white",
-    paddingVertical: 16,
-    borderColor: Colors.lightGrey,
+    // width: "100%",
+    backgroundColor: "#D9D9D94D",
+    width: 400,
+    height: 250,
+    marginBottom: 40,
+    borderRadius: 5,
+    paddingLeft: 20,
+    marginRight: 40,
+  },
+  whiteCardContainer: {
+    width: 400,
+    paddingBottom: 10,
+    borderColor: "#D9D9D980",
     borderWidth: 1,
-    borderRadius: 10,
-    shadowColor: Colors.lightGrey,
-    shadowOffset: { height: 5 },
-    shadowRadius: 5,
-    shadowOpacity: 0.2,
+    borderRadius: 5,
     marginBottom: 10,
+    paddingLeft: 20,
+    marginRight: 40,
   },
   infoContainer: {
     marginLeft: 10,
@@ -117,12 +104,12 @@ const styles = StyleSheet.create({
   headerText: {
     color: "black",
     fontFamily: "InterSemiBold",
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: 20,
+    marginVertical: 12,
   },
   infoLineContainer: {
     flexDirection: "row",
-    marginBottom: 8,
+    marginBottom: 10,
     width: "100%",
   },
   infoTypeText: {
@@ -132,18 +119,18 @@ const styles = StyleSheet.create({
   },
   infoInputText: {
     fontSize: 16,
-    fontFamily: "InterRegular",
-    width: "100%",
+    fontFamily: "InterMedium",
+    flexWrap: "wrap",
   },
   healthInfoContainer: {
     flexDirection: "row",
   },
   divider: {
-    borderColor: Colors.lightGrey,
+    borderColor: "#23342C",
     width: "95%",
     marginRight: 10,
-    marginVertical: 10,
+    marginBottom: 14,
     alignSelf: "center",
-    borderWidth: 0.5,
+    borderWidth: 0.7,
   },
 });

@@ -80,9 +80,9 @@ const ProfileScreen = ({ navigation }) => {
             }
           >
             <View style={styles.profileContainer}>
-              <TouchableOpacity onPress={onPressEdit}>
+              {/* <TouchableOpacity onPress={onPressEdit}>
                 <Text style={styles.buttonText}>Edit</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <View style={styles.imageAndChildInfoContainer}>
                 <Image
                   source={{ uri: studentInfo.uri }}

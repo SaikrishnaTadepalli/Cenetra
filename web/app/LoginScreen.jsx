@@ -4,13 +4,19 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
 
 import colors from "../src/constants/Colors";
-import { setStudents, loginUser, logout } from "../src/redux/authSlice";
+import {
+  setStudents,
+  loginUser,
+  logout,
+  sendSMS,
+} from "../src/redux/authSlice";
 import accessCodeMapping from "../api/data";
 
 const LoginScreen = () => {
@@ -18,42 +24,19 @@ const LoginScreen = () => {
   const router = useRouter();
   const [accessCode, setAccessCode] = useState("");
   const [isError, setIsError] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const students = [];
   const { loginLoading, loginError } = useSelector((state) => state.auth);
-  const state = useSelector((state) => state);
 
   async function handleClick() {
     const teacherID = accessCodeMapping[accessCode];
     if (teacherID) {
-      dispatch(loginUser(teacherID))
-        .then((response) => {
-          if (!loginLoading && !loginError) {
-            router.push("/HomeScreen");
-            //router.push("/VerificationScreen");
-            setIsError("");
-            setIsVerified(true);
-            response.payload.data.classes.forEach((element) => {
-              if (element.teacher._id === teacherID) {
-                element.students.forEach((s) => {
-                  students.push(s);
-                });
-                return;
-              }
-            });
-            dispatch(setStudents(students));
-            localStorage.setItem("teacherID", teacherID);
-            localStorage.setItem("isLoggedIn", "true");
-            const stringifiedDetails = JSON.stringify({ students })
-              .replace(/\\/g, "\\\\") // Escape backslashes
-              .replace(/"/g, '\\"');
-            localStorage.setItem("students", `"${stringifiedDetails}"`);
-          } else if (loginError) {
-            setIsError("Something went wrong. Please try again.");
-            setTimeout(() => setIsError(""), 1000);
-          }
-        })
-        .catch((error) => setIsError(true));
+      router.push("/VerificationScreen");
+      localStorage.setItem("teacherID", teacherID);
+      setIsDisabled(true);
+      dispatch(sendSMS(teacherID))
+        .then(() => {})
+        .catch((error) => console.error("Error in sending SMS", error));
     } else {
       setIsError("Invalid access code.");
       setTimeout(() => setIsError(""), 1000);
@@ -61,8 +44,8 @@ const LoginScreen = () => {
   }
 
   return (
-    <>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.loginContainer}>
         <Text style={styles.welcomeText}>Welcome to Cenetra</Text>
         <View style={styles.inputContainer}>
           <TextInput
@@ -82,11 +65,25 @@ const LoginScreen = () => {
         <TouchableOpacity
           style={styles.loginButtonContainer}
           onPress={handleClick}
+          isDisabled={isDisabled}
         >
-          <Text style={styles.loginButtonText}>Login</Text>
+          <Text
+            style={[styles.loginButtonText, { opacity: isDisabled ? 0.5 : 1 }]}
+          >
+            Verify
+          </Text>
         </TouchableOpacity>
       </View>
-    </>
+      <View style={styles.imageContainer}>
+        <Image
+          source={require("../assets/images/loginIllustration.png")}
+          style={{
+            width: "100%",
+            height: "85%",
+          }}
+        />
+      </View>
+    </View>
   );
 };
 
@@ -94,10 +91,13 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
-    width: "50%",
-    alignSelf: "flex-start",
+    flexDirection: "row",
     alignItems: "center",
-    marginTop: "15%",
+    height: "100%",
+  },
+  loginContainer: {
+    width: "40%",
+    alignItems: "center",
   },
   welcomeText: {
     fontSize: 64,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: 332,
     marginBottom: 35,
-    marginRight: 100,
+    marginRimaght: 10,
   },
   inputHeader: {
     alignSelf: "flex-start",
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     height: 45,
     backgroundColor: "#23342C",
     borderRadius: 100,
-    marginRight: 100,
+    marginRight: 20,
   },
   loginButtonText: {
     alignSelf: "center",
@@ -144,5 +144,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 14,
     alignSelf: "center",
+  },
+  imageContainer: {
+    backgroundColor: "#F8EDEB",
+    width: "60%",
+    height: "100%",
+    justifyContent: "flex-end",
   },
 });

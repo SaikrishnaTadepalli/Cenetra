@@ -19,6 +19,7 @@ import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 import { Checkbox } from "react-native-paper";
 import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import typeColorMapping from "../api/typeColorMapping";
+import Dropdown from "../src/components/DropDown";
 
 const CreateNoticeScreen = ({ date }) => {
   const [isEditable, setEditable] = useState(true);
@@ -30,7 +31,6 @@ const CreateNoticeScreen = ({ date }) => {
   const s = localStorage.getItem("students");
   const s2 = JSON.parse(s);
   const students = JSON.parse(s2).students;
-  const [selectedStudents, setSelectedStudents] = useState([]);
   const [subject, setSubject] = useState("");
   const [details, setDetails] = useState("");
   const [isCancelled, setIsCancelled] = useState(false);
@@ -39,13 +39,38 @@ const CreateNoticeScreen = ({ date }) => {
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewNoticeSelected = getIsNewNoticeAdded(state);
   const types = ["Urgent", "Serious", "Casual"];
-  const [selectedValue, setSelectedValue] = useState(types[0]);
-  const studentNames = students.map(
+  const [selectedType, setSelectedType] = useState(types[0]);
+  const studentInfo = students.map(
     (student) => student.firstName + " " + student.lastName
   );
+  const [selectedStudents, setSelectedStudents] = useState(studentInfo);
+
+  const handleCheckboxSelection = (input) => {
+    const idx = selectedStudents.indexOf(input);
+    const selected = [...selectedStudents];
+    if (idx !== -1) {
+      selected.splice(idx, 1);
+      setSelectedStudents(selected);
+    } else {
+      selected.push(input);
+      setSelectedStudents(selected);
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (studentInfo.length === selectedStudents.length) {
+      // Deselect all options
+      setSelectedStudents([]);
+    } else {
+      // Select all options
+      setSelectedStudents(studentInfo);
+    }
+  };
 
   const onSave = () => {
     const teacherID = localStorage.getItem("teacherID");
+
+    //console.log(selectedStudents);
     if (subject && details) {
       const newNotice = {
         subject: subject,
@@ -57,12 +82,13 @@ const CreateNoticeScreen = ({ date }) => {
         )
         .map(({ _id }) => `"${_id}"`);
       // const studentIDs = students.map(({ _id }) => `"${_id}"`);
-      // console.log(studentIDs);
+      //console.log(selectedStudents, selectedType);
       dispatch(
         createNotices({
           teacherID: teacherID,
           studentIDs: studentIDs,
           details: newNotice,
+          noticeType: selectedType,
         })
       )
         .then(() => {
@@ -103,17 +129,18 @@ const CreateNoticeScreen = ({ date }) => {
   const renderFlag = () => {
     return (
       <View style={{ flexDirection: "row" }}>
-        {types.map((type) => (
+        {types.map((type, idx) => (
           <TouchableOpacity
             style={[
               styles.noticeTypeContainer,
               {
                 borderColor: typeColorMapping[type],
                 backgroundColor:
-                  selectedValue === type ? typeColorMapping[type] : "white",
+                  selectedType === type ? typeColorMapping[type] : "white",
               },
             ]}
-            onPress={() => setSelectedValue(type)}
+            onPress={() => setSelectedType(type)}
+            key={`notice-type-${idx}`}
           >
             <View
               style={[
@@ -136,12 +163,14 @@ const CreateNoticeScreen = ({ date }) => {
           <View style={styles.container}>
             <Text style={styles.headerText}>Create a new notice</Text>
             <Text style={styles.date}>{date}</Text>
-            {/* <MultiSelectQuestion
-              question="Select all students to send the notice to."
-              answers={studentNames}
-              checkedItems={selectedStudents}
-              setCheckedItems={setSelectedStudents}
-            /> */}
+            <View style={{ marginBottom: 20 }}>
+              <Dropdown
+                options={studentInfo}
+                selectedOptions={selectedStudents}
+                setSelectedOptions={handleCheckboxSelection}
+                onSelectAll={handleSelectAll}
+              />
+            </View>
             <View>
               <Text style={styles.inputHeaderText}>Subject</Text>
               <TextInput
@@ -205,7 +234,7 @@ export default CreateNoticeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "red",
+    //backgroundColor: "red",
     width: "80%",
     height: "100%",
   },

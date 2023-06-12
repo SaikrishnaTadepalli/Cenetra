@@ -40,7 +40,7 @@ export const sendSMS = createAsyncThunk(
   "auth/sendSMS",
   async (studentID, { rejectWithValue }) => {
     const query = `mutation {
-      sendSMSCode(studentId: "${studentID}")  {
+      sendSMSCodeStudent(studentId: "${studentID}")  {
           code
       }
   }`;
@@ -73,7 +73,7 @@ export const verifyLogin = createAsyncThunk(
   async ({ studentID, code }, { rejectWithValue }) => {
     //console.log(studentID, code);
     const query = `query {
-      verifyCode(studentId: "${studentID}" code: "${code}") 
+      verifyCode(userId: "${studentID}" code: "${code}") 
   }`;
     try {
       const response = await fetch("http://localhost:3000/graphql", {

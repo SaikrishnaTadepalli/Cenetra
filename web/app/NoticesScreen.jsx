@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import colors from "../src/constants/Colors";
 import CreateNoticeScreen from "./CreateNoticeScreen";
@@ -23,7 +23,8 @@ const NoticesScreen = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
   const state = useSelector((state) => state);
-  const { fetchNoticesPending } = state.notices;
+  const { fetchNoticesPending, isNewNoticeAdded, createNoticesSuccessful } =
+    state.notices;
   const { isLoggedIn } = state.auth;
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
@@ -31,8 +32,8 @@ const NoticesScreen = () => {
   const [noticeID, setNoticeID] = useState("");
   const isDisabled = false;
   const [notices, setNotices] = useState([]);
-  const types = ["Urgent", "Serious", "Casual"];
   const [isExpanded, setIsExpanded] = useState({});
+  const [error, setError] = useState("");
 
   const handleButtonPress = (buttonId) => {
     setIsExpanded((prevState) => ({
@@ -48,10 +49,10 @@ const NoticesScreen = () => {
   };
 
   const onClickNotice = (id) => {
-    console.log(id);
     setisOldNoticeSelected(true);
     setNoticeID(id);
   };
+
   const formatDate = (date) => {
     return moment(date).format("DD MMMM YYYY");
   };
@@ -59,45 +60,65 @@ const NoticesScreen = () => {
   const retrieveData = () => {
     const teacherID = localStorage.getItem("teacherID");
     dispatch(fetchNotices(teacherID)).then((response) => {
-      //console.log(response);
-      const mainData = response.payload.data.noticesByTeacher;
-      var curDate = formatDate(mainData[0].createdAt);
-      var data = [];
-      const newNotices = [];
-      mainData.forEach((notice, idx) => {
-        // console.log(formatDate(notice.createdAt), curDate);
-        if (formatDate(notice.createdAt) === curDate) {
-          data.push({
-            _id: notice._id,
-            createdAt: notice.createdAt,
-            updatedAt: notice.updatedAt,
-            details: notice.details,
-            type: types[idx % 3],
+      if (response.error) {
+        setError("Something went wrong, please try again.");
+      } else {
+        const newNotices = [];
+        const mainData = response.payload.data.noticesByTeacher;
+        mainData.forEach((notice, idx) => {
+          const curDate = formatDate(notice[0].createdAt);
+          const data = [];
+          notice.forEach((item, idx) => {
+            data.push({
+              _id: item._id,
+              createdAt: item.createdAt,
+              details: item.details,
+              type: item.noticeType,
+            });
           });
-        } else {
-          console.log("add to new notice");
           newNotices.push({
             date: curDate,
             data: data,
-            type: types[idx % 3],
           });
-          data = [];
-          curDate = formatDate(notice.createdAt);
-          data.push({
-            _id: notice._id,
-            createdAt: notice.createdAt,
-            updatedAt: notice.updatedAt,
-            details: notice.details,
-            type: types[idx % 3],
-          });
-        }
-      });
-      setNotices(newNotices);
+        });
+        setNotices(newNotices);
+        // var curDate = formatDate(mainData[0].createdAt);
+        // var data = [];
+        // const newNotices = [];
+        // mainData.forEach((notice, idx) => {
+        //   // console.log(formatDate(notice.createdAt), curDate);
+        //   if (formatDate(notice.createdAt) === curDate) {
+        //     data.push({
+        //       _id: notice._id,
+        //       createdAt: notice.createdAt,
+        //       updatedAt: notice.updatedAt,
+        //       details: notice.details,
+        //       type: types[idx % 3],
+        //     });
+        //   } else {
+        //     console.log("add to new notice");
+        //     newNotices.push({
+        //       date: curDate,
+        //       data: data,
+        //       type: types[idx % 3],
+        //     });
+        //     data = [];
+        //     curDate = formatDate(notice.createdAt);
+        //     data.push({
+        //       _id: notice._id,
+        //       createdAt: notice.createdAt,
+        //       updatedAt: notice.updatedAt,
+        //       details: notice.details,
+        //       type: types[idx % 3],
+        //     });
+      }
     });
+    // setNotices([]);
   };
+
   useEffect(() => {
     retrieveData();
-  }, []);
+  }, [createNoticesSuccessful]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -173,6 +194,7 @@ const NoticesScreen = () => {
       </TouchableOpacity>
     );
   };
+
   return (
     <>
       <View style={styles.container}>
@@ -183,7 +205,17 @@ const NoticesScreen = () => {
         <View style={{ flexDirection: "row" }}>
           <>
             {fetchNoticesPending ? (
-              <Text>Retrieving data...</Text>
+              <View
+                style={{
+                  flex: 3,
+                  width: "50%",
+                  marginLeft: notices.length > 0 ? "-15%" : 500,
+                  marginTop: "-5%",
+                  flexDirection: "row",
+                }}
+              >
+                <Text>Retrieving data...</Text>
+              </View>
             ) : notices && notices.length > 0 ? (
               <>
                 <SectionList
@@ -196,23 +228,49 @@ const NoticesScreen = () => {
                   renderItem={renderItem}
                   renderSectionHeader={renderSectionHeader}
                 />
+                {/* <View
+                  style={{
+                    flex: 3,
+                    marginLeft: "-15%",
+                    marginTop: "-5%",
+                    flexDirection: "row",
+                  }}
+                >
+                  <View style={styles.verticalDivider} />
+                  <View style={{ flexDirection: "column", width: "100%" }}>
+                    {!isNewNoticeAdded || isOldNoticeSelected ? (
+                      <TouchableOpacity
+                        style={
+                          isDisabled
+                            ? [styles.buttonContainer, styles.disabled]
+                            : styles.buttonContainer
+                        }
+                        onPress={handleClick}
+                        disabled={isDisabled}
+                      >
+                        <Text style={styles.buttonText}>Create notice</Text>
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                </View> */}
               </>
-            ) : (
+            ) : error !== "" ? (
               <View>
-                <Text>No notices are available.</Text>
+                <Text>{error}</Text>
               </View>
-            )}
+            ) : null}
             <View
               style={{
                 flex: 3,
-                marginLeft: "-15%",
+                width: "50%",
+                marginLeft: notices.length > 0 ? "-15%" : 500,
                 marginTop: "-5%",
                 flexDirection: "row",
               }}
             >
               <View style={styles.verticalDivider} />
-              {isOldNoticeSelected ? (
-                <View style={{ flexDirection: "column" }}>
+              <View style={{ flexDirection: "column", width: "100%" }}>
+                {!isNewNoticeAdded || isOldNoticeSelected ? (
                   <TouchableOpacity
                     style={
                       isDisabled
@@ -222,26 +280,35 @@ const NoticesScreen = () => {
                     onPress={handleClick}
                     disabled={isDisabled}
                   >
+                    <MaterialCommunityIcons
+                      name="pencil-outline"
+                      size={20}
+                      color="#024552"
+                    />
                     <Text style={styles.buttonText}>Create notice</Text>
                   </TouchableOpacity>
+                ) : null}
+                {isOldNoticeSelected ? (
                   <NoticeScreen id={noticeID} />
-                </View>
-              ) : date !== "" ? (
-                <CreateNoticeScreen date={date} />
-              ) : (
-                <View
-                  style={{
-                    flex: 1,
-                    alignSelf: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <EmptyState />
-                  <Text style={styles.emptyStateMessage}>
-                    Select a notice to view.
-                  </Text>
-                </View>
-              )}
+                ) : isNewNoticeAdded ? (
+                  <CreateNoticeScreen date={date} />
+                ) : (
+                  notices &&
+                  notices.length > 0 && (
+                    <View
+                      style={{
+                        flex: 1,
+                        alignSelf: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={styles.emptyStateMessage}>
+                        Select a notice to view.
+                      </Text>
+                    </View>
+                  )
+                )}
+              </View>
             </View>
           </>
         </View>
@@ -294,29 +361,32 @@ const styles = StyleSheet.create({
   cardContainer: {
     // width: "100%",
     minHeight: 45,
-    borderColor: colors.lightGrey,
+    borderColor: "#A0B2AF",
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 16,
     paddingVertical: 8,
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: "#D9D9D933",
     marginBottom: 20,
   },
   buttonContainer: {
     marginVertical: 20,
-    backgroundColor: "#23342C",
+    backgroundColor: "#99B8BE99",
     height: 40,
     width: 150,
     borderRadius: 10,
-    justifyContent: "center",
+    paddingHorizontal: 10,
+    justifyContent: "space-around",
+    flexDirection: "row",
+    alignItems: "center",
   },
   disabled: {
     opacity: 0.5,
   },
   buttonText: {
     alignSelf: "center",
-    color: "#99B8BE",
+    color: "#024552",
     fontFamily: "InterMedium",
   },
   subject: {

@@ -25,11 +25,16 @@ export const fetchProfile = createAsyncThunk(
       if (response.status !== 200) {
         if (response.status === 500) {
           throw new Error(
-            "Response status 500: Error while fetching student profile"
+            "Response status 500: Error while fetching student profile for teacher"
           );
+          //return "500";
         } else if (response.status === 400) {
-          console.log("Response status 400 while fetching student profile");
-          throw new Error("Response status 400 while fetching student profile");
+          console.log(
+            "Response status 400 while fetching student profile for teacher"
+          );
+          throw new Error(
+            "Response status 400 while fetching student profile for teacher"
+          );
         }
       }
       const data = await response.json();
@@ -42,7 +47,10 @@ export const fetchProfile = createAsyncThunk(
       };
       return result;
     } catch (error) {
-      console.error("Error while fetching student profile", error);
+      console.error(
+        "Catch: Error while fetching student profile for teacher",
+        error
+      );
       return rejectWithValue(error.message);
     }
   }

@@ -5,7 +5,11 @@ import moment from "moment-timezone";
 
 const NoticeScreen = ({ id }) => {
   const { notices } = useSelector((state) => state.notices);
-  const notice = notices.find((notice) => (notice ? notice._id === id : null));
+
+  const notice = notices
+    .flatMap((innerArray) => innerArray)
+    .find((obj) => obj._id === id);
+
   const details = notice ? JSON.parse(notice.details) : "";
 
   const renderFlag = (type) => {
@@ -29,7 +33,6 @@ const NoticeScreen = ({ id }) => {
       </View>
     );
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.date}>
@@ -44,9 +47,9 @@ const NoticeScreen = ({ id }) => {
             alignItems: "center",
           }}
         >
-          {renderFlag("Urgent")}
+          {notice && renderFlag(notice.noticeType)}
           <Text style={styles.timeText}>
-            {moment(notice.createdAt).format("H:mm a")}
+            {notice && moment(notice.createdAt).format("H:mm a")}
           </Text>
         </View>
       </View>
