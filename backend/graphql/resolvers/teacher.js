@@ -1,5 +1,29 @@
 const Teacher = require("../../models/teacher");
 
+const getNewNum = (numDigits) => {
+  const min = 10 ** (numDigits - 1);
+  const max = 10 ** numDigits - 1;
+  return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+};
+
+const CreateTeacherNumber = async () => {
+  let number = getNewNum(8);
+
+  while (true) {
+    const fetchedTeacher = await Teacher.findOne({
+      teacherNumber: number,
+    });
+
+    if (!fetchedTeacher) {
+      break;
+    }
+
+    number = getNewNum(8);
+  }
+
+  return number;
+};
+
 module.exports = {
   // Queries
   teachers: async () => {
@@ -40,7 +64,10 @@ module.exports = {
         throw new Error("Teacher exists already.");
       }
 
+      const newTeacherNumber = await CreateTeacherNumber();
+
       const newTeacher = new Teacher({
+        teacherNumber: newTeacherNumber,
         firstName: args.teacherInput.firstName,
         lastName: args.teacherInput.lastName,
         email: args.teacherInput.email,

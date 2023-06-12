@@ -5,6 +5,7 @@ module.exports = buildSchema(`
 
 type Teacher {
     _id: ID!
+    teacherNumber: String!
     firstName: String!
     lastName: String!
     email: String!
@@ -17,6 +18,15 @@ type Student {
     firstName: String!
     lastName: String!
     primaryContactNumber: String!
+}
+
+type Admin {
+    _id: ID!
+    adminNumber: String!
+    firstName: String!
+    lastName: String!
+    phoneNumber: String!
+    permissionLevel: Int!
 }
 
 type Class {
@@ -62,9 +72,10 @@ type ProfileInfo {
     details: String!
     createdAt: String!
     updatedAt: String!
+    approverName: String
 }
 
-union User = Student | Teacher
+union User = Student | Teacher | Admin
 
 type VerificationCode {
     _id: ID!
@@ -83,19 +94,30 @@ input TeacherInput {
 }
 
 input StudentInput {
-    studentNumber: String!
     firstName: String!
     lastName: String!
     primaryContactNumber: String!
 }
 
+input AdminInput {
+    firstName: String!
+    lastName: String!
+    phoneNumber: String!
+    permissionLevel: Int!
+}
+
 type RootQuery {
     teachers: [Teacher!]!
     teacherById(teacherId: ID!): Teacher!
+    teacherByTeacherNumber(teacherNumber: String!): Teacher!
 
     students: [Student!]!
     studentById(studentId: ID!): Student!
     studentByStudentNumber(studentNumber: String!): Student!
+
+    admins: [Admin!]!
+    adminById(adminId: ID!): Admin!
+    adminByAdminNumber(adminNumber: String!): Admin!
 
     classes: [Class!]!
     classById(classId: ID!): Class!
@@ -116,6 +138,7 @@ type RootQuery {
 
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
     getLatestProfileInfo(studentId: ID!): ProfileInfo!
+    getPendingProfileInfo(studentId: ID!): ProfileInfo
 
     verifyCode(userId: ID!, code: String!): Boolean!
 }
@@ -125,6 +148,8 @@ type RootMutation {
     createTeacher(teacherInput: TeacherInput!): Teacher!
 
     createStudent(studentInput: StudentInput!): Student!
+
+    createAdmin(adminInput: AdminInput!): Admin!
 
     createClass(teacherId: ID!, details: String): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
@@ -139,7 +164,8 @@ type RootMutation {
 
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
     
-    addProfileInfo(studentId: ID!, details: String): ProfileInfo!
+    editProfileInfo(studentId: ID!, details: String): ProfileInfo!
+    approveProfileInfo(profileId: ID!, adminId: ID!): ProfileInfo!
 
     sendSMSCode(studentId: ID!): VerificationCode!
 

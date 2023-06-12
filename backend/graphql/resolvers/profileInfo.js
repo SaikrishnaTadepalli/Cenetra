@@ -1,7 +1,20 @@
 const Student = require("../../models/student");
-const ProfileInfo = require("../../models/profileInfo");
+const Admin = require("../../models/admin");
+const ProfileInfoPending = require("../../models/profileInfoPending");
+const ProfileInfoValid = require("../../models/profileInfoValid");
 
 const { transformProfile } = require("./merge");
+
+const mergeJSON = (obj1, obj2) => {
+  const mergedDict = { ...obj1 };
+
+  for (let key in obj2) {
+    mergedDict[key] = obj2[key];
+  }
+
+  const mergedJSON = JSON.stringify(mergedDict);
+  return mergedJSON;
+};
 
 module.exports = {
   // Queries
@@ -13,7 +26,7 @@ module.exports = {
         throw error("Student does not exist.");
       }
 
-      const fetchedProfileInfos = await ProfileInfo.find({
+      const fetchedProfileInfos = await ProfileInfoValid.find({
         student: args.studentId,
       });
 
@@ -39,7 +52,7 @@ module.exports = {
         throw error("Student does not exist.");
       }
 
-      const fetchedProfileInfos = await ProfileInfo.find({
+      const fetchedProfileInfos = await ProfileInfoValid.find({
         student: args.studentId,
       });
 
@@ -61,21 +74,89 @@ module.exports = {
     }
   },
 
-  // Mutations
-  addProfileInfo: async (args) => {
+  getPendingProfileInfo: async (args) => {
     try {
-      const fetchedStudent = await Student.findOne({ _id: args.studentId });
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      const fetchedProfileInfo = await ProfileInfoPending.findOne({
+        student: args.studentId,
+      });
+
+      let result = null;
+      if (!fetchedProfileInfo) {
+        result = transformProfile(fetchedProfileInfo);
+      }
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  editProfileInfo: async (args) => {
+    try {
+      const fetchedStudent = await Student.findById(args.studentId);
 
       if (!fetchedStudent) {
         throw new Error("Student does not exist.");
       }
 
-      const profileInfo = new ProfileInfo({
+      let newDetails = JSON.parse(args.details);
+
+      const fetchedProfileInfo = await ProfileInfoPending.findOneAndRemove({
         student: args.studentId,
-        details: args.details,
       });
 
-      const result = await profileInfo.save();
+      if (fetchedProfileInfo) {
+        const oldDetails = JSON.parse(fetchedProfileInfo.details);
+
+        newDetails = mergeJSON(oldDetails, newDetails);
+      }
+
+      const stringifiedDetails = JSON.stringify(newDetails)
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"');
+
+      const newProfileInfo = new ProfileInfoPending({
+        student: args.studentId,
+        details: stringifiedDetails,
+      });
+
+      const result = await newProfileInfo.save();
+
+      return transformProfile(result);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  approveProfileInfo: async (args) => {
+    try {
+      const fetchedAdmin = await Admin.findById(args.arminId);
+
+      if (!fetchedAdmin) {
+        throw error("Admin does not exist.");
+      }
+
+      const fetchedProfileInfo = await ProfileInfoPending.findByIdAndRemove(
+        args.profileId
+      );
+
+      if (!fetchedProfileInfo) {
+        throw error("Pending Profile Info does not exist.");
+      }
+
+      const newProfileInfo = new ProfileInfoValid({
+        student: fetchedProfileInfo.student,
+        details: fetchedProfileInfo.details,
+        approverName: fetchedAdmin.firstName + fetchedAdmin.lastName,
+      });
+
+      const result = await newProfileInfo.save();
 
       return transformProfile(result);
     } catch (err) {
