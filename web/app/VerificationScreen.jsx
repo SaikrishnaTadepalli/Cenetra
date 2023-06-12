@@ -4,9 +4,15 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { sendSMS, verifyLogin, login } from "../src/redux/authSlice";
+import {
+  sendSMS,
+  verifyLogin,
+  loginUser,
+  setStudents,
+} from "../src/redux/authSlice";
 
 import colors from "../src/constants/Colors";
 import { useDispatch } from "react-redux";
@@ -17,13 +23,19 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
+import { useRouter } from "expo-router";
 
 const VerificationScreen = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   //const { curStudentDetails } = useSelector((state) => state.auth);
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+  const [isCodeSent, setIsCodeSent] = useState(false);
   const ref = useBlurOnFulfill({ value, cellCount: 5 });
+  const { verificationLoading, verificationError, loginError, loginLoading } =
+    useSelector((state) => state.auth);
+  const teacherID = localStorage.getItem("teacherID");
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
@@ -31,10 +43,9 @@ const VerificationScreen = () => {
 
   const handleClick = async () => {
     //console.log("dispatch", value);
-    dispatch(verifyLogin({ studentID: "", code: value }))
+
+    dispatch(verifyLogin({ teacherID, code: value }))
       .then(async (response) => {
-        // console.log("dispatch", response);
-        //console.log("payload", response.payload.data.verifyCode);
         if (response.error) {
           setError(response.payload);
           setTimeout(() => setError(""), 2000);
@@ -42,55 +53,99 @@ const VerificationScreen = () => {
           setError("Invalid login code");
           setTimeout(() => setError(""), 2000);
         } else {
-          // await AsyncStorage.setItem("studentID", curStudentDetails._id);
-          // await AsyncStorage.setItem("isLoggedIn", "true");
-          dispatch(login());
+          dispatch(loginUser(teacherID))
+            .then((response) => {
+              const students = [];
+              if (!loginLoading && !loginError) {
+                response.payload.data.classes.forEach((element) => {
+                  if (element.teacher._id === teacherID) {
+                    element.students.forEach((s) => {
+                      students.push(s);
+                    });
+                    return;
+                  }
+                });
+                dispatch(setStudents(students));
+                localStorage.setItem("isLoggedIn", "true");
+                const stringifiedDetails = JSON.stringify({ students })
+                  .replace(/\\/g, "\\\\") // Escape backslashes
+                  .replace(/"/g, '\\"');
+                localStorage.setItem("students", `"${stringifiedDetails}"`);
+                router.push("/HomeScreen");
+              } else if (!loginLoading && loginError) {
+                setError("Something went wrong. Please try again.");
+                setTimeout(() => setError(""), 1000);
+              }
+            })
+            .catch((error) =>
+              setError(`Something went wrong try again, ${error}`)
+            );
         }
       })
       .catch((error) =>
-        console.error("Error in dispatching verifyLogin", error)
+        console.error("Error in dispatching verifyLogin on web", error)
       );
   };
 
-  useEffect(() => {
-    dispatch(sendSMS(""))
-      .then(() => {})
+  const onResend = () => {
+    dispatch(sendSMS(teacherID))
+      .then(() => {
+        setIsCodeSent(true);
+      })
       .catch((error) => console.error("Error in sending SMS", error));
-  }, []);
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>Verify your number</Text>
-      <Text style={styles.text}>
-        A message was sent to number with a verification code
-      </Text>
-      <View style={{ alignSelf: "flex-start", width: "40%" }}>
-        <Text style={styles.codeText}>Enter Code</Text>
+      <View style={styles.verificationContainer}>
+        <Text style={styles.titleText}>Verify your number</Text>
+        <Text style={styles.text}>
+          Enter Verification code sent to +91 88XXX XX076
+        </Text>
+        <View style={{ alignSelf: "flex-start", width: "41%" }}>
+          <Text style={styles.codeText}>Enter Code</Text>
+        </View>
+        <CodeField
+          ref={ref}
+          {...props}
+          // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
+          value={value}
+          onChangeText={setValue}
+          cellCount={5}
+          rootStyle={styles.codeFieldRoot}
+          keyboardType="number-pad"
+          textContentType="oneTimeCode"
+          renderCell={({ index, symbol, isFocused }) => (
+            <Text
+              key={index}
+              style={[styles.box, isFocused && styles.focusCell]}
+              onLayout={getCellOnLayoutHandler(index)}
+            >
+              {symbol || (isFocused ? <Cursor /> : null)}
+            </Text>
+          )}
+        />
+        <TouchableOpacity onPress={onResend}>
+          <Text style={styles.resendCodeText}>Resend Code?</Text>
+        </TouchableOpacity>
+        {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
+        {isCodeSent ? <Text>Code resent successfully!</Text> : null}
+        <TouchableOpacity
+          style={styles.loginButtonContainer}
+          onPress={handleClick}
+        >
+          <Text style={styles.loginButtonText}>Verify</Text>
+        </TouchableOpacity>
       </View>
-      <CodeField
-        ref={ref}
-        {...props}
-        // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
-        value={value}
-        onChangeText={setValue}
-        cellCount={5}
-        rootStyle={styles.codeFieldRoot}
-        keyboardType="number-pad"
-        textContentType="oneTimeCode"
-        renderCell={({ index, symbol, isFocused }) => (
-          <Text
-            key={index}
-            style={[styles.box, isFocused && styles.focusCell]}
-            onLayout={getCellOnLayoutHandler(index)}
-          >
-            {symbol || (isFocused ? <Cursor /> : null)}
-          </Text>
-        )}
-      />
-      {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
-      <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
-        <Text style={styles.buttonText}>Verify</Text>
-      </TouchableOpacity>
+      <View style={styles.imageContainer}>
+        <Image
+          source={require("../assets/images/loginIllustration.png")}
+          style={{
+            width: "100%",
+            height: "85%",
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -99,31 +154,34 @@ export default VerificationScreen;
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: "center",
+    flexDirection: "row",
     alignItems: "center",
-    marginTop: "10%",
-    paddingHorizontal: 40,
-    width: "30%",
+    height: "100%",
+  },
+  verificationContainer: {
+    width: "40%",
+    alignItems: "center",
   },
   titleText: {
     fontSize: 30,
-    color: colors.darkPurple,
-    fontFamily: "InterMedium",
+    color: "#23342C",
+    fontFamily: "InterSemiBold",
     marginBottom: 10,
   },
   text: {
-    color: colors.darkPurple,
+    color: "#23342C",
     fontSize: 14,
-    fontFamily: "InterLight",
+    fontFamily: "InterRegular",
     width: "85%",
     textAlign: "center",
     marginBottom: 20,
   },
   codeText: {
-    color: colors.darkPurple,
+    color: "#23342C",
     fontSize: 16,
     fontFamily: "InterRegular",
-    textAlign: "center",
+    textAlign: "right",
+    // paddingLeft: 220,
   },
   boxContainer: {
     flexDirection: "row",
@@ -136,32 +194,42 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     marginRight: 10,
-    borderColor: colors.lightPurple,
+    borderColor: "#A0B2AF",
     textAlign: "center",
     lineHeight: 58,
     fontSize: 24,
     fontFamily: "InterMedium",
   },
-  buttonContainer: {
-    marginTop: 30,
-    backgroundColor: colors.lightPurple,
-    height: 40,
-    width: "75%",
-    borderRadius: 10,
+  loginButtonContainer: {
     justifyContent: "center",
+    width: 130,
+    height: 45,
+    backgroundColor: "#23342C",
+    borderRadius: 100,
+    marginTop: 20,
+  },
+  loginButtonText: {
+    alignSelf: "center",
+    color: "white",
+    fontFamily: "InterMedium",
   },
   errorText: {
     color: colors.red,
     marginTop: 10,
     textAlign: "left",
   },
-  buttonText: {
-    alignSelf: "center",
-    color: colors.darkPurple,
-    fontFamily: "InterSemiBold",
-    fontWeight: 600,
-  },
   focusCell: {
-    borderColor: colors.darkPurple,
+    borderColor: "#23342C",
+  },
+  resendCodeText: {
+    marginLeft: 180,
+    marginTop: 10,
+    color: "#99B8BE",
+  },
+  imageContainer: {
+    backgroundColor: "#F8EDEB",
+    width: "60%",
+    height: "100%",
+    justifyContent: "flex-end",
   },
 });

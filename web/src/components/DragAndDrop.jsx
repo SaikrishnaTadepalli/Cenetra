@@ -65,6 +65,7 @@ const DragAndDrop = ({ studentID }) => {
   ));
   return (
     <View style={styles.container}>
+      <Text style={styles.headerText}>Media Upload</Text>
       <View
         style={{
           flexDirection: "row",
@@ -75,17 +76,17 @@ const DragAndDrop = ({ studentID }) => {
           {...getRootProps({ className: "dropzone" })}
           style={styles.dropzone}
         >
-          <Text>Drag and Drop</Text>
+          <Text style={styles.text}>Drag and Drop</Text>
         </div>
-        <Text>or</Text>
+        <Text style={styles.text}>OR</Text>
         <div {...getRootProps({ className: "dropzone" })} style={styles.upload}>
-          <Text>Select Pictures</Text>
+          <Text style={styles.text}>Select Pictures</Text>
         </div>
       </View>
       {isUploading ? <Text>Uploading images....</Text> : null}
       {isSuccess ? <Text>Successfully uploaded images!</Text> : null}
-      <TouchableOpacity onPress={onUpload} style={styles.upload}>
-        <Text>Upload</Text>
+      <TouchableOpacity onPress={onUpload} style={styles.uploadButtonContainer}>
+        <Text style={styles.uploadButtonText}>Upload</Text>
       </TouchableOpacity>
       <View>{files}</View>
     </View>
@@ -96,26 +97,54 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
   },
+  headerText: {
+    fontFamily: "InterMedium",
+    fontSize: 16,
+    alignSelf: "flex-start",
+  },
+  text: {
+    fontFamily: "InterMedium",
+    fontSize: 12,
+  },
   dropzone: {
     borderWidth: 2,
     borderColor: "#d3d3d3",
     borderStyle: "dashed",
     borderRadius: 4,
-    padding: 5,
-    paddingRight: 20,
-    paddingLeft: 20,
     margin: 20,
+    paddingTop: 45,
+    paddingBottom: 45,
+    paddingRight: 15,
+    paddingLeft: 15,
   },
   upload: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "black",
     borderStyle: "solid",
     backgroundColor: "#d3d3d3",
     borderRadius: 4,
-    padding: 5,
-    paddingRight: 30,
-    paddingLeft: 30,
+    paddingTop: 45,
+    paddingBottom: 45,
+    paddingRight: 15,
+    paddingLeft: 15,
     margin: 20,
+  },
+  uploadButtonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 120,
+    height: 40,
+    backgroundColor: "#23342C",
+    borderRadius: 100,
+    marginRight: 10,
+  },
+  uploadButtonText: {
+    alignSelf: "center",
+    color: "white",
+    fontFamily: "InterMedium",
+    fontSize: 14,
   },
   disabled: {
     opacity: 0.5,

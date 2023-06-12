@@ -3,26 +3,22 @@ import React from "react";
 
 import colors from "../constants/Colors";
 
-const OpenEndedQuestion = ({ inputs, handleInputChange }) => {
+const OpenEndedQuestion = ({ question, answer, handleInputChange }) => {
   return (
-    <View>
-      {inputs
-        ? inputs.map((input, idx) => (
-            <View>
-              <Text>{input.name}</Text>
-              <TextInput
-                style={styles.cardContainer}
-                multiline
-                editable={true}
-                numberOfLines={4}
-                maxLength={200}
-                key={input.name}
-                value={input.value}
-                onChangeText={(value) => handleInputChange(idx, value)}
-              />
-            </View>
-          ))
-        : null}
+    <View style={{ width: "60%" }}>
+      <View style={styles.container}>
+        <Text style={styles.inputText}>{question}</Text>
+        <TextInput
+          style={styles.inputContainer}
+          multiline
+          editable={true}
+          numberOfLines={6}
+          maxLength={200}
+          key={question}
+          value={answer}
+          onChangeText={handleInputChange}
+        />
+      </View>
     </View>
   );
 };
@@ -30,15 +26,26 @@ const OpenEndedQuestion = ({ inputs, handleInputChange }) => {
 export default OpenEndedQuestion;
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    minHeight: 60,
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  inputContainer: {
+    minHeight: 100,
     borderColor: colors.lightGrey,
     borderWidth: 1,
     borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 8,
+    width: "100%",
     justifyContent: "center",
     backgroundColor: "white",
-    marginBottom: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  inputText: {
+    width: "20%",
+    marginRight: 20,
+    fontSize: 16,
+    fontFamily: "InterSemiBold",
   },
 });

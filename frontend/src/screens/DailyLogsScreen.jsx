@@ -50,8 +50,6 @@ const DailyLogsScreen = ({ navigation }) => {
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
 
-  // console.log(loading);
-
   return (
     <>
       {error ? (

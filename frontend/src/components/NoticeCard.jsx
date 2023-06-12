@@ -5,24 +5,36 @@ import moment from "moment-timezone";
 
 import colors from "../constants/Colors";
 import typeColorMapping from "../../data/typeColorMapping";
+import { useDispatch } from "react-redux";
+import { markNoticeAsRead } from "../redux/noticesSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const NoticeCard = ({ navigation, isUnread, details, time, type }) => {
-  const [isNoticeUnread, setIsNoticeUnread] = useState(isUnread);
+const NoticeCard = ({ navigation, isRead, details, time, type, noticeID }) => {
+  const [isNoticeRead, setIsNoticeRead] = useState(isRead);
   const parsedDetails = JSON.parse(details);
   const subject = parsedDetails.subject;
+  const dispatch = useDispatch();
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    const studentID = await AsyncStorage.getItem("studentID");
     navigation.navigate("NoticeInfo", {
       subject,
       details: parsedDetails.details,
       time: time,
       title: moment(time).format("DD MMMM YYYY"),
     });
-    setIsNoticeUnread(false);
+    dispatch(
+      markNoticeAsRead({
+        studentID,
+        noticeID: noticeID,
+      })
+    );
+    setIsNoticeRead(true);
   };
 
-  const cardColor = isNoticeUnread ? colors.lightGrey : colors.white;
+  const cardColor = isNoticeRead ? colors.white : colors.lightGrey;
   const dotColor = typeColorMapping[type];
+
   return (
     <TouchableOpacity
       style={[styles.cardContainer, { backgroundColor: cardColor }]}

@@ -13,6 +13,7 @@ import colors from "../src/constants/Colors";
 import DragAndDrop from "../src/components/DragAndDrop";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  editLogs,
   getIsNewLogAdded,
   setIsNewLogAdded,
   updateLogs,
@@ -22,74 +23,82 @@ import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 import OpenEndedQuestion from "../src/components/OpenEndedQuestion";
 import { IconButton } from "react-native-paper";
 
-const inputTexts = [
-  "What food did they eat",
-  "What work did they do",
-  "What games did they play",
-  // "Additional Comments",
-];
-
-const CreateLogScreen = ({ date, studentID }) => {
+const CreateLogScreen = ({ date, studentID, name, logID }) => {
+  const { logs } = useSelector((state) => state.log);
+  const log = logs.find((log) => (log ? log._id === logID : null));
+  const parsedLog = log ? JSON.parse(log.details) : null;
+  const rating = log ? parseInt(log.rating) : 0;
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const { updateLogsPending, updateLogsSuccessful } = useSelector(
     (state) => state.log
   );
   const state = useSelector((state) => state);
-  const initialState = [
-    { name: inputTexts[0], value: "" },
-    { name: inputTexts[1], value: "" },
-    { name: inputTexts[2], value: "" },
-  ];
-  const [inputs, setInputs] = useState(initialState);
+  const [openEndedQuestionState, setOpenEndedQuestionState] = useState([
+    {
+      question: "Additional Comments",
+      answer: parsedLog ? parsedLog.openEndedQuestions[0].answer : "",
+    },
+  ]);
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewLogSelected = getIsNewLogAdded(state);
-  const answers = ["Answer 1", "Answer 2", "Answer 3"];
-  const choices = ["Choice 1", "Choice 2", "Choice 3"];
-  const [checkedItems, setCheckedItems] = useState([]);
-  const [filledStars, setFilledStars] = useState(0);
-  const [selectedValue, setSelectedValue] = useState([
-    { name: choices[0], value: "" },
-    { name: choices[1], value: "" },
-    { name: choices[2], value: "" },
+  const [filledStars, setFilledStars] = useState(rating);
+  const [checkBoxQuestionState, setCheckBoxQuestionState] = useState([
+    {
+      question: "Which activities did the children engage in today?",
+      answer: parsedLog ? parsedLog.checkBoxQuestions[0].answer : [],
+      options: ["Outdoor play", "Art and crafts", "Storytime"],
+    },
+    {
+      question: "Did any children require special attention or support today? ",
+      answer: parsedLog ? parsedLog.checkBoxQuestions[1].answer : [],
+      options: ["Self-care", "Snack time", "Sharing toys"],
+    },
+    {
+      question:
+        "Which areas of development did you observe in the children today?",
+      answer: parsedLog ? parsedLog.checkBoxQuestions[2].answer : [],
+      options: ["Sharing", "Listening attentively", "Problem-solving"],
+    },
+    // ...more questions
+  ]);
+  const [radioQuestionState, setRadioQuestionState] = useState([
+    {
+      question:
+        "How would you rate the overall behavior of the children today?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[0].answer : "",
+      options: ["Excellent", "Good", "Fair", "Poor"],
+    },
+    {
+      question: "Did the children actively participate in group activities?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[1].answer : "",
+      options: ["Yes", "No"],
+    },
+    {
+      question: "How well did the children follow instructions today?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[2].answer : "",
+      options: ["Very well", "Well", "Not so well", "Poorly"],
+    },
+    // ...more questions
   ]);
 
-  const onSave = () => {
-    // console.log(inputs);
-    const teacherID = localStorage.getItem("teacherID");
-    const sectionActivities = [];
-    inputs.map((input) => {
-      sectionActivities.push({
-        title: input.name,
-        description: input.value,
-      });
-    });
-    const data = {
-      activities: [
-        {
-          sectionHeader: "Morning",
-          sectionActivities: sectionActivities,
-        },
-      ],
-    };
-    // console.log(data);
-    if (inputs && filledStars) {
-      dispatch(
-        updateLogs({
-          teacherID: teacherID,
-          studentID: studentID,
-          details: data,
-          rating: filledStars,
-        })
-      )
+  const handleDispatch = (action) => {
+    // console.log(action);
+    if (
+      radioQuestionState &&
+      checkBoxQuestionState &&
+      openEndedQuestionState &&
+      filledStars
+    ) {
+      dispatch(action)
         .then(() => {
+          console.log("dispatching");
           setEditable(false);
           setIsInputEmpty(false);
           setIsSaved(true);
           setIsCancelled(false);
-          setInputs(initialState);
           setFilledStars(0);
           setTimeout(() => {
             setIsSaved(false);
@@ -103,6 +112,57 @@ const CreateLogScreen = ({ date, studentID }) => {
       setIsSaved(false);
     }
   };
+  const onSave = () => {
+    // console.log(inputs);
+    const teacherID = localStorage.getItem("teacherID");
+    // const sectionActivities = [];
+    // const radioButtonQuestions = [];
+    // const checkBoxQuestions = [];
+    // const openEndedQuestions = [];
+    // radioQuestionState.map((radioQuestion) => {
+    //   radioButtonQuestions.push({
+    //     question: radioQuestion.question,
+    //     answer: radioQuestion.answer,
+    //   });
+    // });
+
+    // checkBoxQuestionState.map((checkBoxQuestion) => {
+    //   checkBoxQuestions.push({
+    //     question: checkBoxQuestion.question,
+    //     answer: checkBoxQuestion.answer,
+    //   });
+    // });
+
+    // openEndedQuestionState.map((OpenEndedQuestion) => {
+    //   openEndedQuestions.push({
+    //     question: OpenEndedQuestion.question,
+    //     answer: OpenEndedQuestion.answer,
+    //   });
+    // });
+    //console.log(radioQuestions, checkBoxQuestions, OpenEndedQuestions);
+    const data = {
+      radioButtonQuestions: radioQuestionState,
+      checkBoxQuestions: checkBoxQuestionState,
+      openEndedQuestions: openEndedQuestionState,
+    };
+    var action = "";
+    if (logID) {
+      action = editLogs({
+        logID: logID,
+        details: data,
+        rating: filledStars,
+      });
+    } else {
+      action = updateLogs({
+        teacherID: teacherID,
+        studentID: studentID,
+        details: data,
+        rating: filledStars,
+      });
+    }
+    handleDispatch(action);
+    // console.log(data);
+  };
 
   const onCancel = () => {
     setIsCancelled(true);
@@ -111,25 +171,61 @@ const CreateLogScreen = ({ date, studentID }) => {
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
-      setInputs(initialState);
       setFilledStars(0);
     }, 2000);
   };
 
   const handleInputChange = (index, value) => {
-    setInputs((prevInputs) => {
+    setOpenEndedQuestionState((prevInputs) => {
       const updatedInputs = [...prevInputs];
-      updatedInputs[index].value = value;
+      updatedInputs[index].answer = value;
       return updatedInputs;
     });
   };
 
-  const handleRadioButton = (index, value) => {
-    console.log(index, value);
-    setSelectedValue((prevInputs) => {
-      const updatedInputs = [...prevInputs];
-      updatedInputs[index].value = value;
-      return updatedInputs;
+  // Handle radio button selection
+  const handleRadioSelection = (index, optionValue) => {
+    setRadioQuestionState((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[index].answer = optionValue;
+      return updatedState;
+    });
+  };
+
+  const handleCheckboxSelection = (index, optionValue) => {
+    setCheckBoxQuestionState((prevState) => {
+      const updatedState = [...prevState];
+      const { answer } = updatedState[index];
+      const answerIndex = answer.indexOf(optionValue);
+
+      if (answerIndex === -1) {
+        updatedState[index].answer = [...answer, optionValue];
+      } else {
+        updatedState[index].answer = [
+          ...answer.slice(0, answerIndex),
+          ...answer.slice(answerIndex + 1),
+        ];
+      }
+
+      return updatedState;
+    });
+  };
+
+  const handleSelectAll = (index) => {
+    setCheckBoxQuestionState((prevState) => {
+      const updatedState = [...prevState];
+      const { options } = updatedState[index];
+      const { answer } = updatedState[index];
+
+      if (answer.length === options.length) {
+        // Deselect all options
+        updatedState[index].answer = [];
+      } else {
+        // Select all options
+        updatedState[index].answer = [...options];
+      }
+
+      return updatedState;
     });
   };
 
@@ -150,7 +246,7 @@ const CreateLogScreen = ({ date, studentID }) => {
           icon={starIconName}
           iconColor={isFilled ? colors.yellow : colors.yellow}
           onPress={() => handleStarPress(i)}
-          style={{ marginRight: -15 }}
+          style={{ marginRight: -10 }}
         />
       );
     }
@@ -160,63 +256,101 @@ const CreateLogScreen = ({ date, studentID }) => {
   return (
     <>
       {isSaved ? <Text>Your logs have been saved successfully!</Text> : null}
-      {updateLogsPending ? <Text>Saving your changes.</Text> : null}
       {isAddNewLogSelected ? (
         <ScrollView
           style={styles.container}
           contentContainerStyle={{ paddingBottom: 60 }}
         >
-          <Text style={styles.header}>{date}</Text>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <Text>Fill in a rating</Text>
+          <Text style={styles.headerText}>{name}'s Logs</Text>
+          <View style={{ flexDirection: "row" }}>
+            <View>
+              <View style={styles.dateContainer}>
+                <Text
+                  style={[styles.dateText, { fontFamily: "InterSemiBold" }]}
+                >
+                  Date
+                </Text>
+                <Text style={[styles.dateText, { marginLeft: -30 }]}>
+                  {date}
+                </Text>
+              </View>
               <View
                 style={{
                   flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 10,
                 }}
               >
-                {renderStars()}
+                <View style={styles.ratingContainer}>
+                  <Text style={styles.ratingText}>Fill in a rating</Text>
+                  <View style={{ flexDirection: "row" }}>{renderStars()}</View>
+                </View>
               </View>
-            </View>
-            <View style={styles.listView}>
-              <OpenEndedQuestion
-                inputs={inputs}
-                handleInputChange={handleInputChange}
-              />
-              <MultiSelectQuestion
-                question="Question 1"
-                answers={answers}
-                checkedItems={checkedItems}
-                setCheckedItems={setCheckedItems}
-              />
-              <MultipleChoiceQuestion
-                headerText="Question 1"
-                choices={choices}
-                selectedValue={selectedValue}
-                setSelectedValue={setSelectedValue}
-              />
-              <DragAndDrop studentID={studentID} />
-
-              {isInputEmpty && !filledStars ? (
-                <Text style={styles.errorText}>
-                  Could not save logs. Please fill in at least one text box.
-                </Text>
-              ) : null}
-              <View style={styles.buttonsContainer}>
-                <TouchableOpacity>
-                  <Text style={styles.cancelText} onPress={onCancel}>
-                    Cancel
+              <View style={styles.dragAndDropContainer}>
+                <DragAndDrop studentID={studentID} />
+              </View>
+              <View style={styles.listView}>
+                <View style={{ marginBottom: 20 }}>
+                  {radioQuestionState.map((question, idx) => (
+                    <MultipleChoiceQuestion
+                      key={`radio-question-${idx}`}
+                      question={question.question}
+                      answers={question.options}
+                      selectedValue={question.answer}
+                      disabled={false}
+                      setSelectedValue={(option) =>
+                        handleRadioSelection(idx, option)
+                      }
+                    />
+                  ))}
+                </View>
+                <View style={{ marginBottom: 30 }}>
+                  {checkBoxQuestionState.map((question, idx) => (
+                    <MultiSelectQuestion
+                      key={`multi-question-${idx}`}
+                      question={question.question}
+                      answers={question.options}
+                      checkedItems={question.answer}
+                      disabled={false}
+                      setCheckedItems={(option) =>
+                        handleCheckboxSelection(idx, option)
+                      }
+                      onSelectAll={() => handleSelectAll(idx)}
+                    />
+                  ))}
+                </View>
+                <View style={{ marginBottom: 20 }}>
+                  {openEndedQuestionState.map((question, idx) => (
+                    <OpenEndedQuestion
+                      key={`open-question-${idx}`}
+                      question={question.question}
+                      answer={question.answer}
+                      handleInputChange={(answer) =>
+                        handleInputChange(idx, answer)
+                      }
+                    />
+                  ))}
+                </View>
+                {isInputEmpty && !filledStars ? (
+                  <Text style={styles.errorText}>
+                    Could not save logs. Please answer all questions.
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-                  <Text style={styles.saveText}>Save</Text>
-                </TouchableOpacity>
+                ) : null}
+                {updateLogsPending ? <Text>Saving your changes.</Text> : null}
+                <View style={styles.buttonsContainer}>
+                  <TouchableOpacity
+                    style={styles.saveButtonContainer}
+                    onPress={onSave}
+                  >
+                    <Text style={styles.saveButtonText}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.cancelButtonContainer}
+                    onPress={onCancel}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -230,16 +364,25 @@ export default CreateLogScreen;
 
 const styles = StyleSheet.create({
   container: {
-    //backgroundColor: "red",
-    width: "80%",
+    // backgroundColor: "red",
+    width: "100%",
   },
-  header: {
-    fontSize: 20,
-    fontWeight: 600,
-    marginBottom: 10,
+  headerText: {
+    marginBottom: 40,
+    fontSize: 24,
+    fontFamily: "InterMedium",
+  },
+  dateContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  dateText: {
+    fontFamily: "InterBold",
+    fontSize: 16,
+    width: "20%",
   },
   listView: {
-    width: "80%",
+    width: "100%",
   },
   cardContainer: {
     minHeight: 60,
@@ -253,17 +396,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   ratingContainer: {
-    minHeight: 30,
-    borderColor: colors.lightGrey,
-    borderWidth: 1,
-    borderRadius: 4,
-    width: 70,
-    justifyContent: "center",
-    backgroundColor: "white",
-    marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  ratingText: {
+    fontFamily: "InterSemiBold",
+    fontSize: 16,
+    marginRight: 40,
   },
   buttonContainer: {
-    marginVertical: 20,
+    // marginVertical: 20,
     backgroundColor: colors.lightPurple,
     height: 40,
     width: "30%",
@@ -275,24 +417,44 @@ const styles = StyleSheet.create({
     color: colors.primaryText,
     fontWeight: 600,
   },
-  saveButton: {
-    marginLeft: 18,
+  saveButtonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 120,
+    height: 40,
+    backgroundColor: "#23342C",
+    borderRadius: 100,
+    marginRight: 10,
   },
-  saveText: {
-    color: colors.buttonText,
-    fontSize: 18,
-    textAlign: "center",
-    fontFamily: "InterBold",
+  cancelButtonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 120,
+    height: 40,
+    backgroundColor: "white",
+    borderRadius: 100,
+    borderColor: "black",
+    borderWidth: 1,
   },
-  cancelText: {
-    color: colors.red,
-    fontSize: 18,
+  saveButtonText: {
+    alignSelf: "center",
+    color: "white",
+    fontFamily: "InterMedium",
+    fontSize: 14,
+  },
+  cancelButtonText: {
+    color: "black",
+    fontSize: 14,
+    fontFamily: "InterMedium",
     fontFamily: "InterBold",
   },
   buttonsContainer: {
     flexDirection: "row",
     marginTop: 30,
-    alignSelf: "center",
     marginRight: 100,
   },
   errorText: {
@@ -300,5 +462,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 14,
     //alignSelf: "center",
+  },
+  dragAndDropContainer: {
+    alignSelf: "flex-start",
+    marginBottom: 40,
   },
 });

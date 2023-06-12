@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { logout } from "../redux/authSlice";
 
 const Header = () => {
-  const pages = ["Home", "Class List", "Notices"];
+  const pages = ["Home", "Daily Logs", "Notices"];
   const screens = ["HomeScreen", "ClassListScreen", "NoticesScreen"];
   const [activeButton, setActiveButton] = useState("Home");
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -32,28 +32,24 @@ const Header = () => {
           <View style={styles.header}>
             <Text style={styles.headerText}>Cenetra</Text>
             {pages.map((page, idx) => (
-              <>
-                <View
-                  style={
-                    page === activeButton
-                      ? [
-                          styles.optionsButtonContainer,
-                          {
-                            borderBottomColor: "black",
-                            borderBottomWidth: 2,
-                          },
-                        ]
-                      : styles.optionsButtonContainer
-                  }
-                >
-                  <TouchableOpacity
-                    onPress={() => handleClick(idx, page)}
-                    key={`page-${idx}`}
-                  >
-                    <Text style={styles.optionsText}>{page}</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
+              <View
+                key={`page-${idx}`}
+                style={
+                  page === activeButton
+                    ? [
+                        styles.optionsButtonContainer,
+                        {
+                          borderBottomColor: "black",
+                          borderBottomWidth: 2,
+                        },
+                      ]
+                    : styles.optionsButtonContainer
+                }
+              >
+                <TouchableOpacity onPress={() => handleClick(idx, page)}>
+                  <Text style={styles.optionsText}>{page}</Text>
+                </TouchableOpacity>
+              </View>
             ))}
             <TouchableOpacity
               style={styles.logOutButtonContainer}
@@ -81,7 +77,7 @@ const styles = StyleSheet.create({
   header: {
     height: 60,
     width: "100%",
-    backgroundColor: "#F8EDEB",
+    backgroundColor: "#E8A2A84D",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -115,5 +111,8 @@ const styles = StyleSheet.create({
   optionsButtonContainer: {
     // marginTop: 40,
     paddingVertical: 20,
+    width: 90,
+    // backgroundColor: "lightblue",
+    alignItems: "center",
   },
 });

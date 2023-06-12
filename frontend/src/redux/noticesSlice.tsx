@@ -11,6 +11,8 @@ export const fetchNotices = createAsyncThunk(
                 details
                 createdAt
                 updatedAt
+                noticeType
+                read
                 }
             }
             `;
@@ -39,16 +41,57 @@ export const fetchNotices = createAsyncThunk(
   }
 );
 
+export const markNoticeAsRead = createAsyncThunk(
+  "notices/markNoticeAsRead",
+  async ({ studentID, noticeID }, { rejectWithValue }) => {
+    const query = `
+            mutation {
+                markNoticeAsRead(studentId:"${studentID}", noticeId:"${noticeID}") {
+                _id
+                }
+            }
+            `;
+    try {
+      const response = await fetch("http://localhost:3000/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          throw new Error(
+            "Response status 500: Error while marking notices as read"
+          );
+        } else if (response.status === 400) {
+          console.log("Response status 400 while marking notices as read");
+          throw new Error("Response status 400 while  marking notices as read");
+        }
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error while  marking notices as read", error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export interface NoticesState {
   notices: string[];
   loading: boolean;
   error: boolean;
+  markAsReadLoading: boolean;
+  markAsReadError: boolean;
   isNewNoticeAdded: boolean;
 }
 
 const initialState: NoticesState = {
   loading: null,
   error: false,
+  markAsReadLoading: null,
+  markAsReadError: false,
   notices: [],
   isNewNoticeAdded: false,
 };
@@ -75,6 +118,18 @@ export const noticesSlice = createSlice({
         state.notices = action.payload.data.notices;
         state.loading = false;
         state.error = false;
+      })
+      .addCase(markNoticeAsRead.pending, (state) => {
+        state.markAsReadLoading = true;
+        state.markAsReadError = false;
+      })
+      .addCase(markNoticeAsRead.rejected, (state) => {
+        state.markAsReadLoading = null;
+        state.markAsReadError = true;
+      })
+      .addCase(markNoticeAsRead.fulfilled, (state) => {
+        state.markAsReadLoading = false;
+        state.markAsReadError = false;
       });
   },
 });

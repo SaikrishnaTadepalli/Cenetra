@@ -2,17 +2,26 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 import colors from "../src/constants/Colors";
 import { setIsNewLogAdded } from "../src/redux/logsSlice";
+import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
+import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 
-const LogScreen = ({ logID, setIsOldLogSelected, setDate, curDate }) => {
+const LogScreen = ({
+  logID,
+  setIsOldLogSelected,
+  setDate,
+  curDate,
+  name,
+  setLogID,
+}) => {
   const { logs } = useSelector((state) => state.log);
   const log = logs.find((log) => (log ? log._id === logID : null));
   const parsedLog = log ? JSON.parse(log.details) : null;
   const rating = log ? parseInt(log.rating) : 0;
-  const date = log ? moment(log.createdAt).format("DD MMMM YYYY") : "";
+  const date = log ? moment(log.createdAt).format("MMMM D, YYYY") : "";
   const dispatch = useDispatch();
 
   const renderIcon = (name, idx) => (
@@ -20,8 +29,8 @@ const LogScreen = ({ logID, setIsOldLogSelected, setDate, curDate }) => {
       key={`${name}-${idx}`}
       name={name}
       color="#FAC748"
-      size={16}
-      style={{ marginRight: 2 }}
+      size={20}
+      style={{ marginRight: 8 }}
     />
   );
   const renderIcons = (num, name) =>
@@ -31,56 +40,104 @@ const LogScreen = ({ logID, setIsOldLogSelected, setDate, curDate }) => {
     setIsOldLogSelected(false);
     setDate(date);
     dispatch(setIsNewLogAdded(true));
+    setLogID(logID);
   };
+  // console.log("Log scren", parsedLog);
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 10,
-        }}
-      >
-        <Text style={styles.header}>{date}</Text>
+      <View style={styles.logHeaderContainer}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={styles.headerText}>{name}'s Logs</Text>
+          {date === curDate && (
+            <Text style={styles.subHeaderText}>Today's Logs</Text>
+          )}
+        </View>
+
         {date === curDate ? (
-          <TouchableOpacity onPress={onPressEdit}>
-            <Text style={styles.editButtonText}>Edit</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              onPress={onPressEdit}
+              style={styles.editButtonContainer}
+            >
+              <MaterialCommunityIcons
+                name="pencil-outline"
+                size={20}
+                color="#024552"
+              />
+              <Text style={styles.editButtonText}>Edit Log</Text>
+            </TouchableOpacity>
+          </View>
         ) : null}
       </View>
-      <View
-        style={{
-          alignItems: "center",
-          flexDirection: "row",
-          marginBottom: 20,
-          marginTop: 10,
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
+        <View style={styles.dateContainer}>
+          <Text
+            style={[
+              styles.dateText,
+              { fontFamily: "InterSemiBold", marginRight: 20 },
+            ]}
+          >
+            Date
+          </Text>
+          <Text style={styles.dateText}>{date}</Text>
+        </View>
+      </View>
+      <View style={styles.ratingContainer}>
         {rating > 0 ? (
           <>
-            <Text style={{ marginRight: 10 }}>Rating</Text>
+            <Text style={styles.ratingText}>Rating</Text>
             {renderIcons(rating, "star")}
             {renderIcons(5 - rating, "star-outline")}{" "}
           </>
         ) : null}
       </View>
-      {parsedLog
-        ? parsedLog.activities.map((log, index) => (
-            <View key={`log-title-${index}`}>
-              <Text style={styles.sectionHeader}>{log.sectionHeader}</Text>
-              {log.sectionActivities.map((data, idx) => (
-                <View key={`log-info-${idx}`}>
-                  <Text style={styles.headerText}>{data.title}</Text>
-                  <View style={styles.cardContainer} key={`log-${idx}`}>
-                    <Text style={styles.noticeText}>{data.description}</Text>
-                  </View>
-                </View>
-              ))}
+      {parsedLog &&
+        parsedLog.radioButtonQuestions.map((radioButtonQuestion, index) => (
+          <View
+            key={`radio-button-question-${index}`}
+            style={{
+              marginBottom: 20,
+              width: "100%",
+              // backgroundColor: "red",
+            }}
+          >
+            <MultipleChoiceQuestion
+              question={radioButtonQuestion.question}
+              answers={radioButtonQuestion.options}
+              selectedValue={radioButtonQuestion.answer}
+              disabled={true}
+            />
+          </View>
+        ))}
+      {parsedLog &&
+        parsedLog.checkBoxQuestions.map((checkBoxQuestion, index) => (
+          <View key={`multi-select-question-${index}`}>
+            <MultiSelectQuestion
+              disabled={true}
+              question={checkBoxQuestion.question}
+              answers={checkBoxQuestion.answer}
+              checkedItems={checkBoxQuestion.options}
+            />
+          </View>
+        ))}
+      {parsedLog &&
+        parsedLog.openEndedQuestions.map((openEndedQuestion, index) => (
+          <View
+            key={`open-ended-question-${index}`}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 20,
+              marginTop: 30,
+            }}
+          >
+            <Text style={styles.question}>{openEndedQuestion.question}</Text>
+            <View style={styles.openEndedAnswerContainer}>
+              <Text style={styles.answer}>{openEndedQuestion.answer}</Text>
             </View>
-          ))
-        : null}
+          </View>
+        ))}
     </View>
   );
 };
@@ -89,22 +146,58 @@ export default LogScreen;
 
 const styles = StyleSheet.create({
   container: {
-    width: "80%",
+    width: "100%",
+    // backgroundColor: "red",
+  },
+  logHeaderContainer: {
+    flexDirection: "row",
+    marginBottom: 40,
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-between",
+  },
+  headerText: {
+    fontSize: 24,
+    fontFamily: "InterMedium",
+    marginRight: 15,
+  },
+  subHeaderText: {
+    color: "#719792",
+    fontSize: 16,
+    fontFamily: "InterMedium",
+  },
+  dateText: {
+    fontFamily: "InterBold",
+    fontSize: 16,
+  },
+  ratingContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    marginBottom: 20,
+    marginTop: 10,
+  },
+  ratingText: {
+    fontSize: 16,
+    fontFamily: "InterSemiBold",
+    marginRight: 10,
+  },
+  dateContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   cardContainer: {
     marginTop: 10,
     borderColor: "black",
     borderWidth: 1,
-    width: "100%",
     borderRadius: 8,
     paddingBottom: 20,
     paddingTop: 10,
     marginBottom: 20,
   },
   sectionHeader: {
-    textAlign: "center",
+    textAlign: "flex-start",
     fontSize: 20,
-    fontWeight: 600,
+    fontFamily: "InterSemiBold",
     marginBottom: 20,
     marginTop: 10,
   },
@@ -118,23 +211,57 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: 10,
   },
-  headerText: {
-    fontSize: 14,
-    fontWeight: 400,
-    flexWrap: "wrap",
-    maxWidth: "85%",
+  infoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  noticeText: {
+  title: {
+    fontFamily: "InterMedium",
+    fontSize: 16,
+    width: "30%",
+    marginRight: 20,
+  },
+  description: {
     fontSize: 14,
-    marginLeft: 10,
-    fontWeight: 400,
-    maxWidth: "95%",
-    color: "black",
+    fontFamily: "InterRegular",
+    paddingBottom: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    minWidth: 150,
+  },
+  editButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingHorizontal: 5,
+    backgroundColor: "#99B8BE99",
+    width: 100,
+    height: 40,
+    borderRadius: 5,
   },
   editButtonText: {
-    color: colors.buttonText,
-    fontSize: 15,
-    fontWeight: 600,
+    color: "#024552",
+    fontSize: 14,
+    fontFamily: "InterMedium",
     textAlign: "right",
+  },
+  question: {
+    fontSize: 16,
+    fontFamily: "InterMedium",
+    marginRight: 20,
+  },
+  answer: {
+    fontSize: 16,
+    fontFamily: "InterMedium",
+  },
+  openEndedAnswerContainer: {
+    backgroundColor: "#D9D9D933",
+    borderRadius: 5,
+    width: 300,
+    // height: 100,
+    borderColor: "#D9D9D933",
+    borderWidth: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
 });
