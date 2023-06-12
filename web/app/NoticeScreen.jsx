@@ -18,15 +18,15 @@ const NoticeScreen = ({ id }) => {
         style={[
           styles.noticeTypeContainer,
           {
-            borderColor: typeColorMapping[type],
-            backgroundColor: typeColorMapping[type],
+            borderColor: typeColorMapping[type].dotColor,
+            backgroundColor: typeColorMapping[type].backgroundColor,
           },
         ]}
       >
         <View
           style={[
             styles.dotContainer,
-            { backgroundColor: typeColorMapping[type] },
+            { backgroundColor: typeColorMapping[type].dotColor },
           ]}
         />
         <Text>{type}</Text>
@@ -36,7 +36,7 @@ const NoticeScreen = ({ id }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.date}>
-        {notice ? moment(notice.createdAt).format("DD MMMM YYYY") : null}
+        {notice ? moment(notice.createdAt).format("MMMM D, YYYY") : null}
       </Text>
       <View style={styles.cardContainer}>
         <Text style={styles.subjectText}>{details.subject}</Text>

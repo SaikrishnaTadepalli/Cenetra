@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useState } from "react";
 import moment from "moment-timezone";
+import { Ionicons } from "@expo/vector-icons";
 
 import colors from "../constants/Colors";
 import typeColorMapping from "../../data/typeColorMapping";
@@ -9,58 +10,95 @@ import { useDispatch } from "react-redux";
 import { markNoticeAsRead } from "../redux/noticesSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const NoticeCard = ({ navigation, isRead, details, time, type, noticeID }) => {
+const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
   const [isNoticeRead, setIsNoticeRead] = useState(isRead);
+  const [isExpanded, setIsExpanded] = useState({});
   const parsedDetails = JSON.parse(details);
   const subject = parsedDetails.subject;
   const dispatch = useDispatch();
 
-  const handleClick = async () => {
+  const handleExpandNotice = async (buttonId) => {
     const studentID = await AsyncStorage.getItem("studentID");
-    navigation.navigate("NoticeInfo", {
-      subject,
-      details: parsedDetails.details,
-      time: time,
-      title: moment(time).format("DD MMMM YYYY"),
-    });
     dispatch(
       markNoticeAsRead({
         studentID,
-        noticeID: noticeID,
+        noticeID,
       })
     );
     setIsNoticeRead(true);
+    setIsExpanded((prevState) => ({
+      ...prevState,
+      [buttonId]: !prevState[buttonId],
+    }));
   };
 
-  const cardColor = isNoticeRead ? colors.white : colors.lightGrey;
-  const dotColor = typeColorMapping[type];
+  const renderFlag = (type) => {
+    return (
+      <View
+        style={[
+          styles.noticeTypeContainer,
+          {
+            borderColor: typeColorMapping[type].dotColor,
+            backgroundColor: typeColorMapping[type].backgroundColor,
+          },
+        ]}
+      >
+        <View
+          style={[
+            styles.dotContainer,
+            { backgroundColor: typeColorMapping[type].dotColor },
+          ]}
+        />
+        <Text>{type}</Text>
+      </View>
+    );
+  };
 
   return (
-    <TouchableOpacity
-      style={[styles.cardContainer, { backgroundColor: cardColor }]}
-      onPress={handleClick}
-    >
-      <View style={styles.headerRow}>
+    <>
+      <View style={styles.cardContainer}>
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            width: "70%",
+            marginBottom: 10,
           }}
         >
-          <View style={[styles.dotContainer, { backgroundColor: dotColor }]} />
-          <Text style={styles.titleText} numberOfLines={1} ellipsizeMode="tail">
+          {!isNoticeRead ? (
+            <View style={[styles.dotContainer, { backgroundColor: "blue" }]} />
+          ) : null}
+          <Text
+            style={styles.subject}
+            numberOfLines={isExpanded[date] ? null : 1}
+            ellipsizeMode={isExpanded[date] ? null : "tail"}
+          >
             {subject}
           </Text>
         </View>
-        <Text style={styles.timeText}>{moment(time).format("HH:mm")}</Text>
+        {isExpanded[date] && (
+          <>
+            <Text style={styles.detailsText}>{parsedDetails.details}</Text>
+            {renderFlag(type)}
+          </>
+        )}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.date}>
+            {moment(date).format("MMMM DD, YYYY   HH:mm a")}
+          </Text>
+          <TouchableOpacity onPress={() => handleExpandNotice(date)}>
+            <Ionicons
+              name={
+                isExpanded[date]
+                  ? "chevron-up-circle-outline"
+                  : "chevron-down-circle-outline"
+              }
+              size={20}
+              color="black"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View>
-        <Text style={styles.subText} numberOfLines={1} ellipsizeMode="tail">
-          {parsedDetails.details}
-        </Text>
-      </View>
-    </TouchableOpacity>
+    </>
   );
 };
 
@@ -70,12 +108,13 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: "100%",
     minHeight: 55,
-    borderColor: colors.lightGrey,
+    borderColor: "#A0B2AF",
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 16,
     paddingVertical: 8,
     justifyContent: "center",
+    backgroundColor: "rgba(217, 217, 217, 0.2)",
   },
   headerRow: {
     flexDirection: "row",
@@ -88,24 +127,42 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 8,
   },
-  titleText: {
-    fontSize: 15,
-    color: colors.primaryText,
-    fontFamily: "InterMedium",
+  subject: {
+    fontSize: 14,
+    color: "#23342C",
+    fontFamily: "InterSemiBold",
     width: "90%",
   },
+  detailsText: {
+    fontSize: 15,
+    color: "#23342C",
+    fontFamily: "InterMedium",
+    width: "90%",
+    marginBottom: 10,
+  },
   timeText: {
-    color: colors.secondaryText,
+    color: "#719792",
     fontSize: 14,
     fontFamily: "InterMedium",
     alignSelf: "center",
     width: "30%",
     textAlign: "right",
   },
-  subText: {
-    color: colors.secondaryText,
-    fontSize: 14,
-    width: "90%",
-    fontFamily: "InterMedium",
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // width: 320,
+  },
+  noticeTypeContainer: {
+    flexDirection: "row",
+    borderWidth: 1,
+    width: 100,
+    height: 30,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 80,
+    marginBottom: 10,
   },
 });

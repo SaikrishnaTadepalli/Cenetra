@@ -20,7 +20,7 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
     navigation.navigate("Log", {
       data: data,
       pictures: pictures,
-      title: moment(curLog.createdAt).format("DD MMMM YYYY"),
+      title: moment(curLog.createdAt).format("MMMM D, YYYY"),
       date: curLog.createdAt,
     });
   };
@@ -42,7 +42,7 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
       <View style={styles.headerRow}>
         <Text style={styles.titleText}>
-          {moment(date).format("DD MMMM YYYY")}
+          {moment(date).format("MMMM D, YYYY")}
         </Text>
         <View style={{ alignItems: "center", flexDirection: "row" }}>
           {renderIcons(rating, "star")}

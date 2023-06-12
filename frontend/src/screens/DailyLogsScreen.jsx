@@ -19,6 +19,7 @@ import { fetchStudentID } from "../redux/authSlice";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllMedia } from "../redux/mediaSlice";
+import { BACKEND_URI } from "../../utils/config";
 
 const DailyLogsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -41,6 +42,9 @@ const DailyLogsScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
+    // console.log("--------------------!!!!!!!!!!!-------------");
+    // console.log(BACKEND_URI);
+    // console.log("--------------------!!!!!!!!!!!-------------");
     retrieveData();
   }, []);
 
