@@ -143,7 +143,6 @@ type RootQuery {
     verifyCode(userId: ID!, code: String!): Boolean!
 }
 
-
 type RootMutation {
     createTeacher(teacherInput: TeacherInput!): Teacher!
 
@@ -164,6 +163,7 @@ type RootMutation {
 
     registerMedia(teacherId: ID!, studentId: ID!, fileName: String!): Media!
     
+    addProfileInfo(studentId: ID!, details: String): ProfileInfo!
     editProfileInfo(studentId: ID!, details: String): ProfileInfo!
     approveProfileInfo(profileId: ID!, adminId: ID!): ProfileInfo!
 

@@ -53,6 +53,25 @@ module.exports = {
     }
   },
 
+  teacherByTeacherNumber: async (args) => {
+    try {
+      const teacher = await Teacher.findOne({
+        teacherNumber: args.teacherNumber,
+      });
+
+      if (!teacher) {
+        throw error("Teacher does not exist.");
+      }
+
+      return {
+        ...teacher._doc,
+        _id: teacher.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   createTeacher: async (args) => {
     try {

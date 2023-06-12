@@ -53,6 +53,25 @@ module.exports = {
     }
   },
 
+  adminByAdminNumber: async (args) => {
+    try {
+      const admin = await Admin.findOne({
+        adminNumber: args.adminNumber,
+      });
+
+      if (!admin) {
+        throw error("Admin does not exist.");
+      }
+
+      return {
+        ...admin._doc,
+        _id: admin.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   createAdmin: async (args) => {
     try {
@@ -66,7 +85,7 @@ module.exports = {
 
       const newAdminNumber = await CreateAdminNumber();
 
-      const newAdmin = new Teacher({
+      const newAdmin = new Admin({
         adminNumber: newAdminNumber,
         firstName: args.adminInput.firstName,
         lastName: args.adminInput.lastName,

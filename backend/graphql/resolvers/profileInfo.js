@@ -87,11 +87,33 @@ module.exports = {
       });
 
       let result = null;
-      if (!fetchedProfileInfo) {
+      if (fetchedProfileInfo) {
         result = transformProfile(fetchedProfileInfo);
       }
 
       return result;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  addProfileInfo: async (args) => {
+    try {
+      const fetchedStudent = await Student.findOne({ _id: args.studentId });
+
+      if (!fetchedStudent) {
+        throw new Error("Student does not exist.");
+      }
+
+      const profileInfo = new ProfileInfoValid({
+        student: args.studentId,
+        details: args.details,
+        approverName: "Add-API",
+      });
+
+      const result = await profileInfo.save();
+
+      return transformProfile(result);
     } catch (err) {
       throw err;
     }
@@ -136,7 +158,7 @@ module.exports = {
 
   approveProfileInfo: async (args) => {
     try {
-      const fetchedAdmin = await Admin.findById(args.arminId);
+      const fetchedAdmin = await Admin.findById(args.adminId);
 
       if (!fetchedAdmin) {
         throw error("Admin does not exist.");
