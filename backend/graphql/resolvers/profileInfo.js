@@ -175,7 +175,7 @@ module.exports = {
       const newProfileInfo = new ProfileInfoValid({
         student: fetchedProfileInfo.student,
         details: fetchedProfileInfo.details,
-        approverName: fetchedAdmin.firstName + fetchedAdmin.lastName,
+        approverName: fetchedAdmin.firstName + " " + fetchedAdmin.lastName,
       });
 
       const result = await newProfileInfo.save();
