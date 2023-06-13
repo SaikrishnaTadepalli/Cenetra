@@ -31,7 +31,15 @@ const LoginScreen = () => {
 
   async function handleClick() {
     dispatch(getTeacherID(accessCode)).then((response) => {
-      if (!teacherInfoLoading && !teacherInfoError) {
+      // console.log(
+      //   !response.error,
+      //   teacherInfoError,
+      //   response,
+      //   !teacherInfoError,
+      //   !teacherInfoLoading,
+      //   isError
+      // );
+      if (response.meta.requestStatus === "fulfilled") {
         router.push("/VerificationScreen");
         const teacherID = response.payload.data.teacherByTeacherNumber._id;
         // console.log(teacherID);
@@ -42,7 +50,7 @@ const LoginScreen = () => {
           .catch((error) => console.error("Error in sending SMS", error));
       } else {
         setIsError("Invalid access code.");
-        setTimeout(() => setIsError(""), 1000);
+        setTimeout(() => setIsError(""), 100);
       }
     });
 

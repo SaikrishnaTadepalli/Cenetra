@@ -11,6 +11,7 @@ const Header = () => {
   const pages = ["Home", "Daily Logs", "Notices"];
   const screens = ["HomeScreen", "ClassListScreen", "NoticesScreen"];
   const [activeButton, setActiveButton] = useState("Home");
+  const loggedIn = localStorage.getItem("isLoggedIn");
   const { isLoggedIn } = useSelector((state) => state.auth);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -26,9 +27,15 @@ const Header = () => {
     router.push("/LoginScreen");
   };
 
+  useEffect(() =>
+    // console.log(loggedIn),
+    {}, [isLoggedIn]);
+
+  // console.log(isLoggedIn, loggedIn);
+
   return (
     <>
-      {isLoggedIn ? (
+      {loggedIn === "true" ? (
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Cenetra</Text>
