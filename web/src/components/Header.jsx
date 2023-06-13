@@ -25,6 +25,7 @@ const Header = () => {
     dispatch(logout());
     router.push("/LoginScreen");
   };
+
   return (
     <>
       {isLoggedIn ? (

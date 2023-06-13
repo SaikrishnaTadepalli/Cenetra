@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import envs from "../config/env";
 
 export const fetchNotices = createAsyncThunk(
   "notices/fetchNotices",
@@ -17,7 +18,7 @@ export const fetchNotices = createAsyncThunk(
             }
             `;
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +53,7 @@ export const markNoticeAsRead = createAsyncThunk(
             }
             `;
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

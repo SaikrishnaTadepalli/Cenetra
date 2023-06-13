@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import envs from "../../config/env";
 
 export const getTeacherID = createAsyncThunk(
   "auth/getTeacherID",
@@ -14,7 +15,7 @@ export const getTeacherID = createAsyncThunk(
   }`;
     console.log(query);
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,7 +59,7 @@ export const loginUser = createAsyncThunk("auth/login", async (teacherID) => {
 }
 `;
   try {
-    const response = await fetch("http://localhost:3000/graphql", {
+    const response = await fetch(envs, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +92,7 @@ export const sendSMS = createAsyncThunk(
       }
   }`;
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +123,7 @@ export const verifyLogin = createAsyncThunk(
   }`;
     console.log(query);
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

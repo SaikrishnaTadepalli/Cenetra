@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import envs from "../config/env";
 
 export const getMediaByDate = createAsyncThunk(
   "media/getMediaByDate",
@@ -9,7 +10,7 @@ export const getMediaByDate = createAsyncThunk(
       const query = `query {
         getS3ViewURLByDate(studentId: "${studentID}", date: "${date}") 
       }`;
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +41,7 @@ export const getAllMedia = createAsyncThunk(
       const query = `query {
         getS3ViewURLs(studentId: "${studentID}") 
       }`;
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
