@@ -1,6 +1,6 @@
 import { Slot } from "expo-router";
 import Header from "../src/components/Header";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { store } from "../src/redux/store";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import useCachedResources from "../src/hooks/useCachedResources";
@@ -12,11 +12,12 @@ const theme = {
 
 const HomeLayout = () => {
   const fontsLoaded = useCachedResources();
+
   return (
     <>
       <Provider store={store}>
         <PaperProvider theme={theme}>
-          <Header />
+          {fontsLoaded && <Header />}
           <Slot />
         </PaperProvider>
       </Provider>
