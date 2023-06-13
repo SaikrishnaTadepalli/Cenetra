@@ -1,6 +1,6 @@
 const execRequest = async (query) => {
   try {
-    const endpoint = "http://localhost:3000/graphql";
+    const endpoint = "http://18.206.57.12:8080/graphql";
 
     const response = await fetch(endpoint, {
       method: "POST",

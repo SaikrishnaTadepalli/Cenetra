@@ -10,6 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { Ionicons } from "@expo/vector-icons";
+import envs from "../config/env";
 
 import NoticeCard from "../components/NoticeCard";
 import colors from "../constants/Colors";
@@ -32,12 +33,12 @@ const NoticeScreen = ({ navigation }) => {
   const formatDate = (date) => {
     return moment(date).format("MMMM D, YYYY");
   };
-
+  console.log("-----", envs);
   const retrieveData = async () => {
     const data = await AsyncStorage.getItem("studentID");
     dispatch(fetchNotices(data))
       .then((response) => {
-        console.log(response.payload.data);
+        // console.log(response.payload.data);
         const newNotices = [];
         const mainData = response.payload.data.noticesForStudent;
         mainData.forEach((notice, idx) => {

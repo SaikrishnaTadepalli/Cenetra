@@ -10,3 +10,14 @@
 // module.exports = {
 //   BACKEND_URI,
 // };
+import { BACKEND_URI, TEST_BACKEND_URI } from "@env";
+
+const dev = {
+  BACKEND_URI,
+};
+
+const prod = {
+  TEST_BACKEND_URI,
+};
+
+export default __DEV__ ? dev : prod;

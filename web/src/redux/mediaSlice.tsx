@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import envs from "../../config/env";
 
 export const getUploadUrl = createAsyncThunk(
   "media/getUploadUrl",
@@ -9,7 +10,7 @@ export const getUploadUrl = createAsyncThunk(
       const query = `query {
         getS3UploadUrl(teacherId: "${teacherID}", studentId: "${studentID}")
       }`;
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +42,7 @@ export const uplaodMedia = createAsyncThunk(
           fileName
         }
     }`;
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

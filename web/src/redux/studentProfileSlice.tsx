@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import envs from "../../config/env";
 
 export const fetchProfile = createAsyncThunk(
   "studentProfile/fetchProfile",
@@ -15,7 +16,7 @@ export const fetchProfile = createAsyncThunk(
       }
             `;
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: "100%",
+    width: "100%",
   },
   loginContainer: {
     width: "40%",

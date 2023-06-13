@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import envs from "../../config/env";
 
 export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
   const query = `
@@ -13,7 +14,7 @@ export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
 }
 `;
   try {
-    const response = await fetch("http://localhost:3000/graphql", {
+    const response = await fetch(envs, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +56,7 @@ export const updateLogs = createAsyncThunk(
   }`;
     // console.log(query);
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -101,7 +102,7 @@ export const editLogs = createAsyncThunk(
   }`;
     // console.log(query);
     try {
-      const response = await fetch("http://localhost:3000/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
