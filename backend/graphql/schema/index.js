@@ -1,5 +1,4 @@
 const { buildSchema } = require("graphql");
-const { GraphQLUpload } = require("graphql-upload");
 
 module.exports = buildSchema(`
 
