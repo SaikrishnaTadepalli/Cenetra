@@ -13,7 +13,7 @@ export const getTeacherID = createAsyncThunk(
         phoneNumber
     }
   }`;
-    // console.log(query);
+    console.log(query, envs);
     try {
       const response = await fetch(envs, {
         method: "POST",
