@@ -4,7 +4,7 @@ import envs from "../config/env";
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (studentNum, { rejectWithValue }) => {
-    // console.log("!!!!!", BACKEND_URI);
+    // console.log("!!!!!", envs);
     const query = `query{
     studentByStudentNumber(studentNumber: "${studentNum}") {
         _id
@@ -14,6 +14,7 @@ export const loginUser = createAsyncThunk(
         primaryContactNumber
     }
   }`;
+    //console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -118,7 +119,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  isLoggedIn: true,
+  isLoggedIn: false,
   curStudentDetails: "",
   loginLoading: false,
   loginError: false,
