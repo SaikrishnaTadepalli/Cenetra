@@ -13,7 +13,7 @@ export const getTeacherID = createAsyncThunk(
         phoneNumber
     }
   }`;
-    console.log(query);
+    // console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -121,7 +121,7 @@ export const verifyLogin = createAsyncThunk(
     const query = `query {
       verifyCode(userId: "${teacherID}" code: "${code}")
   }`;
-    console.log(query);
+    // console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
