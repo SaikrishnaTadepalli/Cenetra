@@ -20,4 +20,4 @@ const prod = {
   TEST_BACKEND_URI,
 };
 
-export default __DEV__ ? dev : prod;
+export default dev;

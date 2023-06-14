@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import envs from "../config/env";
 
-const { BACKEND_URI } = envs;
-
 export const fetchProfile = createAsyncThunk(
   "studentProfile/fetchProfile",
   async (studentID, { rejectWithValue }) => {
@@ -15,7 +13,7 @@ export const fetchProfile = createAsyncThunk(
       }
             `;
     try {
-      const response = await fetch(BACKEND_URI, {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +61,7 @@ export const updateProfile = createAsyncThunk(
         }
         }`;
       // console.log("------------query--------", query);
-      const response = await fetch(BACKEND_URI, {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

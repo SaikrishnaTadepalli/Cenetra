@@ -2,7 +2,6 @@
   "expo": {
     "name": "Cenetra",
     "slug": "cenetra-test",
-    "owner": "vips11",
     "description": "Mobile first daycare application",
     "version": "1.0.0",
     "orientation": "portrait",
