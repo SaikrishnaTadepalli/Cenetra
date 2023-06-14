@@ -31,15 +31,7 @@ const LoginScreen = () => {
 
   async function handleClick() {
     dispatch(getTeacherID(accessCode)).then((response) => {
-      // console.log(
-      //   !response.error,
-      //   teacherInfoError,
-      //   response,
-      //   !teacherInfoError,
-      //   !teacherInfoLoading,
-      //   isError
-      // );
-      if (response.meta.requestStatus === "fulfilled") {
+      if (!teacherInfoLoading && !teacherInfoError) {
         router.push("/VerificationScreen");
         const teacherID = response.payload.data.teacherByTeacherNumber._id;
         // console.log(teacherID);
