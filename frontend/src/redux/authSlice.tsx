@@ -4,7 +4,7 @@ import envs from "../config/env";
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (studentNum, { rejectWithValue }) => {
-    // console.log("!!!!!", envs);
+    //console.log("!!!!!", envs);
     const query = `query{
     studentByStudentNumber(studentNumber: "${studentNum}") {
         _id
@@ -42,11 +42,12 @@ export const loginUser = createAsyncThunk(
 export const sendSMS = createAsyncThunk(
   "auth/sendSMS",
   async (studentID, { rejectWithValue }) => {
+    //console.log(studentID);
     const query = `mutation {
-      sendSMSCodeStudent(studentId: "${studentID}")  {
-          code
-      }
-  }`;
+        sendSMSCodeStudent(studentId: "${studentID}")  {
+            code
+        }
+    }`;
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -86,7 +87,7 @@ export const verifyLogin = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
-      //console.log("verifyCode", response);
+      //console.log("verifyCode", envs, query);
       if (response.status !== 200) {
         if (response.status === 500) {
           console.error("Error while verifying code");

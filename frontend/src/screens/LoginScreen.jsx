@@ -5,15 +5,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import colors from "../constants/Colors";
 import { useDispatch } from "react-redux";
-import { fetchStudent, loginUser } from "../redux/authSlice";
+import { fetchStudent, loginUser, sendSMS } from "../redux/authSlice";
 import { useSelector } from "react-redux";
 const LoginScreen = ({ navigation }) => {
   const [studentNumber, setStudentNumber] = useState();
   const [error, setError] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
 
@@ -24,8 +25,13 @@ const LoginScreen = ({ navigation }) => {
           setError(response.payload);
           setTimeout(() => setError(""), 2000);
         } else {
-          //const student = fetchStudent(state);
-          navigation.navigate("Verification");
+          const studentID = response.payload.data.studentByStudentNumber._id;
+          dispatch(sendSMS(studentID))
+            .then(() => {
+              setIsDisabled(true);
+              navigation.navigate("Verification");
+            })
+            .catch((error) => console.error("Error in sending SMS", error));
         }
       })
       .catch((error) => {
@@ -33,6 +39,8 @@ const LoginScreen = ({ navigation }) => {
         setError(error);
       });
   };
+
+  useEffect(() => setIsDisabled(false), []);
 
   return (
     <View style={styles.container}>
@@ -47,7 +55,11 @@ const LoginScreen = ({ navigation }) => {
         />
         {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
       </View>
-      <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
+      <TouchableOpacity
+        style={[styles.buttonContainer, { opacity: isDisabled ? 0.5 : 1 }]}
+        onPress={handleClick}
+        disabled={isDisabled}
+      >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
     </View>

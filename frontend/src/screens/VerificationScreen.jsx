@@ -53,12 +53,6 @@ const VerificationScreen = () => {
       );
   };
 
-  useEffect(() => {
-    dispatch(sendSMS(curStudentDetails._id))
-      .then(() => {})
-      .catch((error) => console.error("Error in sending SMS", error));
-  }, []);
-
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>Verify your number</Text>
@@ -79,14 +73,22 @@ const VerificationScreen = () => {
         rootStyle={styles.codeFieldRoot}
         keyboardType="number-pad"
         textContentType="oneTimeCode"
+        containerProps={{
+          contentContainerStyle: {
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        }}
         renderCell={({ index, symbol, isFocused }) => (
-          <Text
-            key={index}
-            style={[styles.box, isFocused && styles.focusCell]}
-            onLayout={getCellOnLayoutHandler(index)}
-          >
-            {symbol || (isFocused ? <Cursor /> : null)}
-          </Text>
+          <View key={index} style={[styles.box, isFocused && styles.focusCell]}>
+            <Text
+              key={index}
+              style={styles.enteredText}
+              onLayout={getCellOnLayoutHandler(index)}
+            >
+              {symbol || (isFocused ? <Cursor /> : null)}
+            </Text>
+          </View>
         )}
       />
       {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
     color: colors.darkPurple,
     fontSize: 16,
     fontFamily: "InterRegular",
-    textAlign: "center",
+    marginLeft: 5,
   },
   boxContainer: {
     flexDirection: "row",
@@ -140,9 +142,17 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderColor: colors.lightPurple,
     textAlign: "center",
-    lineHeight: 58,
+    textAlignVertical: "center",
+    alignContent: "center",
     fontSize: 24,
     fontFamily: "InterMedium",
+    justifyContent: "center",
+  },
+  enteredText: {
+    color: colors.darkPurple,
+    fontSize: 24,
+    fontFamily: "InterRegular",
+    alignSelf: "center",
   },
   buttonContainer: {
     marginTop: 30,

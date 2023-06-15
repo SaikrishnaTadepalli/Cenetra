@@ -33,7 +33,7 @@ const NoticeScreen = ({ navigation }) => {
   const formatDate = (date) => {
     return moment(date).format("MMMM D, YYYY");
   };
-  console.log("-----", envs);
+  // console.log("-----", envs);
   const retrieveData = async () => {
     const data = await AsyncStorage.getItem("studentID");
     dispatch(fetchNotices(data))
