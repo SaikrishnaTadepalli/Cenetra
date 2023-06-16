@@ -56,12 +56,16 @@ const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
 
   return (
     <>
-      <View style={styles.cardContainer}>
+      <TouchableOpacity
+        style={styles.cardContainer}
+        onPress={() => handleExpandNotice(date)}
+      >
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
             marginBottom: 10,
+            justifyContent: "space-between",
           }}
         >
           {!isNoticeRead ? (
@@ -74,6 +78,15 @@ const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
           >
             {subject}
           </Text>
+          <Ionicons
+            name={
+              isExpanded[date]
+                ? "chevron-up-circle-outline"
+                : "chevron-down-circle-outline"
+            }
+            size={24}
+            color="black"
+          />
         </View>
         {isExpanded[date] && (
           <>
@@ -85,19 +98,8 @@ const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
           <Text style={styles.date}>
             {moment(date).format("MMMM DD, YYYY   HH:mm a")}
           </Text>
-          <TouchableOpacity onPress={() => handleExpandNotice(date)}>
-            <Ionicons
-              name={
-                isExpanded[date]
-                  ? "chevron-up-circle-outline"
-                  : "chevron-down-circle-outline"
-              }
-              size={20}
-              color="black"
-            />
-          </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     </>
   );
 };
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   subject: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#23342C",
     fontFamily: "InterSemiBold",
     width: "90%",
