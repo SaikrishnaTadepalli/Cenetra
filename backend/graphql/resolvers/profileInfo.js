@@ -97,6 +97,27 @@ module.exports = {
     }
   },
 
+  getAllMatchedPendingProfileInfos: async (args) => {
+    try {
+      const fetchedPendingProfiles = await ProfileInfoPending.find();
+
+      const fetchedValidProfiles = fetchedPendingProfiles.map(
+        async (pendingProfile) =>
+          await ProfileInfoValid.findById(pendingProfile.student)
+      );
+
+      const result = fetchedPendingProfiles.map((pendingProfile, i) => [
+        transformProfile(pendingProfile),
+        transformProfile(fetchedValidProfiles[i]),
+      ]);
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  // Mutations
   addProfileInfo: async (args) => {
     try {
       const fetchedStudent = await Student.findOne({ _id: args.studentId });

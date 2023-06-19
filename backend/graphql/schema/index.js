@@ -138,6 +138,7 @@ type RootQuery {
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
     getLatestProfileInfo(studentId: ID!): ProfileInfo!
     getPendingProfileInfo(studentId: ID!): ProfileInfo
+    getAllMatchedPendingProfileInfos(): [[ProfileInfo!, ProfileInfo!]!]!
 
     verifyCode(userId: ID!, code: String!): Boolean!
 }
@@ -166,10 +167,10 @@ type RootMutation {
     editProfileInfo(studentId: ID!, details: String): ProfileInfo!
     approveProfileInfo(profileId: ID!, adminId: ID!): ProfileInfo!
 
-    sendSMSCode(studentId: ID!): VerificationCode!
-
+    sendSMSCode(userNumber: String!): VerificationCode!
     sendSMSCodeStudent(studentId: ID!): VerificationCode!
     sendSMSCodeTeacher(teacherId: ID!): VerificationCode!
+    sendSMSCodeAdmin(adminId: ID!): VerificationCode!
 }
 
 schema {
