@@ -1,20 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import envs from "../config/env";
+import envs from "../../config/env";
 
-export const loginUser = createAsyncThunk(
-  "auth/login",
-  async (studentNum, { rejectWithValue }) => {
-    //console.log("!!!!!", envs);
+export const getAdminID = createAsyncThunk(
+  "auth/getAdminID",
+  async (adminNum, { rejectWithValue }) => {
     const query = `query{
-    studentByStudentNumber(studentNumber: "${studentNum}") {
+    adminByAdminNumber(adminNumber: "${adminNum}") {
         _id
         firstName
         lastName
-        studentNumber
-        primaryContactNumber
+        adminNumber
+        phoneNumber
     }
   }`;
-    //console.log(query);
+    console.log(query, envs);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -25,29 +24,74 @@ export const loginUser = createAsyncThunk(
       });
       if (response.status !== 200) {
         if (response.status === 500) {
-          console.error("loginError while fetching student login details");
-          throw new Error("Invalid Login ID");
+          console.error("Error while getting Admin ID");
+          throw new Error("Invalid code");
+        } else if (response.status === 400) {
+          console.log("Invalid Admin number");
+          throw new Error("Invalid or wrong Admin number");
         }
       }
       const data = await response.json();
 
       return data;
     } catch (error) {
-      console.error("loginError in loginUser in mobile", error);
+      console.error("Catch: error getting Admin info", error);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        return rejectWithValue("Network error");
+      }
       return rejectWithValue(error.message);
     }
   }
 );
 
+export const loginUser = createAsyncThunk("auth/login", async (adminID) => {
+  //const {query, adminID} = props;
+  const query = `
+  query {
+    classes {
+      _id
+      details
+      students {
+        _id
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+  try {
+    const response = await fetch(envs, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+    if (response.status !== 200) {
+      if (response.status === 500) {
+        console.error("Error while logging in Admin");
+        throw new Error("Network error");
+      } else if (response.status === 400) {
+        console.log("Invalid access code");
+        throw new Error("Invalid or wrong access code for Admin");
+      }
+    }
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.log("Catch: Error while logging in Admin", error);
+  }
+});
+
 export const sendSMS = createAsyncThunk(
   "auth/sendSMS",
-  async (studentID, { rejectWithValue }) => {
-    //console.log(studentID);
+  async (adminID, { rejectWithValue }) => {
     const query = `mutation {
-        sendSMSCodeStudent(studentId: "${studentID}")  {
-            code
-        }
-    }`;
+      sendSMSCodeAdmin(adminId: "${adminID}")  {
+          code
+      }
+  }`;
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -58,15 +102,17 @@ export const sendSMS = createAsyncThunk(
       });
       if (response.status !== 200) {
         if (response.status === 500) {
-          console.error("error while sending SMS code");
-          throw new Error("Invalid student ID");
+          console.error("error while sending SMS code to Admin");
+          throw new Error("Network error");
+        } else if (response.status === 400) {
+          console.error("error while sending SMS code to Admin");
+          throw new Error("Invalid Admin ID");
         }
       }
       const data = await response.json();
-
       return data;
     } catch (error) {
-      console.error("loginError in sending smsCODE in mobile", error);
+      console.error("Catch: error while sending SMS code to Admin", error);
       return rejectWithValue(error.message);
     }
   }
@@ -74,11 +120,12 @@ export const sendSMS = createAsyncThunk(
 
 export const verifyLogin = createAsyncThunk(
   "auth/verify",
-  async ({ studentID, code }, { rejectWithValue }) => {
-    //console.log(studentID, code);
+  async ({ adminID, code }, { rejectWithValue }) => {
+    // console.log(adminID, code);
     const query = `query {
-      verifyCode(userId: "${studentID}" code: "${code}") 
+      verifyCode(userId: "${adminID}" code: "${code}")
   }`;
+    // console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -87,22 +134,21 @@ export const verifyLogin = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
-      //console.log("verifyCode", envs, query);
+      // console.log("verifyCode", response);
       if (response.status !== 200) {
         if (response.status === 500) {
-          console.error("Error while verifying code");
+          console.error("Error while verifying code for Admin");
           throw new Error("Network error");
         } else if (response.status === 400) {
-          console.log("Invalid code");
-          throw new Error("Invalid or wrong verification code");
+          console.error("Invalid code");
+          throw new Error("Invalid or wrong verification code for Admin");
         }
       }
 
       const data = await response.json();
-
       return data;
     } catch (error) {
-      console.log("Invalid verification code on mobile", error);
+      console.log("Catch: Invalid verification code on web", error);
       return rejectWithValue(error.message);
     }
   }
@@ -110,44 +156,70 @@ export const verifyLogin = createAsyncThunk(
 
 export interface AuthState {
   isLoggedIn: boolean;
-  curStudentDetails: string;
+  adminInfo: string;
+  students: string[];
   loginLoading: boolean;
   loginError: boolean;
   SMSLoading: boolean;
   SMSError: boolean;
   verificationLoading: boolean;
   verificationError: boolean;
+  adminInfoLoading: boolean;
+  adminInfoError: boolean;
+  classes: string[];
 }
 
 const initialState: AuthState = {
   isLoggedIn: true,
-  curStudentDetails: "",
-  loginLoading: false,
+  adminInfo: "",
+  loginLoading: null,
   loginError: false,
+  students: [],
   SMSLoading: false,
   SMSError: false,
   verificationLoading: false,
   verificationError: false,
+  adminInfoLoading: false,
+  adminInfoError: false,
+  classes: [],
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state) => {
+    login: (state, action) => {
       state.isLoggedIn = true;
+      state.adminInfo = action.payload;
     },
     logout: (state) => {
       state.isLoggedIn = false;
-      state.curStudentDetails = "";
+      state.adminInfo = "";
+      localStorage.setItem("isLoggedIn", "false");
     },
     permanentlyDeleteUser: (state) => {
       state.isLoggedIn = false;
-      state.curStudentDetails = "";
+      state.adminInfo = "";
+    },
+    setClasses: (state, action) => {
+      state.classes = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getAdminID.pending, (state) => {
+        state.adminInfoLoading = true;
+        state.adminInfoError = false;
+      })
+      .addCase(getAdminID.rejected, (state) => {
+        state.adminInfoLoading = null;
+        state.adminInfoError = true;
+      })
+      .addCase(getAdminID.fulfilled, (state, action) => {
+        state.adminInfoLoading = false;
+        state.adminInfoError = false;
+        state.adminInfo = action.payload.data.adminByAdminNumber;
+      })
       .addCase(loginUser.pending, (state) => {
         state.loginLoading = true;
         state.loginError = false;
@@ -159,10 +231,9 @@ export const authSlice = createSlice({
         state.isLoggedIn = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoggedIn = false;
-        state.curStudentDetails = action.payload.data.studentByStudentNumber;
         state.loginLoading = false;
         state.loginError = false;
+        state.isLoggedIn = true;
       })
       .addCase(sendSMS.pending, (state) => {
         state.SMSLoading = true;
@@ -196,12 +267,9 @@ export const authSlice = createSlice({
   },
 });
 
-export const { login, logout, permanentlyDeleteUser } = authSlice.actions;
+export const { login, logout, permanentlyDeleteUser, setClasses } =
+  authSlice.actions;
 
-export const fetchStudent = (state) =>
-  console.log("authslice", state, state.auth.curStudentDetails);
-
-export const fetchStudentID = (state) =>
-  console.log("authslice", state.auth.curStudentDetails);
+export const fetchStudents = (state) => state.auth.students;
 
 export default authSlice.reducer;

@@ -13,7 +13,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import colors from "../constants/Colors";
 import ProfileCard from "../components/ProfileCard";
-import { fetchProfile } from "../redux/studentProfileSlice";
+import {
+  fetchPendingProfile,
+  fetchProfile,
+} from "../redux/studentProfileSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
@@ -25,22 +28,35 @@ const ProfileScreen = ({ navigation }) => {
   );
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const { fetchProfileLoading, fetchProfileError } = useSelector(
-    (state) => state.studentProfile
-  );
+  const { fetchProfileLoading, fetchProfileError, isEditDisabled } =
+    useSelector((state) => state.studentProfile);
 
   const onPressEdit = () => {
-    navigation.navigate("EditProfile", { studentData: studentInfo });
+    navigation.navigate("EditProfile", {
+      studentData: studentInfo,
+    });
   };
+
   const retrieveData = async () => {
     const studentID = await AsyncStorage.getItem("studentID");
     dispatch(fetchProfile(studentID))
       .then((response) => {})
       .catch((error) => console.log("Error in Profile Screen screen", error));
   };
+
+  const getPendingProfile = async () => {
+    const studentID = await AsyncStorage.getItem("studentID");
+    dispatch(fetchPendingProfile(studentID))
+      .then((response) => {})
+      .catch((error) =>
+        console.log("Error in fetching pending Profile Screen screen", error)
+      );
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       retrieveData();
+      getPendingProfile();
       return () => {
         // Clean up any resources if needed
       };
@@ -51,6 +67,7 @@ const ProfileScreen = ({ navigation }) => {
     retrieveData();
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
+  //console.log(isEditDisabled);
   return (
     <>
       {fetchProfileError ? (
@@ -80,9 +97,16 @@ const ProfileScreen = ({ navigation }) => {
             }
           >
             <View style={styles.profileContainer}>
-              {/* <TouchableOpacity onPress={onPressEdit}>
-                <Text style={styles.buttonText}>Edit</Text>
-              </TouchableOpacity> */}
+              <TouchableOpacity onPress={onPressEdit} disabled={isEditDisabled}>
+                <Text
+                  style={[
+                    styles.buttonText,
+                    { opacity: isEditDisabled ? 0.5 : 1 },
+                  ]}
+                >
+                  Edit
+                </Text>
+              </TouchableOpacity>
               <View style={styles.imageAndChildInfoContainer}>
                 <Image
                   source={{ uri: studentInfo.uri }}
@@ -98,6 +122,9 @@ const ProfileScreen = ({ navigation }) => {
                 </View>
               </View>
             </View>
+            {isEditDisabled ? (
+              <Text>Your changes have been sent for approval</Text>
+            ) : null}
             <View style={styles.profileContainer}>
               {studentInfo.information
                 ? studentInfo.information.map((item, idx) => (
