@@ -101,15 +101,26 @@ module.exports = {
     try {
       const fetchedPendingProfiles = await ProfileInfoPending.find();
 
-      const fetchedValidProfiles = fetchedPendingProfiles.map(
-        async (pendingProfile) =>
-          await ProfileInfoValid.findById(pendingProfile.student)
+      const fetchedValidProfiles = await Promise.all(
+        fetchedPendingProfiles.map(async (pendingProfile) => {
+          const fetchedValids = await ProfileInfoValid.find({
+            student: pendingProfile._doc.student,
+          }).sort({ createdAt: -1 });
+
+          return fetchedValids.length > 0 ? fetchedValids[0] : null;
+        })
       );
 
-      const result = fetchedPendingProfiles.map((pendingProfile, i) => [
-        transformProfile(pendingProfile),
-        transformProfile(fetchedValidProfiles[i]),
-      ]);
+      const result = fetchedPendingProfiles.map(async (pendingProfile, i) => {
+        const transformedPending = pendingProfile
+          ? transformProfile(pendingProfile)
+          : null;
+        const transformedValid = fetchedValidProfiles[i]
+          ? transformProfile(fetchedValidProfiles[i])
+          : null;
+
+        return [transformedPending, transformedValid];
+      });
 
       return result;
     } catch (err) {
