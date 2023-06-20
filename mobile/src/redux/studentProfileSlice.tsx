@@ -45,22 +45,23 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
-export const updateProfile = createAsyncThunk(
-  "studentProfile/updateProfile",
+export const editProfile = createAsyncThunk(
+  "studentProfile/editProfile",
   async ({ studentID, details }, { rejectWithValue }) => {
     // console.log("details", details);
     try {
-      const jsonString = JSON.stringify(details)
+      const stringifiedDetails = JSON.stringify(details)
         .replace(/\\/g, "\\\\") // Escape backslashes
         .replace(/"/g, '\\"'); // Escape double quotes
+
       const query = `mutation{
-        addProfileInfo(studentId: "${studentID}", details: "${jsonString}") {
+        editProfileInfo(studentId: "${studentID}", details: "${stringifiedDetails}") {
           details
           createdAt
           updatedAt
         }
         }`;
-      // console.log("------------query--------", query);
+      console.log("------------query--------", query);
       const response = await fetch(envs, {
         method: "POST",
         headers: {
@@ -86,22 +87,82 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+export const fetchPendingProfile = createAsyncThunk(
+  "studentProfile/fetchPendingProfile",
+  async (studentID, { rejectWithValue }) => {
+    // console.log(studentID);
+    const query = `
+    {
+      getPendingProfileInfo(studentId:"${studentID}") {
+          student {
+            _id
+          }
+          createdAt
+          details
+        }
+      }
+            `;
+    //console.log(query);
+    try {
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          throw new Error(
+            "Response status 500: Error while fetching pending student profile for parents"
+          );
+          //return "500";
+        } else if (response.status === 400) {
+          console.error(
+            "Response status 400 while fetching pending student profile for parents"
+          );
+          throw new Error(
+            "Response status 400 while fetching pending student profile for parents"
+          );
+        }
+      }
+      const data = await response.json();
+      if (data.data.getPendingProfileInfo !== null) {
+        return data;
+      }
+      return null;
+    } catch (error) {
+      console.error(
+        "Catch: Error while fetching pending student profile for parents",
+        error
+      );
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export interface ProfileState {
   studentInfo: object;
   lastUpdated: string;
-  updateProfileLoading: boolean;
-  updateProfileError: boolean;
+  editProfileLoading: boolean;
+  editProfileError: boolean;
   fetchProfileLoading: boolean;
   fetchProfileError: boolean;
+  isEditDisabled: boolean;
+  fetchPendingProfileLoading: boolean;
+  fetchPendingProfileError: boolean;
 }
 
 const initialState: ProfileState = {
-  updateProfileLoading: null,
-  updateProfileError: false,
+  editProfileLoading: null,
+  editProfileError: false,
   fetchProfileLoading: null,
   fetchProfileError: false,
   studentInfo: {},
   lastUpdated: "",
+  isEditDisabled: false,
+  fetchPendingProfileLoading: null,
+  fetchPendingProfileError: false,
 };
 
 export const studentProfileSlice = createSlice({
@@ -132,17 +193,35 @@ export const studentProfileSlice = createSlice({
         state.fetchProfileLoading = false;
         state.fetchProfileError = false;
       })
-      .addCase(updateProfile.pending, (state) => {
-        state.updateProfileLoading = true;
-        state.updateProfileError = false;
+      .addCase(editProfile.pending, (state) => {
+        state.editProfileLoading = true;
+        state.editProfileError = false;
       })
-      .addCase(updateProfile.rejected, (state) => {
-        state.updateProfileLoading = null;
-        state.updateProfileError = true;
+      .addCase(editProfile.rejected, (state) => {
+        state.editProfileLoading = null;
+        state.editProfileError = true;
       })
-      .addCase(updateProfile.fulfilled, (state, action) => {
-        state.updateProfileLoading = false;
-        state.updateProfileError = false;
+      .addCase(editProfile.fulfilled, (state) => {
+        // console.log("edit profile fulfilled");
+        state.editProfileLoading = false;
+        state.editProfileError = false;
+        state.isEditDisabled = true;
+      })
+      .addCase(fetchPendingProfile.pending, (state) => {
+        state.fetchPendingProfileLoading = true;
+        state.fetchPendingProfileError = false;
+      })
+      .addCase(fetchPendingProfile.rejected, (state) => {
+        state.fetchPendingProfileLoading = null;
+        state.fetchPendingProfileError = true;
+      })
+      .addCase(fetchPendingProfile.fulfilled, (state, action) => {
+        //console.log("pending profile fulfilled");
+        if (action.payload !== null) {
+          state.isEditDisabled = true;
+        }
+        state.fetchPendingProfileLoading = false;
+        state.fetchPendingProfileError = false;
       });
   },
 });

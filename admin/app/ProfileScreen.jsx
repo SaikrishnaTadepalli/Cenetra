@@ -73,7 +73,7 @@ const ProfileScreen = ({ curStudentID }) => {
       setBloodGroup(studentInfo.information[4].section[0].name);
     }
   }, []);
-
+  // console.log(studentInfo);
   return (
     <>
       {curStudentID === "" && !fetchProfileLoading && (

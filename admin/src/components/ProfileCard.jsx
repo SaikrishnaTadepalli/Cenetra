@@ -8,7 +8,7 @@ import {
 import React from "react";
 import Colors from "../constants/Colors";
 
-const ProfileCard = ({ sectionHeader, data, title }) => {
+const ProfileCard = ({ sectionHeader, data }) => {
   const renderButton = (infoType, info) => {
     return (
       <View style={styles.infoLineContainer}>
@@ -59,6 +59,31 @@ const ProfileCard = ({ sectionHeader, data, title }) => {
           ))}
         </View>
       );
+    } else if (sectionHeader === "ALLERGIES") {
+      return data.map((item, idx) => (
+        <View key={`profile-info${idx}`}>
+          {renderText("Item:", item.name)}
+          {renderText("Severity:", item.severity)}
+          {data.indexOf(item) !== data.length - 1 ? (
+            <View style={styles.divider} />
+          ) : null}
+        </View>
+      ));
+    } else if (sectionHeader === "MEDICATIONS") {
+      return data.map((item, idx) => (
+        <View key={`profile-info${idx}`}>
+          {renderText("Medicine Name:", item.name)}
+          {renderText("Dosage:", item.dosage)}
+          {renderText("Frequency:", item.frequency)}
+          {data.indexOf(item) !== data.length - 1 ? (
+            <View style={styles.divider} />
+          ) : null}
+        </View>
+      ));
+    } else if (sectionHeader === "BLOOD GROUP") {
+      return data.map((item, idx) => (
+        <View key={`profile-info${idx}`}>{renderText("", item.name)}</View>
+      ));
     }
   };
 

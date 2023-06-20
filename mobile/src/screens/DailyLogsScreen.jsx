@@ -102,6 +102,7 @@ const DailyLogsScreen = ({ navigation }) => {
                 ) : null
               )}
             </ScrollView>
+            {logs.length === 0 && <Text>No logs are available.</Text>}
             {logs.map((log, idx) => (
               <View style={styles.logsContainer} key={`daily-logs-card-${idx}`}>
                 <DailyLogsCard

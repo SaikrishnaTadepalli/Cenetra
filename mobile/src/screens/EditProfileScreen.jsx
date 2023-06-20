@@ -13,12 +13,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import colors from "../constants/Colors";
 import { useDispatch } from "react-redux";
-import { updateProfile } from "../redux/studentProfileSlice";
+import { editProfile, updateProfile } from "../redux/studentProfileSlice";
 import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 
 const EditProfileScreen = ({ navigation, route }) => {
-  const { updateProfileLoading, updateProfileError } = useSelector(
+  const { editProfileLoading, editProfileError } = useSelector(
     (state) => state.studentProfile
   );
   const [picture, setPicture] = useState("");
@@ -84,7 +84,7 @@ const EditProfileScreen = ({ navigation, route }) => {
     const studentID = await AsyncStorage.getItem("studentID");
     //console.log(JSON.stringify({ updatedInfo2 }));
     dispatch(
-      updateProfile({
+      editProfile({
         studentID: studentID,
         details: updatedInfo,
       })
@@ -349,12 +349,12 @@ const EditProfileScreen = ({ navigation, route }) => {
           </View>
         </View>
       </View>
-      {updateProfileLoading ? (
+      {editProfileLoading ? (
         <Text style={{ textAlign: "center", marginBottom: 20, fontSize: 16 }}>
-          Saving changes....
+          Sending for approval....
         </Text>
       ) : null}
-      {updateProfileError ? (
+      {editProfileError ? (
         <Text style={styles.errorText}>Error while saving changes.</Text>
       ) : null}
       <View
@@ -371,7 +371,7 @@ const EditProfileScreen = ({ navigation, route }) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-          <Text style={styles.saveText}>Save</Text>
+          <Text style={styles.saveText}>Send for approval</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

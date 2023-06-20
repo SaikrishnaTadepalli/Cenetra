@@ -57,7 +57,10 @@ const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
   return (
     <>
       <TouchableOpacity
-        style={styles.cardContainer}
+        style={[
+          styles.cardContainer,
+          { borderColor: isNoticeRead ? "#A0B2AF" : "#699BF7" },
+        ]}
         onPress={() => handleExpandNotice(date)}
       >
         <View
@@ -68,9 +71,6 @@ const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
             justifyContent: "space-between",
           }}
         >
-          {!isNoticeRead ? (
-            <View style={[styles.dotContainer, { backgroundColor: "blue" }]} />
-          ) : null}
           <Text
             style={styles.subject}
             numberOfLines={isExpanded[date] ? null : 1}
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: "100%",
     minHeight: 55,
-    borderColor: "#A0B2AF",
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 16,

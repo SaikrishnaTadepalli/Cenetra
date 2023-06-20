@@ -116,10 +116,8 @@ const HomeScreen = () => {
             >
               {selectedClasses &&
                 selectedClasses.map((cls, idx) => (
-                  <>
-                    <Text key={`class-list=${idx}`} style={styles.className}>
-                      {cls.value}
-                    </Text>
+                  <View key={`class-list=${idx}`}>
+                    <Text style={styles.className}>{cls.value}</Text>
                     {cls.students.map((student, idx) => (
                       <TouchableOpacity
                         style={[
@@ -149,7 +147,7 @@ const HomeScreen = () => {
                         </Text>
                       </TouchableOpacity>
                     ))}
-                  </>
+                  </View>
                 ))}
             </ScrollView>
             <View

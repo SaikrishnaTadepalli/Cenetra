@@ -53,22 +53,19 @@ const LogScreen = ({
             <Text style={styles.subHeaderText}>Today's Logs</Text>
           )}
         </View>
-
-        {date === curDate ? (
-          <View>
-            <TouchableOpacity
-              onPress={onPressEdit}
-              style={styles.editButtonContainer}
-            >
-              <MaterialCommunityIcons
-                name="pencil-outline"
-                size={20}
-                color="#024552"
-              />
-              <Text style={styles.editButtonText}>Edit Log</Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+        <View>
+          <TouchableOpacity
+            onPress={onPressEdit}
+            style={styles.editButtonContainer}
+          >
+            <MaterialCommunityIcons
+              name="pencil-outline"
+              size={20}
+              color="#024552"
+            />
+            <Text style={styles.editButtonText}>Edit Log</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={{ flexDirection: "row" }}>
         <View style={styles.dateContainer}>

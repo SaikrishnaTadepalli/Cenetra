@@ -24,7 +24,10 @@ const DropDown = ({
             {selectedOptions.map(
               (option, idx) =>
                 option && (
-                  <View style={styles.selectedOptionContainer}>
+                  <View
+                    style={styles.selectedOptionContainer}
+                    key={`dropdown-selected-options-${idx}`}
+                  >
                     <Text style={styles.selectedOptionText}>
                       {option.value}
                     </Text>

@@ -8,88 +8,239 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import colors from "../src/constants/Colors";
-import CreateNoticeScreen from "./CreateNoticeScreen";
-import NoticeScreen from "./NoticeScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNotices, setIsNewNoticeAdded } from "../src/redux/noticeSlice";
 import typeColorMapping from "../api/typeColorMapping";
-import { Image, Svg, SvgUri } from "react-native-svg";
-import EmptyState from "../assets/icons/emptyState.svg";
 import NewInfoScreen from "./NewInfoScreen";
+import {
+  fetchPendingProfile,
+  fetchProfile,
+} from "../src/redux/studentProfileSlice";
 
-const NoticesScreen = () => {
+const ApprovalsScreen = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
   const state = useSelector((state) => state);
-  const { fetchNoticesPending, isNewNoticeAdded, createNoticesSuccessful } =
-    state.notices;
+  const c = localStorage.getItem("classes");
+  const c2 = JSON.parse(c);
+  const classes = JSON.parse(c2);
+  const { fetchPendingProfileLoading, fetchProfileLoading } =
+    state.studentProfile;
   const { isLoggedIn } = state.auth;
-  const curDate = moment().format("DD MMMM YYYY");
-  const [date, setDate] = useState("");
-  const [isOldNoticeSelected, setisOldNoticeSelected] = useState(false);
-  const [noticeID, setNoticeID] = useState("");
-  const isDisabled = false;
-  const [notices, setNotices] = useState([]);
-  const [isExpanded, setIsExpanded] = useState({});
   const [error, setError] = useState("");
+  const [oldStudentData, setOldStudentData] = useState({});
+  const [updatedStudentData, setUpdatedStudentData] = useState({});
+  const [differences, setDifferences] = useState([]);
+  const [data, setData] = useState([]);
+  const [date, setDate] = useState("");
+  const [profileID, setProfileID] = useState("");
 
-  const handleButtonPress = (buttonId) => {
-    setIsExpanded((prevState) => ({
-      ...prevState,
-      [buttonId]: !prevState[buttonId],
-    }));
+  const onClickChange = (item) => {
+    setProfileID(item.profileID);
   };
 
-  const handleClick = () => {
-    setDate(curDate);
-    setisOldNoticeSelected(false);
-    dispatch(setIsNewNoticeAdded(true));
+  const compareStudentData = (dataSet1, dataSet2) => {
+    //console.log(dataSet1);
+    const student1 = dataSet1;
+    const student2 = dataSet2;
+    // Compare the properties or values of the objects
+    // Compare the name property
+    if (student1.name !== student2.name) {
+      console.log("Name difference:", student1.name, "vs", student2.name);
+    }
+    // Compare the student_number property
+    if (student1.student_number !== student2.student_number) {
+      console.log(
+        "Student number difference:",
+        student1.student_number,
+        "vs",
+        student2.student_number
+      );
+    }
+    // console.log(student1.information && student1.information);
+    // console.log(student1.information);
+    if (student1.information && student2.information) {
+      for (let i = 0; i < 5; i++) {
+        const info1 = student1.information[i];
+        const info2 = student2.information[i];
+        // Compare the section array
+        const oldData = [];
+        const newData = [];
+        for (let k = 0; k < info1.section.length; k++) {
+          const section1 = info1.section[k];
+          const section2 = info2.section[k];
+          // console.log(section1);
+          if (
+            info1.sectionHeader === "PRIMARY CONTACTS" ||
+            info1.sectionHeader === "EMERGENCY CONTACTS"
+          ) {
+            if (section1.name !== section2.name) {
+              console.log(
+                "Name difference for",
+                student1.name,
+                "at index",
+                i,
+                "within section",
+                k
+              );
+            }
+            if (section1.relationship !== section2.relationship) {
+              console.log(
+                "Relationship difference for",
+                student1.name,
+                "at index",
+                i,
+                "within section",
+                k
+              );
+            }
+            if (section1.email !== section2.email) {
+              console.log(
+                "Email difference for",
+                student1.name,
+                "at index",
+                i,
+                "within section",
+                k
+              );
+            }
+            if (section1.phoneNumber !== section2.phoneNumber) {
+              console.log(
+                "Phone number difference for",
+                student1.name,
+                "at index",
+                i,
+                "within section",
+                k
+              );
+            }
+            if (section1.address !== section2.address) {
+              console.log(
+                "Address difference for",
+                student1.name,
+                "at index",
+                i,
+                "within section",
+                k
+              );
+            }
+          }
+          if (info1.sectionHeader === "ALLERGIES") {
+            if (
+              section1.name !== section2.name ||
+              section1.severity !== section2.severity
+            ) {
+              //console.log("Difference");
+              oldData.push({
+                name: section1.name,
+                severity: section1.severity,
+              });
+              newData.push({
+                name: section2.name,
+                severity: section2.severity,
+              });
+            }
+            const updatedData = [...differences];
+            updatedData.push({
+              sectionHeader: "ALLERGIES",
+              oldData,
+              newData,
+            });
+            setDifferences(updatedData);
+          }
+          if (info1.sectionHeader === "MEDICATIONS") {
+            if (
+              section1.name !== section2.name ||
+              section1.dosage !== section2.dosage ||
+              section1.frequency !== section2.frequency
+            ) {
+              oldData.push({
+                name: section1.name,
+                dosage: section1.dosage,
+                frequency: section1.frequency,
+              });
+              newData.push({
+                name: section2.name,
+                dosage: section2.dosage,
+                frequency: section2.frequency,
+              });
+              const updatedData = [...differences];
+              updatedData.push({
+                sectionHeader: "MEDICATIONS",
+                oldData,
+                newData,
+              });
+              setDifferences(updatedData);
+            }
+          }
+          if (info1.sectionHeader === "BLOOD GROUP") {
+            if (section1.name !== section2.name) {
+              console.log(
+                "Blood group difference for",
+                student1.name,
+                "at index",
+                i,
+                "within section",
+                k
+              );
+            }
+          }
+        }
+      }
+    }
   };
 
-  const onClickNotice = (id) => {
-    setisOldNoticeSelected(true);
-    setNoticeID(id);
-  };
-
-  const formatDate = (date) => {
-    return moment(date).format("DD MMMM YYYY");
-  };
-
-  const retrieveData = () => {
-    const teacherID = localStorage.getItem("teacherID");
-    dispatch(fetchNotices(teacherID)).then((response) => {
+  const retrieveData = async () => {
+    // console.log(classes.classes[0].students[0]);
+    await dispatch(
+      fetchPendingProfile(classes.classes[0].students[0]._id)
+    ).then((response) => {
       if (response.error) {
         setError("Something went wrong, please try again.");
       } else {
-        const newNotices = [];
-        const mainData = response.payload.data.noticesByTeacher;
-        mainData.forEach((notice, idx) => {
-          const curDate = formatDate(notice[0].createdAt);
-          const data = [];
-          notice.forEach((item, idx) => {
-            data.push({
-              _id: item._id,
-              createdAt: item.createdAt,
-              details: item.details,
-              type: item.noticeType,
-            });
-          });
-          newNotices.push({
-            date: curDate,
-            data: data,
-          });
-        });
-        setNotices(newNotices);
+        setUpdatedStudentData(response.payload.studentInfo);
+        setProfileID(response.payload.profileID);
+        setDate(response.payload.lastUpdated);
       }
     });
+    await dispatch(fetchProfile(classes.classes[0].students[0]._id)).then(
+      (response) => {
+        if (response.error) {
+          setError("Something went wrong, please try again.");
+        } else {
+          setOldStudentData(response.payload.studentInfo);
+        }
+      }
+    );
   };
 
   useEffect(() => {
-    retrieveData();
-  }, [createNoticesSuccessful]);
+    const fetchData = async () => {
+      await retrieveData();
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    getInfo();
+  }, [updatedStudentData, oldStudentData]);
+
+  const getInfo = () => {
+    console.log(updatedStudentData, oldStudentData);
+    if (oldStudentData !== {} && updatedStudentData !== {}) {
+      compareStudentData(oldStudentData, updatedStudentData);
+      // console.log(differences);
+      const newData = {
+        profileID: profileID,
+        differences: differences,
+        lastUpdated: date,
+      };
+      const updatedData = [...data];
+      updatedData.push(newData);
+      setData(updatedData);
+    }
+  };
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -97,45 +248,50 @@ const NoticesScreen = () => {
     }
   }, [isLoggedIn]);
 
-  const renderItem = ({ item }) => {
-    const details = JSON.parse(item.details);
-    const subject = details.subject;
-    const date = formatDate(item.createdAt);
-    const dotColor = typeColorMapping[item.type].dotColor;
+  const printSectionHeader = (sectionHeader) => {
+    if (sectionHeader === "ALLERGIES") {
+      return "Allergen";
+    } else if (sectionHeader === "MEDICATIONS") {
+      return "Medication";
+    }
+    if (
+      sectionHeader === "PRIMARY CONTACTS" ||
+      sectionHeader === "EMERGENCY CONTACTS"
+    ) {
+      return "Contact";
+    }
+    if (sectionHeader === "BLOOD GROUP") {
+      return "Blood Group";
+    }
+  };
+
+  const renderItem = (item) => {
+    console.log(item);
     return (
       <>
-        {isExpanded[date] ? (
-          <TouchableOpacity
-            style={styles.cardContainer}
-            onPress={() => onClickNotice(item._id)}
-          >
-            {item ? (
-              <>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 10,
-                  }}
-                >
-                  <View
-                    style={[styles.dotContainer, { backgroundColor: dotColor }]}
-                  />
-                  <Text
-                    style={styles.subject}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {subject}
-                  </Text>
-                </View>
-                <Text style={styles.date}>
-                  {moment(item.createdAt).format("DD MMMM YYYY, HH:mm")}
+        <TouchableOpacity
+          style={styles.cardContainer}
+          onPress={() => onClickChange(item)}
+        >
+          {item ? (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={styles.subject}>
+                  {printSectionHeader("ALLERGIES")} change
                 </Text>
-              </>
-            ) : null}
-          </TouchableOpacity>
-        ) : null}
+              </View>
+              <Text style={styles.date}>
+                {moment(item.lastUpdated).format("DD MMMM YYYY, HH:mm")}
+              </Text>
+            </>
+          ) : null}
+        </TouchableOpacity>
       </>
     );
   };
@@ -143,36 +299,33 @@ const NoticesScreen = () => {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.headerText}>Notices</Text>
-        <Text style={styles.subHeaderText}>
-          All notices you posted will be shown here.
-        </Text>
-        {notices.length === 0 && <Text>No notices are available.</Text>}
+        <Text style={styles.headerText}>Approvals</Text>
         <View style={{ flexDirection: "row" }}>
           <>
-            {fetchNoticesPending ? (
+            {fetchPendingProfileLoading || fetchProfileLoading ? (
               <View
                 style={{
                   flex: 3,
                   width: "50%",
-                  marginLeft: notices.length > 0 ? "-15%" : 500,
+                  // marginLeft: "-50%",
                   marginTop: "-5%",
                   flexDirection: "row",
                 }}
               >
                 <Text>Retrieving data...</Text>
               </View>
-            ) : notices && notices.length > 0 ? (
+            ) : differences && differences.length > 0 ? (
               <>
-                <SectionList
-                  sections={notices}
-                  stickySectionHeadersEnabled={false}
-                  keyExtractor={(notice) => notice._id}
-                  ListFooterComponent={<View />}
-                  ListFooterComponentStyle={{ height: 20 }}
-                  contentContainerStyle={styles.listView}
-                  renderItem={renderItem}
-                />
+                <ScrollView>
+                  {data.map(
+                    (item, idx) => (
+                      <View key={`difference-list-${idx}`}>
+                        {renderItem(item)}
+                      </View>
+                    )
+                    // renderItem(item)
+                  )}
+                </ScrollView>
               </>
             ) : error !== "" ? (
               <View>
@@ -183,28 +336,20 @@ const NoticesScreen = () => {
               style={{
                 flex: 3,
                 width: "50%",
-                marginLeft: 50,
-                marginTop: "-5%",
+                // marginLeft: "20%",
+                marginTop: "-2%",
                 flexDirection: "row",
               }}
             >
               <View style={styles.verticalDivider} />
               <View style={{ flexDirection: "column", width: "100%" }}>
-                <NewInfoScreen />
-                {/* {isOldNoticeSelected ? (
-                  <NoticeScreen id={noticeID} />
-                ) : isNewNoticeAdded ? (
-                  <CreateNoticeScreen date={date} />
-                ) : (
-                  notices &&
-                  notices.length > 0 && (
-                    <View style={styles.emptyStateContainer}>
-                      <Text style={styles.emptyStateMessage}>
-                        Select a change to approve.
-                      </Text>
-                    </View>
-                  )
-                )} */}
+                {differences && (
+                  <NewInfoScreen
+                    differences={differences}
+                    studentName={updatedStudentData.name}
+                    profileID={profileID}
+                  />
+                )}
               </View>
             </View>
           </>
@@ -214,14 +359,14 @@ const NoticesScreen = () => {
   );
 };
 
-export default NoticesScreen;
+export default ApprovalsScreen;
 
 const styles = StyleSheet.create({
   container: {
     // backgroundColor: "pink",
     // width: "100%",
     marginLeft: 20,
-    marginTop: 20,
+    marginTop: 60,
   },
   headerText: {
     fontSize: 30,
@@ -256,7 +401,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardContainer: {
-    // width: "100%",
+    width: "60%",
     minHeight: 45,
     borderColor: "#A0B2AF",
     borderWidth: 1,
@@ -265,6 +410,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     justifyContent: "center",
     backgroundColor: "#D9D9D933",
+    //backgroundColor: "pink",
     marginBottom: 20,
   },
   buttonContainer: {

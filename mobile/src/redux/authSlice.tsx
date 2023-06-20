@@ -120,7 +120,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  isLoggedIn: false,
+  isLoggedIn: true,
   curStudentDetails: "",
   loginLoading: false,
   loginError: false,
