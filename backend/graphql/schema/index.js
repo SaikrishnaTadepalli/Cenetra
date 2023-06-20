@@ -138,7 +138,7 @@ type RootQuery {
     getProfileInfo(studentId: ID!): [ProfileInfo!]!
     getLatestProfileInfo(studentId: ID!): ProfileInfo!
     getPendingProfileInfo(studentId: ID!): ProfileInfo
-    getAllMatchedPendingProfileInfos(): [[ProfileInfo!, ProfileInfo!]!]!
+    getAllMatchedPendingProfileInfos: [[ProfileInfo]!]!
 
     verifyCode(userId: ID!, code: String!): Boolean!
 }

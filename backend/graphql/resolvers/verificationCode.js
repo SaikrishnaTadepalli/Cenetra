@@ -1,5 +1,6 @@
 const Student = require("../../models/student");
 const Teacher = require("../../models/teacher");
+const Admin = require("../../models/admin");
 const VerificationCode = require("../../models/verificationCode");
 
 const { sendSMS } = require("../../utils/sms");
@@ -188,7 +189,7 @@ module.exports = {
       // Store the verification code
       const verificationCode = new VerificationCode({
         user: args.adminId,
-        userType: "Teacher",
+        userType: "Admin",
         code: code,
       });
 

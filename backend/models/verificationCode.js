@@ -11,7 +11,7 @@ const verificationCodeSchema = new Schema(
     },
     userType: {
       type: String,
-      enum: ["Student", "Teacher"],
+      enum: ["Student", "Teacher", "Admin"],
       required: true,
     },
     code: {
