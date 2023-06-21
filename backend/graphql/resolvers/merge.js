@@ -83,11 +83,13 @@ const transformVerificationCode = (verificationCode) => {
     createdAt: dateToString(verificationCode._doc.createdAt),
     updatedAt: dateToString(verificationCode._doc.updatedAt),
   };
-
+  return rtn;
   if (verificationCode.userType === "Student") {
     rtn.user = student.bind(this, verificationCode._doc.user);
-  } else {
+  } else if (verificationCode.userType === "Teacher") {
     rtn.user = teacher.bind(this, verificationCode._doc.user);
+  } else if (verificationCode.userType === "Admin") {
+    rtn.user = admin.bind(this, verificationCode._doc.user);
   }
 
   return rtn;

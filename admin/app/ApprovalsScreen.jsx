@@ -29,18 +29,21 @@ const ApprovalsScreen = () => {
     state.studentProfile;
   const { isLoggedIn } = state.auth;
   const [error, setError] = useState("");
-  const [oldStudentData, setOldStudentData] = useState({});
-  const [updatedStudentData, setUpdatedStudentData] = useState({});
-  const [differences, setDifferences] = useState([]);
-  const [data, setData] = useState([]);
+  const [differencesObj, setDifferencesObj] = useState([]);
+  const [dataDifferences, setDataDifferences] = useState([]);
+  // const [data, setData] = useState([]);
   const [date, setDate] = useState("");
+  const [studentName, setStudentName] = useState("");
   const [profileID, setProfileID] = useState("");
 
   const onClickChange = (item) => {
+    //console.log(item, profileID, studentName);
     setProfileID(item.profileID);
+    setStudentName(item.studentName);
+    setDataDifferences(item.differences);
   };
 
-  const compareStudentData = (dataSet1, dataSet2) => {
+  const compareStudentData = (dataSet1, dataSet2, differences) => {
     //console.log(dataSet1);
     const student1 = dataSet1;
     const student2 = dataSet2;
@@ -48,15 +51,6 @@ const ApprovalsScreen = () => {
     // Compare the name property
     if (student1.name !== student2.name) {
       console.log("Name difference:", student1.name, "vs", student2.name);
-    }
-    // Compare the student_number property
-    if (student1.student_number !== student2.student_number) {
-      console.log(
-        "Student number difference:",
-        student1.student_number,
-        "vs",
-        student2.student_number
-      );
     }
     // console.log(student1.information && student1.information);
     // console.log(student1.information);
@@ -67,6 +61,17 @@ const ApprovalsScreen = () => {
         // Compare the section array
         const oldData = [];
         const newData = [];
+        if (info1.section.length !== info2.section.length) {
+          //  console.log(info1, info2);
+          for (let j = info1.section.length; j < info2.section.length; j++) {
+            newData.push(info2.section[j]);
+          }
+          differences.push({
+            sectionHeader: info1.sectionHeader,
+            oldData: [],
+            newData,
+          });
+        }
         for (let k = 0; k < info1.section.length; k++) {
           const section1 = info1.section[k];
           const section2 = info2.section[k];
@@ -75,58 +80,36 @@ const ApprovalsScreen = () => {
             info1.sectionHeader === "PRIMARY CONTACTS" ||
             info1.sectionHeader === "EMERGENCY CONTACTS"
           ) {
-            if (section1.name !== section2.name) {
-              console.log(
-                "Name difference for",
-                student1.name,
-                "at index",
-                i,
-                "within section",
-                k
-              );
-            }
-            if (section1.relationship !== section2.relationship) {
-              console.log(
-                "Relationship difference for",
-                student1.name,
-                "at index",
-                i,
-                "within section",
-                k
-              );
-            }
-            if (section1.email !== section2.email) {
-              console.log(
-                "Email difference for",
-                student1.name,
-                "at index",
-                i,
-                "within section",
-                k
-              );
-            }
-            if (section1.phoneNumber !== section2.phoneNumber) {
-              console.log(
-                "Phone number difference for",
-                student1.name,
-                "at index",
-                i,
-                "within section",
-                k
-              );
-            }
-            if (section1.address !== section2.address) {
-              console.log(
-                "Address difference for",
-                student1.name,
-                "at index",
-                i,
-                "within section",
-                k
-              );
+            if (
+              section1.name !== section2.name ||
+              section1.relationship !== section2.relationship ||
+              section1.email !== section2.email ||
+              section1.phoneNumber !== section2.phoneNumber ||
+              section1.address !== section2.address
+            ) {
+              oldData.push({
+                name: section1.name,
+                relationship: section1.relationship,
+                email: section1.email,
+                phoneNumber: section1.phoneNumber,
+                address: section1.address,
+              });
+              newData.push({
+                name: section2.name,
+                relationship: section2.relationship,
+                email: section2.email,
+                phoneNumber: section2.phoneNumber,
+                address: section2.address,
+              });
+              differences.push({
+                sectionHeader: info1.sectionHeader,
+                oldData,
+                newData,
+              });
             }
           }
           if (info1.sectionHeader === "ALLERGIES") {
+            //console.log(section1, section2);
             if (
               section1.name !== section2.name ||
               section1.severity !== section2.severity
@@ -140,20 +123,19 @@ const ApprovalsScreen = () => {
                 name: section2.name,
                 severity: section2.severity,
               });
+              differences.push({
+                sectionHeader: info1.sectionHeader,
+                oldData,
+                newData,
+              });
             }
-            const updatedData = [...differences];
-            updatedData.push({
-              sectionHeader: "ALLERGIES",
-              oldData,
-              newData,
-            });
-            setDifferences(updatedData);
           }
           if (info1.sectionHeader === "MEDICATIONS") {
             if (
               section1.name !== section2.name ||
               section1.dosage !== section2.dosage ||
-              section1.frequency !== section2.frequency
+              section1.frequency !== section2.frequency ||
+              section1.length !== section2.length
             ) {
               oldData.push({
                 name: section1.name,
@@ -165,25 +147,20 @@ const ApprovalsScreen = () => {
                 dosage: section2.dosage,
                 frequency: section2.frequency,
               });
-              const updatedData = [...differences];
-              updatedData.push({
-                sectionHeader: "MEDICATIONS",
+              differences.push({
+                sectionHeader: info1.sectionHeader,
                 oldData,
                 newData,
               });
-              setDifferences(updatedData);
             }
           }
           if (info1.sectionHeader === "BLOOD GROUP") {
             if (section1.name !== section2.name) {
-              console.log(
-                "Blood group difference for",
-                student1.name,
-                "at index",
-                i,
-                "within section",
-                k
-              );
+              differences.push({
+                sectionHeader: info1.sectionHeader,
+                oldData: { name: section1.name },
+                newData: { name: section2.name },
+              });
             }
           }
         }
@@ -199,46 +176,48 @@ const ApprovalsScreen = () => {
       if (response.error) {
         setError("Something went wrong, please try again.");
       } else {
-        setUpdatedStudentData(response.payload.studentInfo);
-        setProfileID(response.payload.profileID);
-        setDate(response.payload.lastUpdated);
+        //console.log(response);
+        const d = [];
+        const data = response.payload.data.getAllMatchedPendingProfileInfos[0];
+        const newDetails = data[0].details.replace(/\\/g, "");
+        const oldDetails = data[1].details.replace(/\\/g, "");
+        const oldStudentData = JSON.parse(oldDetails);
+        const updatedStudentData = JSON.parse(newDetails);
+        // console.log(newDetails);
+
+        getInfo(
+          {
+            profileID: data[0]._id,
+            details: updatedStudentData,
+            lastUpdated: data[0].updatedAt,
+          },
+          { details: data[1] ? oldStudentData : null },
+          d
+        );
+        //console.log(d);
+        // console.log(typeof oldDetails);
+        const updatedData = {
+          profileID: data[0]._id,
+          differences: d,
+          studentName: oldStudentData.name,
+          lastUpdated: data[0].updatedAt,
+        };
+        const updated = [...differencesObj];
+        updated.push(updatedData);
+        setDifferencesObj(updated);
+        //console.log(updatedData);
       }
     });
-    await dispatch(fetchProfile(classes.classes[0].students[0]._id)).then(
-      (response) => {
-        if (response.error) {
-          setError("Something went wrong, please try again.");
-        } else {
-          setOldStudentData(response.payload.studentInfo);
-        }
-      }
-    );
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await retrieveData();
-    };
-    fetchData();
+    retrieveData();
   }, []);
 
-  useEffect(() => {
-    getInfo();
-  }, [updatedStudentData, oldStudentData]);
-
-  const getInfo = () => {
-    console.log(updatedStudentData, oldStudentData);
+  const getInfo = (updatedStudentData, oldStudentData, d) => {
+    //console.log(updatedStudentData, oldStudentData);
     if (oldStudentData !== {} && updatedStudentData !== {}) {
-      compareStudentData(oldStudentData, updatedStudentData);
-      // console.log(differences);
-      const newData = {
-        profileID: profileID,
-        differences: differences,
-        lastUpdated: date,
-      };
-      const updatedData = [...data];
-      updatedData.push(newData);
-      setData(updatedData);
+      compareStudentData(oldStudentData.details, updatedStudentData.details, d);
     }
   };
 
@@ -251,7 +230,8 @@ const ApprovalsScreen = () => {
   const printSectionHeader = (sectionHeader) => {
     if (sectionHeader === "ALLERGIES") {
       return "Allergen";
-    } else if (sectionHeader === "MEDICATIONS") {
+    }
+    if (sectionHeader === "MEDICATIONS") {
       return "Medication";
     }
     if (
@@ -266,7 +246,7 @@ const ApprovalsScreen = () => {
   };
 
   const renderItem = (item) => {
-    console.log(item);
+    //console.log(item);
     return (
       <>
         <TouchableOpacity
@@ -282,12 +262,10 @@ const ApprovalsScreen = () => {
                   marginBottom: 10,
                 }}
               >
-                <Text style={styles.subject}>
-                  {printSectionHeader("ALLERGIES")} change
-                </Text>
+                <Text style={styles.subject}>{item.studentName}</Text>
               </View>
               <Text style={styles.date}>
-                {moment(item.lastUpdated).format("DD MMMM YYYY, HH:mm")}
+                {moment(item.lastUpdated).format("DD MMMM YYYY, HH:mm a")}
               </Text>
             </>
           ) : null}
@@ -295,7 +273,7 @@ const ApprovalsScreen = () => {
       </>
     );
   };
-
+  //onsole.log(differencesObj);
   return (
     <>
       <View style={styles.container}>
@@ -314,10 +292,10 @@ const ApprovalsScreen = () => {
               >
                 <Text>Retrieving data...</Text>
               </View>
-            ) : differences && differences.length > 0 ? (
+            ) : differencesObj && differencesObj.length > 0 ? (
               <>
                 <ScrollView>
-                  {data.map(
+                  {differencesObj.map(
                     (item, idx) => (
                       <View key={`difference-list-${idx}`}>
                         {renderItem(item)}
@@ -336,20 +314,31 @@ const ApprovalsScreen = () => {
               style={{
                 flex: 3,
                 width: "50%",
-                // marginLeft: "20%",
                 marginTop: "-2%",
                 flexDirection: "row",
               }}
             >
               <View style={styles.verticalDivider} />
+              {differencesObj.length > 0 && studentName === "" && (
+                <View style={styles.emptyStateContainer}>
+                  <Text style={styles.emptyStateMessage}>
+                    Select a change to approve.
+                  </Text>
+                </View>
+              )}
               <View style={{ flexDirection: "column", width: "100%" }}>
-                {differences && (
-                  <NewInfoScreen
-                    differences={differences}
-                    studentName={updatedStudentData.name}
-                    profileID={profileID}
-                  />
-                )}
+                {studentName ? (
+                  <View>
+                    <Text style={[styles.subHeaderText, { marginBottom: 20 }]}>
+                      Student Name: {studentName}
+                    </Text>
+                    <NewInfoScreen
+                      differences={dataDifferences}
+                      studentName={studentName}
+                      profileID={profileID}
+                    />
+                  </View>
+                ) : null}
               </View>
             </View>
           </>
@@ -452,10 +441,12 @@ const styles = StyleSheet.create({
     color: "#99B8BE",
     fontFamily: "InterMedium",
     fontSize: 16,
+    // marginLeft: "20%",
   },
   emptyStateContainer: {
-    flex: 1,
-    alignSelf: "center",
+    //flex: 1,
+    marginLeft: "40%",
+    justifyContent: "center",
     alignItems: "center",
   },
 });

@@ -32,51 +32,28 @@ const LoginScreen = () => {
   async function handleClick() {
     dispatch(getAdminID(accessCode))
       .then((response) => {
-        if (response.error) {
-          setError(response.payload);
-          setTimeout(() => setError(""), 2000);
-        } else {
+        if (!response.error) {
+          router.push("/VerificationScreen");
           const adminID = response.payload.data.adminByAdminNumber._id;
+          // console.log(teacherID);
           localStorage.setItem("adminID", adminID);
-          dispatch(loginUser(adminID))
-            .then((response) => {
-              if (!loginLoading && !loginError) {
-                const classes = response.payload.data.classes;
-                dispatch(setClasses(classes));
-                localStorage.setItem("isLoggedIn", "true");
-                const stringifiedDetails = JSON.stringify({ classes })
-                  .replace(/\\/g, "\\\\") // Escape backslashes
-                  .replace(/"/g, '\\"');
-                localStorage.setItem("classes", `"${stringifiedDetails}"`);
-                router.push("/HomeScreen");
-              } else if (!loginLoading && loginError) {
-                setError("Something went wrong. Please try again.");
-                setTimeout(() => setError(""), 1000);
-              }
-            })
+          setIsDisabled(true);
+          dispatch(sendSMS(adminID))
+            .then(() => {})
             .catch((error) =>
-              setError(`Something went wrong try again, ${error}`)
+              console.error("Error in sending SMS to admins", error)
             );
+        } else {
+          setError(response.payload);
+          setTimeout(() => setError(""), 1000);
         }
       })
-      .catch((error) =>
-        console.error("Error in dispatching verifyLogin on web", error)
-      );
+      .catch((error) => {
+        console.log("Catch:", error);
+        setError("Something went wrong");
+      });
   }
-  //   dispatch(sendSMS(adminID))
-  //     .then(() => {})
-  //     .catch((error) => console.error("Error in sending SMS", error));
-  // } else {
-  //   setError(response.payload);
-  //   setTimeout(() => setError(""), 1000);
-  // }
-
-  // if (teacherID) {
-  // } else {
-  //   setError("Invalid access code.");
-  //   setTimeout(() => setError(""), 1000);
-  // }
-
+  console.log(error);
   return (
     <View style={styles.container}>
       <View style={styles.loginContainer}>

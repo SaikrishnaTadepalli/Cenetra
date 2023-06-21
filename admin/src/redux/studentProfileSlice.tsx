@@ -62,16 +62,13 @@ export const fetchPendingProfile = createAsyncThunk(
   async (studentID, { rejectWithValue }) => {
     //console.log(studentID);
     const query = `
-    {
-      getPendingProfileInfo(studentId:"${studentID}") {
-          _id
-          student {
-            _id
-          }
-          createdAt
-          details
-        }
+    query {
+      getAllMatchedPendingProfileInfos {
+        _id
+        details
+        updatedAt
       }
+    }
             `;
     //console.log(query);
     try {
@@ -100,16 +97,7 @@ export const fetchPendingProfile = createAsyncThunk(
       const data = await response.json();
       //console.log(data.data.getPendingProfileInfo.details);
 
-      const actualData = data.data.getPendingProfileInfo;
-      const cleanedStateData = actualData.details.replace(/\\/g, "");
-      const details = JSON.parse(cleanedStateData);
-      const result = {
-        lastUpdated: actualData.createdAt,
-        studentInfo: details,
-        studentID: actualData.student._id,
-        profileID: actualData._id,
-      };
-      return result;
+      return data;
     } catch (error) {
       console.error(
         "Catch: Error while fetching pending student profile for admin",
@@ -235,7 +223,6 @@ export const studentProfileSlice = createSlice({
         state.pendingStudentInfo = action.payload;
         state.fetchPendingProfileLoading = false;
         state.fetchPendingProfileError = false;
-        state.pendingProfileID = action.payload.profileID;
       })
       .addCase(approvePendingProfile.pending, (state) => {
         state.approvePendingProfileLoading = true;

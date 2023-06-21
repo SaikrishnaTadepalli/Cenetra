@@ -97,7 +97,7 @@ module.exports = {
     }
   },
 
-  getAllMatchedPendingProfileInfos: async (args) => {
+  getAllMatchedPendingProfileInfos: async () => {
     try {
       const fetchedPendingProfiles = await ProfileInfoPending.find();
 

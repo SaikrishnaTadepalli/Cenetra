@@ -12,6 +12,7 @@ export const fetchProfile = createAsyncThunk(
         }
       }
             `;
+    console.log(envs);
     try {
       const response = await fetch(envs, {
         method: "POST",

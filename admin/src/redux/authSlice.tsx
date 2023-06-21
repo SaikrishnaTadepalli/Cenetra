@@ -13,7 +13,7 @@ export const getAdminID = createAsyncThunk(
         phoneNumber
     }
   }`;
-    console.log(query, envs);
+    //console.log(query, envs === "test");
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -32,7 +32,7 @@ export const getAdminID = createAsyncThunk(
         }
       }
       const data = await response.json();
-
+      //console.log(envs);
       return data;
     } catch (error) {
       console.error("Catch: error getting Admin info", error);
@@ -100,6 +100,7 @@ export const sendSMS = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
+      console.log(query, envs);
       if (response.status !== 200) {
         if (response.status === 500) {
           console.error("error while sending SMS code to Admin");
@@ -125,7 +126,7 @@ export const verifyLogin = createAsyncThunk(
     const query = `query {
       verifyCode(userId: "${adminID}" code: "${code}")
   }`;
-    // console.log(query);
+    console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
