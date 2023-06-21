@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
@@ -59,19 +53,22 @@ const LogScreen = ({
             <Text style={styles.subHeaderText}>Today's Logs</Text>
           )}
         </View>
-        <View>
-          <TouchableOpacity
-            onPress={onPressEdit}
-            style={styles.editButtonContainer}
-          >
-            <MaterialCommunityIcons
-              name="pencil-outline"
-              size={20}
-              color="#024552"
-            />
-            <Text style={styles.editButtonText}>Edit Log</Text>
-          </TouchableOpacity>
-        </View>
+
+        {date === curDate ? (
+          <View>
+            <TouchableOpacity
+              onPress={onPressEdit}
+              style={styles.editButtonContainer}
+            >
+              <MaterialCommunityIcons
+                name="pencil-outline"
+                size={20}
+                color="#024552"
+              />
+              <Text style={styles.editButtonText}>Edit Log</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
       <View style={{ flexDirection: "row" }}>
         <View style={styles.dateContainer}>
@@ -151,7 +148,6 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     // backgroundColor: "red",
-    height: "100%",
   },
   logHeaderContainer: {
     flexDirection: "row",

@@ -10,18 +10,17 @@ import { useRouter } from "expo-router";
 import moment from "moment-timezone";
 
 import colors from "../src/constants/Colors";
-import DropDown from "../src/components/DropDown";
+import DailyLogsScreen from "./DailyLogs";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogs } from "../src/redux/logsSlice";
 import CreateLogScreen from "./CreateLogScreen";
 import LogScreen from "./LogScreen";
-import LogsScreen from "./LogsScreen";
 
-const DailyLogsScreen = () => {
-  const c = localStorage.getItem("classes");
-  const c2 = JSON.parse(c);
-  const classes = JSON.parse(c2).classes;
-  const { isAdmin } = useSelector((state) => state.auth);
+const ClassListScreen = () => {
+  const s = localStorage.getItem("students");
+  const s2 = JSON.parse(s);
+  const students = JSON.parse(s2).students;
+  const state = useSelector((state) => state.auth);
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const dispatch = useDispatch();
   const router = useRouter();
@@ -32,45 +31,6 @@ const DailyLogsScreen = () => {
   const [isStudentNameSelected, setIsStudentNameSelected] = useState(false);
   const [logID, setLogID] = useState("");
   const curDate = moment().format("MMMM D, YYYY");
-
-  const classInfo = classes.map((item) => ({
-    key: item._id,
-    value: item.details,
-    students: item.students,
-  }));
-  const [selectedClasses, setSelectedClasses] = useState([]);
-
-  const handleCheckboxSelectionForClasses = (input) => {
-    // console.log(input, selectedClasses);
-    const idx = selectedClasses.findIndex((cls) => cls.key === input.key);
-    // console.log(idx);
-    const selected = [...selectedClasses];
-    if (idx !== -1) {
-      selected.splice(idx, 1);
-      setSelectedClasses(selected);
-      setStudentID("");
-    } else {
-      selected.push(input);
-      setSelectedClasses(selected);
-    }
-  };
-
-  const handleSelectAllForClasses = () => {
-    if (classInfo.length === selectedClasses.length) {
-      // Deselect all options
-      setSelectedClasses([]);
-      setStudentID("");
-    } else {
-      // Select all options
-      setSelectedClasses(classInfo);
-    }
-  };
-
-  const onPressDelete = (idx) => {
-    const updatedItems = [...selectedClasses];
-    updatedItems.splice(idx, 1);
-    setSelectedClasses(updatedItems);
-  };
 
   const onClickLog = (logID) => {
     setIsOldLogSelected(true);
@@ -101,60 +61,44 @@ const DailyLogsScreen = () => {
     >
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Class List</Text>
-        <DropDown
-          options={classInfo}
-          selectedOptions={selectedClasses}
-          setSelectedOptions={handleCheckboxSelectionForClasses}
-          onSelectAll={handleSelectAllForClasses}
-          onPressDelete={onPressDelete}
-          dropdownText="Select class to view"
-        />
+        <Text style={styles.subHeaderText}>My Class</Text>
       </View>
       <View style={{ flexDirection: "row", height: "100%" }}>
         <ScrollView
           contentContainerStyle={styles.listView}
-          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
         >
-          {selectedClasses &&
-            selectedClasses.map((cls, idx) => (
-              <>
-                <Text key={`class-list=${idx}`} style={styles.className}>
-                  {cls.value}
-                </Text>
-                {cls.students.map((student, idx) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.cardContainer,
-                      {
-                        backgroundColor:
-                          student._id === studentID
-                            ? "rgba(187, 157, 191, 0.4)"
-                            : "rgba(217, 217, 217, 0.3)",
-                      },
-                    ]}
-                    key={`name-${idx}`}
-                    onPress={() =>
-                      handleClick(
-                        student.firstName + " " + student.lastName,
-                        student._id
-                      )
-                    }
-                  >
-                    <Text
-                      style={[
-                        styles.nameText,
-                        {
-                          color:
-                            student._id === studentID ? "#4F0059" : "#5E5E5E",
-                        },
-                      ]}
-                    >
-                      {student.firstName + " " + student.lastName}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </>
-            ))}
+          {students.map((student, idx) => (
+            <TouchableOpacity
+              style={[
+                styles.cardContainer,
+                {
+                  backgroundColor:
+                    student._id === studentID
+                      ? "rgba(187, 157, 191, 0.4)"
+                      : "rgba(217, 217, 217, 0.3)",
+                },
+              ]}
+              key={`name-${idx}`}
+              onPress={() =>
+                handleClick(
+                  student.firstName + " " + student.lastName,
+                  student._id
+                )
+              }
+            >
+              <Text
+                style={[
+                  styles.nameText,
+                  {
+                    color: student._id === studentID ? "#4F0059" : "#5E5E5E",
+                  },
+                ]}
+              >
+                {student.firstName + " " + student.lastName}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
         <View
           style={{
@@ -167,7 +111,7 @@ const DailyLogsScreen = () => {
         >
           <View style={styles.verticalDivider} />
           {isStudentNameSelected ? (
-            <LogsScreen
+            <DailyLogsScreen
               name={name}
               studentID={studentID}
               setIsStudentNameSelected={setIsStudentNameSelected}
@@ -182,7 +126,7 @@ const DailyLogsScreen = () => {
               </Text>
             </View>
           ) : (
-            <View style={{ height: "100%" }}>
+            <View>
               {isOldLogSelected ? (
                 <LogScreen
                   logID={logID}
@@ -208,7 +152,7 @@ const DailyLogsScreen = () => {
   );
 };
 
-export default DailyLogsScreen;
+export default ClassListScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -219,10 +163,10 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginLeft: 30,
     marginBottom: 20,
-    marginTop: 40,
+    marginTop: 60,
   },
   headerText: {
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: "InterBold",
     marginBottom: 34,
   },
@@ -233,11 +177,6 @@ const styles = StyleSheet.create({
   nameText: {
     fontFamily: "InterMedium",
     fontSize: 14,
-  },
-  className: {
-    fontSize: 16,
-    fontFamily: "InterSemiBold",
-    marginVertical: 20,
   },
   listView: {
     width: "30%",

@@ -16,7 +16,7 @@ import LogScreen from "./LogScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsNewLogAdded, setIsNewLogAdded } from "../src/redux/logsSlice";
 
-const LogsScreen = ({
+const DailyLogsScreen = ({
   name,
   studentID,
   setIsStudentNameSelected,
@@ -60,6 +60,22 @@ const LogsScreen = ({
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{name}'s Logs</Text>
+      <View>
+        <TouchableOpacity
+          style={
+            isDisabled
+              ? [styles.buttonContainer, styles.disabled]
+              : styles.buttonContainer
+          }
+          onPress={handleClick}
+          disabled={isDisabled}
+        >
+          <Ionicons name="add" size={20} color="#024552" />
+          <Text style={styles.buttonText} onPress={handleClick}>
+            Add a new log
+          </Text>
+        </TouchableOpacity>
+      </View>
       <View style={{ flexDirection: "row" }}>
         <ScrollView contentContainerStyle={styles.listView}>
           {fetchLogsPending ? (
@@ -108,7 +124,7 @@ const LogsScreen = ({
   );
 };
 
-export default LogsScreen;
+export default DailyLogsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -118,7 +134,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontFamily: "InterSemiBold",
-    marginBottom: 20,
   },
   dateText: {
     fontFamily: "InterMedium",
