@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
@@ -145,6 +151,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     // backgroundColor: "red",
+    height: "100%",
   },
   logHeaderContainer: {
     flexDirection: "row",

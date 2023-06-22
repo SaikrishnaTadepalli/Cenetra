@@ -53,31 +53,38 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
       return "Blood Group";
     }
   };
-
   return (
     <>
       {isDenied ? <Text>The change has been denied.</Text> : null}
       {isApproved ? <Text>The change has been approved!</Text> : null}
       {isPageShown && (
-        <>
+        <View>
           {differences &&
             differences.map((difference, idx) => (
               <View key={`difference-header-${idx}`}>
                 <Text style={styles.headerText}>
                   {printSectionHeader(difference.sectionHeader)} change
                 </Text>
-                <Text style={[styles.subHeaderText, { marginBottom: 20 }]}>
-                  Student Name: {studentName}{" "}
-                </Text>
-                <View style={{ flexDirection: "row", marginBottom: 24 }}>
-                  <Text style={styles.subHeaderText}>
-                    Previous Information:
+                {difference.oldData.length > 0 ? (
+                  <View style={{ flexDirection: "row", marginBottom: 24 }}>
+                    <Text style={styles.subHeaderText}>
+                      Previous Information:
+                    </Text>
+                    <ProfileCard
+                      sectionHeader={difference.sectionHeader}
+                      data={difference.oldData}
+                    />
+                  </View>
+                ) : (
+                  <Text
+                    style={[
+                      styles.subHeaderText,
+                      { marginBottom: 20, fontFamily: "InterSemiBold" },
+                    ]}
+                  >
+                    New Information has been added
                   </Text>
-                  <ProfileCard
-                    sectionHeader={difference.sectionHeader}
-                    data={difference.oldData}
-                  />
-                </View>
+                )}
                 <View style={{ flexDirection: "row" }}>
                   <Text style={styles.subHeaderText}>New Information:</Text>
                   <ProfileCard
@@ -101,7 +108,7 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
               <Text style={styles.cancelText}>Deny</Text>
             </TouchableOpacity>
           </View>
-        </>
+        </View>
       )}
     </>
   );
@@ -111,7 +118,7 @@ export default NewInfoScreen;
 
 const styles = StyleSheet.create({
   headerText: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: "InterMedium",
     marginBottom: 24,
   },

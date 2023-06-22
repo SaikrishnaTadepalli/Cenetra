@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontFamily: "InterSemiBold",
+    marginBottom: 20,
   },
   dateText: {
     fontFamily: "InterMedium",

@@ -110,7 +110,7 @@ const DailyLogsScreen = () => {
           dropdownText="Select class to view"
         />
       </View>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", height: "100%" }}>
         <ScrollView
           contentContainerStyle={styles.listView}
           nestedScrollEnabled={true}
@@ -182,7 +182,7 @@ const DailyLogsScreen = () => {
               </Text>
             </View>
           ) : (
-            <View>
+            <View style={{ height: "100%" }}>
               {isOldLogSelected ? (
                 <LogScreen
                   logID={logID}

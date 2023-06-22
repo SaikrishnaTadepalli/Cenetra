@@ -11,7 +11,7 @@ import {
   sendSMS,
   verifyLogin,
   loginUser,
-  setStudents,
+  setClasses,
 } from "../src/redux/authSlice";
 
 import colors from "../src/constants/Colors";
@@ -58,24 +58,17 @@ const VerificationScreen = () => {
           setError("Invalid login code");
           setTimeout(() => setError(""), 2000);
         } else {
+          const adminID = localStorage.getItem("adminID");
           dispatch(loginUser(adminID))
             .then((response) => {
-              const students = [];
               if (!loginLoading && !loginError) {
-                response.payload.data.classes.forEach((element) => {
-                  if (element.admin._id === adminID) {
-                    element.students.forEach((s) => {
-                      students.push(s);
-                    });
-                    return;
-                  }
-                });
-                dispatch(setStudents(students));
+                const classes = response.payload.data.classes;
+                dispatch(setClasses(classes));
                 localStorage.setItem("isLoggedIn", "true");
-                const stringifiedDetails = JSON.stringify({ students })
+                const stringifiedDetails = JSON.stringify({ classes })
                   .replace(/\\/g, "\\\\") // Escape backslashes
                   .replace(/"/g, '\\"');
-                localStorage.setItem("students", `"${stringifiedDetails}"`);
+                localStorage.setItem("classes", `"${stringifiedDetails}"`);
                 router.push("/HomeScreen");
               } else if (!loginLoading && loginError) {
                 setError("Something went wrong. Please try again.");
