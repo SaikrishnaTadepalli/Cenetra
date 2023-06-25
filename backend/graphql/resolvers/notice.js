@@ -87,16 +87,6 @@ module.exports = {
         return fetchedStudent;
       });
 
-      // for (let i = 0; i < args.studentIds.length; i++) {
-      //   const fetchedStudent = await Student.findOne({
-      //     _id: args.studentIds[i],
-      //   });
-
-      //   if (!fetchedStudent) {
-      //     throw new Error(`Student does not exist: ${stuId}.`);
-      //   }
-      // }
-
       const readArr = args.studentIds.map((x) => false);
 
       const notice = new Notice({
@@ -104,6 +94,7 @@ module.exports = {
         students: args.studentIds,
         details: args.details,
         noticeType: args.noticeType,
+        edits: [],
         read: readArr,
       });
 
@@ -138,9 +129,15 @@ module.exports = {
         }
       }
 
+      const currentDate = new Date();
       const readArr = args.studentIds.map((x) => false);
 
       fetchedNotice.students = args.studentIds;
+      fetchedNotice.edits.push({
+        edit: fetchedNotice.details,
+        editedBy: args.editorName,
+        editedOn: currentDate.toISOString(),
+      });
       fetchedNotice.details = args.details;
       fetchedNotice.noticeType = args.noticeType;
       fetchedNotice.read = readArr;

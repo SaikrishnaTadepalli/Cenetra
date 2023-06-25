@@ -81,6 +81,7 @@ module.exports = {
         student: args.studentId,
         details: args.details,
         rating: args.rating,
+        edits: [],
       });
 
       const result = await log.save();
@@ -97,6 +98,14 @@ module.exports = {
   editLog: async (args) => {
     try {
       const fetchedLog = await Log.findById(args.logId);
+
+      const currentDate = new Date();
+
+      fetchedLog.edits.push({
+        edit: fetchedLog.details,
+        editedBy: args.editorName,
+        editedOn: currentDate.toISOString(),
+      });
 
       fetchedLog.details = args.details;
       fetchedLog.rating = args.rating;

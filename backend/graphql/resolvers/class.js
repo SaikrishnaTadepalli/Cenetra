@@ -64,6 +64,7 @@ module.exports = {
         teacher: args.teacherId,
         students: [],
         details: args.details,
+        className: args.className,
       });
 
       const classSaveRes = await curClass.save();

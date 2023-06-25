@@ -150,14 +150,14 @@ type RootMutation {
 
     createAdmin(adminInput: AdminInput!): Admin!
 
-    createClass(teacherId: ID!, details: String): Class!
+    createClass(teacherId: ID!, details: String, className: String!): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
 
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
-    editLog(logId: ID!, details: String!, rating: Int!): Log!
+    editLog(logId: ID!, details: String!, rating: Int!, editorName: String!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
-    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
+    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!, editorName: String!): Notice!
     deleteNotice(teacherId: ID!, noticeId: ID!): Notice!
     markNoticeAsRead(studentId: ID!, noticeId: ID!): Notice!
 

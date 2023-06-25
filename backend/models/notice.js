@@ -30,6 +30,22 @@ const noticeSchema = new Schema(
         required: true,
       },
     ],
+    edits: [
+      {
+        edit: {
+          type: String,
+          required: true,
+        },
+        editedBy: {
+          type: String,
+          required: true,
+        },
+        editedOn: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

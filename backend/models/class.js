@@ -15,8 +15,13 @@ const classSchema = new Schema({
       required: true,
     },
   ],
+  className: {
+    type: String,
+    required: true,
+  },
   details: {
     type: String,
+    required: true,
   },
 });
 
