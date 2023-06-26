@@ -28,7 +28,7 @@ module.exports = {
   // Queries
   students: async () => {
     try {
-      const students = await Student.find();
+      const students = await Student.find().sort({ firstName: 1 });
 
       return students.map((student) => ({ ...student._doc, _id: student.id }));
     } catch (err) {
