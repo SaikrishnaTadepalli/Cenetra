@@ -49,11 +49,11 @@ const LoginScreen = () => {
         }
       })
       .catch((error) => {
-        console.log("Catch:", error);
+        console.error("Catch:", error);
         setError("Something went wrong");
       });
   }
-  console.log(error);
+  // console.log(error);
   return (
     <View style={styles.container}>
       <View style={styles.loginContainer}>

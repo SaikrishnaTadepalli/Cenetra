@@ -79,7 +79,7 @@ const HomeScreen = () => {
             response.payload ===
             "Response status 500: Error while fetching student profile for teacher"
           ) {
-            console.log("-----response-------");
+            // console.log("-----response-------");
             setError("500");
           }
         }

@@ -28,7 +28,7 @@ export const fetchLogs = createAsyncThunk(
         if (response.status === 500) {
           throw new Error("Response status 500: Error while fetching logs");
         } else if (response.status === 400) {
-          console.log("Response status 400 while fetching logs");
+          console.error("Response status 400 while fetching logs");
           throw new Error("Response status 400 while fetching logs");
         }
       }

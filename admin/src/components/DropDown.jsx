@@ -56,6 +56,7 @@ const DropDown = ({
             answers={options}
             question=""
             onSelectAll={onSelectAll}
+            isDropdown={true}
           />
         </View>
       )}

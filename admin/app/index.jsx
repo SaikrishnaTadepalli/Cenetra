@@ -7,7 +7,7 @@ import { store } from "../src/redux/store";
 import HomeScreen from "./HomeScreen";
 
 const App = () => {
-  console.log("header 2");
+  //console.log("header 2");
   return (
     <View style={styles.container}>
       <LoginScreen />

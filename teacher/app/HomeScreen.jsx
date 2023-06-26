@@ -34,12 +34,12 @@ const HomeScreen = () => {
             response.payload ===
             "Response status 500: Error while fetching student profile for teacher"
           ) {
-            console.log("-----response-------");
+            // console.log("-----response-------");
             setError("500");
           }
         }
       })
-      .catch((error) => console.log("Error in Profile Screen screen", error));
+      .catch((error) => console.error("Error in Profile Screen screen", error));
   };
 
   // useEffect(() => {

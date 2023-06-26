@@ -121,6 +121,7 @@ const LogScreen = ({
               question={checkBoxQuestion.question}
               answers={checkBoxQuestion.answer}
               checkedItems={checkBoxQuestion.options}
+              isDropdown={false}
             />
           </View>
         ))}

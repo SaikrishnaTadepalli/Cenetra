@@ -10,6 +10,7 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
   const dispatch = useDispatch();
   const [isApproved, setIsApproved] = useState(false);
   const [isDenied, setIsDenied] = useState(false);
+  const [error, setError] = useState("");
   const [isPageShown, setIsPageShown] = useState(true);
   const onSave = () => {
     const adminID = localStorage.getItem("adminID");
@@ -20,11 +21,22 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
         profileID: profileID,
       })
     )
-      .then(() => {
-        setIsApproved(true), setIsPageShown(false);
-        setTimeout(() => {
-          setIsApproved(false);
-        }, 2000);
+      .then((response) => {
+        if (!response.error) {
+          setIsApproved(true);
+          setIsPageShown(false);
+          setTimeout(() => {
+            setIsApproved(false);
+          }, 2000);
+        } else {
+          setIsPageShown(false);
+          setError(
+            "There was an error while approving the change. Please try again."
+          );
+          setTimeout(() => {
+            setError("");
+          }, 2000);
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -40,31 +52,51 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
   const printSectionHeader = (sectionHeader) => {
     if (sectionHeader === "ALLERGIES") {
       return "Allergen";
-    } else if (sectionHeader === "MEDICATIONS") {
+    }
+    if (sectionHeader === "MEDICATIONS") {
       return "Medication";
     }
-    if (
-      sectionHeader === "PRIMARY CONTACTS" ||
-      sectionHeader === "EMERGENCY CONTACTS"
-    ) {
-      return "Contact";
+    if (sectionHeader === "PRIMARY CONTACTS") {
+      return "Primary Contact";
+    }
+    if (sectionHeader === "EMERGENCY CONTACTS") {
+      return "Emergency Contact";
     }
     if (sectionHeader === "BLOOD GROUP") {
       return "Blood Group";
     }
   };
+  //console.log(differences);
   return (
     <>
+      {error !== "" ? <Text>There was an error approving the log.</Text> : null}
       {isDenied ? <Text>The change has been denied.</Text> : null}
       {isApproved ? <Text>The change has been approved!</Text> : null}
       {isPageShown && (
         <View>
+          {studentName ? (
+            <View>
+              <Text style={[styles.subHeaderText, { marginBottom: 20 }]}>
+                Student Name: {studentName}
+              </Text>
+            </View>
+          ) : null}
           {differences &&
             differences.map((difference, idx) => (
               <View key={`difference-header-${idx}`}>
                 <Text style={styles.headerText}>
                   {printSectionHeader(difference.sectionHeader)} change
                 </Text>
+                {difference.newData.length === 0 && (
+                  <Text
+                    style={[
+                      styles.subHeaderText,
+                      { marginBottom: 20, fontFamily: "InterSemiBold" },
+                    ]}
+                  >
+                    Information has been deleted.
+                  </Text>
+                )}
                 {difference.oldData.length > 0 ? (
                   <View style={{ flexDirection: "row", marginBottom: 24 }}>
                     <Text style={styles.subHeaderText}>
@@ -73,25 +105,29 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
                     <ProfileCard
                       sectionHeader={difference.sectionHeader}
                       data={difference.oldData}
+                      isApproval={true}
                     />
                   </View>
                 ) : (
-                  <Text
-                    style={[
-                      styles.subHeaderText,
-                      { marginBottom: 20, fontFamily: "InterSemiBold" },
-                    ]}
-                  >
-                    New Information has been added
-                  </Text>
+                  <>
+                    <Text
+                      style={[
+                        styles.subHeaderText,
+                        { marginBottom: 20, fontFamily: "InterSemiBold" },
+                      ]}
+                    >
+                      New Information has been added
+                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text style={styles.subHeaderText}>New Information:</Text>
+                      <ProfileCard
+                        sectionHeader={difference.sectionHeader}
+                        data={difference.newData}
+                        isApproval={true}
+                      />
+                    </View>
+                  </>
                 )}
-                <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.subHeaderText}>New Information:</Text>
-                  <ProfileCard
-                    sectionHeader={difference.sectionHeader}
-                    data={difference.newData}
-                  />
-                </View>
               </View>
             ))}
           <View style={styles.buttonsContainer}>
@@ -120,7 +156,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontFamily: "InterMedium",
-    marginBottom: 24,
+    marginVertical: 24,
   },
   subHeaderText: {
     fontSize: 16,

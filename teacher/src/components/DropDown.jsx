@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import MultiSelectQuestion from "./MultiSelectQuestion";
 
 const DropDown = ({
@@ -8,6 +8,7 @@ const DropDown = ({
   selectedOptions,
   setSelectedOptions,
   onSelectAll,
+  onPressDelete,
 }) => {
   const [isOptionsShown, setIsOptionsShown] = useState(false);
   const onPress = () => {
@@ -17,7 +18,27 @@ const DropDown = ({
   return (
     <>
       <TouchableOpacity style={styles.boxContainer} onPress={onPress}>
-        <Text style={styles.placeholderText}>Select from dropdown</Text>
+        {selectedOptions.length > 0 ? (
+          <View style={styles.selectedOptionsContainer}>
+            {selectedOptions.map(
+              (option, idx) =>
+                option && (
+                  <View
+                    style={styles.selectedOptionContainer}
+                    key={`dropdown-selected-options-${idx}`}
+                  >
+                    <Text style={styles.selectedOptionText}>{option}</Text>
+
+                    <TouchableOpacity onPress={() => onPressDelete(idx)}>
+                      <MaterialIcons name="clear" size={14} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                )
+            )}
+          </View>
+        ) : (
+          <Text style={styles.placeholderText}>Select from dropdown</Text>
+        )}
         <Ionicons
           name={isOptionsShown ? "caret-up-sharp" : "caret-down-sharp"}
           size={16}
@@ -43,7 +64,9 @@ const styles = StyleSheet.create({
   boxContainer: {
     backgroundColor: "#D9D9D933",
     width: 270,
-    height: 50,
+    minHeight: 50,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -91,6 +114,26 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 16,
     marginLeft: 8,
+  },
+  selectedOptionContainer: {
+    paddingHorizontal: 10,
+    height: 36,
+    borderColor: "#99B8BE99",
+    borderWidth: 1,
+    borderRadius: 5,
+    justifyContent: "center",
+    marginHorizontal: 5,
+    marginTop: 6,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  selectedOptionText: {
+    fontSize: 14,
+  },
+  selectedOptionsContainer: {
+    flexWrap: "wrap",
+    flexDirection: "row",
+    width: "100%",
   },
 });
 

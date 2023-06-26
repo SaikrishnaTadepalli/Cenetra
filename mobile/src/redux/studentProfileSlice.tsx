@@ -12,7 +12,6 @@ export const fetchProfile = createAsyncThunk(
         }
       }
             `;
-    console.log(envs);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -27,16 +26,17 @@ export const fetchProfile = createAsyncThunk(
             "Response status 500: Error while fetching student profile"
           );
         } else if (response.status === 400) {
-          console.log("Response status 400 while fetching student profile");
+          console.error("Response status 400 while fetching student profile");
           throw new Error("Response status 400 while fetching student profile");
         }
       }
       const data = await response.json();
-      //console.log(data.data.getLatestProfileInfo);
-      const details = JSON.parse(data.data.getLatestProfileInfo.details);
+
+      const details = data.data.getLatestProfileInfo.details;
+      const cleanedData = details.replace(/\\/g, "");
       const result = {
         lastUpdated: data.data.getLatestProfileInfo.createdAt,
-        studentInfo: details,
+        studentInfo: JSON.parse(cleanedData),
       };
       return result;
     } catch (error) {
@@ -62,7 +62,7 @@ export const editProfile = createAsyncThunk(
           updatedAt
         }
         }`;
-      console.log("------------query--------", query);
+      //console.log("------------query--------", query);
       const response = await fetch(envs, {
         method: "POST",
         headers: {
@@ -203,7 +203,6 @@ export const studentProfileSlice = createSlice({
         state.editProfileError = true;
       })
       .addCase(editProfile.fulfilled, (state) => {
-        // console.log("edit profile fulfilled");
         state.editProfileLoading = false;
         state.editProfileError = false;
         state.isEditDisabled = true;
@@ -217,9 +216,11 @@ export const studentProfileSlice = createSlice({
         state.fetchPendingProfileError = true;
       })
       .addCase(fetchPendingProfile.fulfilled, (state, action) => {
-        //console.log("pending profile fulfilled");
+        // console.log("pending profile fulfilled");
         if (action.payload !== null) {
           state.isEditDisabled = true;
+        } else {
+          state.isEditDisabled = false;
         }
         state.fetchPendingProfileLoading = false;
         state.fetchPendingProfileError = false;

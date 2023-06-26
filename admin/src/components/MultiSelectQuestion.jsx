@@ -9,6 +9,7 @@ const MultiSelectQuestion = ({
   setCheckedItems,
   onSelectAll,
   disabled,
+  isDropdown,
 }) => {
   // const setChecked = (input) => {
   //   if (input === "select all") {
@@ -33,7 +34,7 @@ const MultiSelectQuestion = ({
     ...DefaultTheme,
     roundness: 100, // Change this value to modify the size
   };
-  // console.log(checkedItems, answers);
+  //console.log(answers);
   return (
     <>
       <Provider theme={theme}>
@@ -68,8 +69,11 @@ const MultiSelectQuestion = ({
             {!disabled && (
               <Checkbox
                 status={
-                  checkedItems.findIndex((item) => item.key === input.key) !==
-                  -1
+                  checkedItems.findIndex(
+                    (item) =>
+                      (isDropdown && item.key === input.key) ||
+                      (!isDropdown && item === input)
+                  ) !== -1
                     ? "checked"
                     : "unchecked"
                 }
@@ -80,7 +84,9 @@ const MultiSelectQuestion = ({
                 color="#6750A4"
               />
             )}
-            <Text style={styles.answerText}>{input.value}</Text>
+            <Text style={styles.answerText}>
+              {isDropdown ? input.value : input}
+            </Text>
           </View>
         ))}
       </Provider>

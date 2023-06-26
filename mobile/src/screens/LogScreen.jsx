@@ -29,7 +29,7 @@ const LogScreen = ({ navigation, route }) => {
     const studentID = await AsyncStorage.getItem("studentID");
     dispatch(getMediaByDate({ studentID: studentID, date: route.params.date }))
       .then((response) => {})
-      .catch((error) => console.log("Error in logs screen", error));
+      .catch((error) => console.error("Error in logs screen", error));
   };
   useFocusEffect(
     React.useCallback(() => {

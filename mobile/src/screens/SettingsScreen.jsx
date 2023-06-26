@@ -59,7 +59,7 @@ const SettingsScreen = ({ navigation }) => {
 
     try {
       await Linking.openURL(`tel:${phoneNumber}`);
-      console.log("log", Linking.openURL(`tel:${phoneNumber}`));
+      //console.log("log", Linking.openURL(`tel:${phoneNumber}`));
     } catch (error) {
       console.error("Failed to open link:", error);
     }

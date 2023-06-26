@@ -93,7 +93,7 @@ export const verifyLogin = createAsyncThunk(
           console.error("Error while verifying code");
           throw new Error("Network error");
         } else if (response.status === 400) {
-          console.log("Invalid code");
+          console.error("Invalid code");
           throw new Error("Invalid or wrong verification code");
         }
       }
@@ -102,7 +102,7 @@ export const verifyLogin = createAsyncThunk(
 
       return data;
     } catch (error) {
-      console.log("Invalid verification code on mobile", error);
+      console.error("Invalid verification code on mobile", error);
       return rejectWithValue(error.message);
     }
   }

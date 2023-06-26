@@ -9,19 +9,6 @@ import React from "react";
 import Colors from "../constants/Colors";
 
 const ProfileCard = ({ sectionHeader, data, title }) => {
-  const renderButton = (infoType, info) => {
-    return (
-      <View style={styles.infoLineContainer}>
-        {infoType !== "" ? (
-          <Text style={styles.infoTypeText}>{infoType}</Text>
-        ) : null}
-        <TouchableOpacity>
-          <Text style={styles.infoInputText}>{info} </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   const renderText = (infoType, info) => {
     return (
       <View style={styles.infoLineContainer}>
@@ -43,9 +30,9 @@ const ProfileCard = ({ sectionHeader, data, title }) => {
           <Text style={styles.headerText}>{item.title}</Text>
           {renderText("Name:", item.name)}
           {renderText("Relationship:", item.relationship)}
-          {renderButton("Phone Number:", item.phoneNumber)}
-          {renderButton("Email Address:", item.email)}
-          {renderButton("Home Address:", item.address)}
+          {renderText("Phone Number:", item.phoneNumber)}
+          {renderText("Email Address:", item.email)}
+          {renderText("Home Address:", item.address)}
           {data.indexOf(item) !== data.length - 1 ? (
             <View style={styles.divider} />
           ) : null}
