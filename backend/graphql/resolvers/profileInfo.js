@@ -18,32 +18,6 @@ const mergeJSON = (obj1, obj2) => {
 
 module.exports = {
   // Queries
-  getProfileInfo: async (args) => {
-    try {
-      const student = await Student.findById(args.studentId);
-
-      if (!student) {
-        throw error("Student does not exist.");
-      }
-
-      const fetchedProfileInfos = await ProfileInfoValid.find({
-        student: args.studentId,
-      });
-
-      const formattedProfileInfos = fetchedProfileInfos.map((profileInfo) =>
-        transformProfile(profileInfo)
-      );
-
-      const sortedProfileInfos = formattedProfileInfos.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-
-      return sortedProfileInfos;
-    } catch (err) {
-      throw err;
-    }
-  },
-
   getLatestProfileInfo: async (args) => {
     try {
       const student = await Student.findById(args.studentId);
@@ -52,23 +26,13 @@ module.exports = {
         throw error("Student does not exist.");
       }
 
-      const fetchedProfileInfos = await ProfileInfoValid.find({
+      const fetchedProfileInfo = await ProfileInfoValid.findOne({
         student: args.studentId,
       });
 
-      if (fetchedProfileInfos.length === 0) {
-        throw Error("No Profiles For Student");
-      }
+      const formattedProfileInfo = transformProfile(fetchedProfileInfo);
 
-      const formattedProfileInfos = fetchedProfileInfos.map((profileInfo) =>
-        transformProfile(profileInfo)
-      );
-
-      const sortedProfileInfos = formattedProfileInfos.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-
-      return sortedProfileInfos[0];
+      return formattedProfileInfo;
     } catch (err) {
       throw err;
     }
@@ -86,41 +50,41 @@ module.exports = {
         student: args.studentId,
       });
 
-      let result = null;
-      if (fetchedProfileInfo) {
-        result = transformProfile(fetchedProfileInfo);
-      }
+      const formattedProfileInfo = transformProfile(fetchedProfileInfo);
 
-      return result;
+      return formattedProfileInfo;
     } catch (err) {
       throw err;
     }
   },
 
-  getAllMatchedPendingProfileInfos: async () => {
+  getAllMatchedPendingProfileInfos: async (args) => {
     try {
       const fetchedPendingProfiles = await ProfileInfoPending.find();
 
       const fetchedValidProfiles = await Promise.all(
         fetchedPendingProfiles.map(async (pendingProfile) => {
-          const fetchedValids = await ProfileInfoValid.find({
+          const fetchedValid = await ProfileInfoValid.findOne({
             student: pendingProfile._doc.student,
-          }).sort({ createdAt: -1 });
+          });
 
-          return fetchedValids.length > 0 ? fetchedValids[0] : null;
+          return fetchedValid;
         })
       );
 
-      const result = fetchedPendingProfiles.map(async (pendingProfile, i) => {
-        const transformedPending = pendingProfile
-          ? transformProfile(pendingProfile)
-          : null;
-        const transformedValid = fetchedValidProfiles[i]
-          ? transformProfile(fetchedValidProfiles[i])
-          : null;
+      const result = fetchedPendingProfiles.map(
+        async (pendingProfile, index) => {
+          const transformedPending = pendingProfile
+            ? transformProfile(pendingProfile)
+            : null;
 
-        return [transformedPending, transformedValid];
-      });
+          const transformedValid = fetchedValidProfiles[index]
+            ? transformProfile(fetchedValidProfiles[index])
+            : null;
+
+          return [transformedPending, transformedValid];
+        }
+      );
 
       return result;
     } catch (err) {
@@ -141,6 +105,7 @@ module.exports = {
         student: args.studentId,
         details: args.details,
         approverName: "Add-API",
+        edits: [],
       });
 
       const result = await profileInfo.save();
@@ -153,7 +118,7 @@ module.exports = {
 
   editProfileInfo: async (args) => {
     try {
-      const fetchedStudent = await Student.findById(args.studentId);
+      const fetchedStudent = await Student.findOne({ _id: args.studentId });
 
       if (!fetchedStudent) {
         throw new Error("Student does not exist.");
@@ -196,21 +161,34 @@ module.exports = {
         throw error("Admin does not exist.");
       }
 
-      const fetchedProfileInfo = await ProfileInfoPending.findByIdAndRemove(
-        args.profileId
-      );
+      const fetchedPendingProfileInfo =
+        await ProfileInfoPending.findByIdAndRemove(args.profileId);
 
-      if (!fetchedProfileInfo) {
+      if (!fetchedPendingProfileInfo) {
         throw error("Pending Profile Info does not exist.");
       }
 
-      const newProfileInfo = new ProfileInfoValid({
-        student: fetchedProfileInfo.student,
-        details: fetchedProfileInfo.details,
-        approverName: fetchedAdmin.firstName + " " + fetchedAdmin.lastName,
+      const fetchedValidProfileInfo = await ProfileInfoValid.findOne({
+        student: args.studentId,
       });
 
-      const result = await newProfileInfo.save();
+      if (!fetchedValidProfileInfo) {
+        throw error("Valid Profile Info does not exist.");
+      }
+
+      const currentDate = new Date();
+
+      fetchedValidProfileInfo.edits.push({
+        edit: fetchedValidProfileInfo.details,
+        editedBy: fetchedValidProfileInfo.approverName,
+        editedOn: currentDate.toISOString(),
+      });
+
+      fetchedValidProfileInfo.details = fetchedPendingProfileInfo.details;
+      fetchedValidProfileInfo.approverName =
+        fetchedAdmin.firstName + " " + fetchedAdmin.lastName;
+
+      const result = await fetchedValidProfileInfo.save();
 
       return transformProfile(result);
     } catch (err) {
