@@ -27,7 +27,7 @@ export const getAdminID = createAsyncThunk(
           console.error("Error while getting Admin ID");
           throw new Error("Invalid code");
         } else if (response.status === 400) {
-          console.log("Invalid Admin number");
+          console.error("Invalid Admin number");
           throw new Error("Invalid or wrong Admin number");
         }
       }
@@ -72,7 +72,7 @@ export const loginUser = createAsyncThunk("auth/login", async (adminID) => {
         console.error("Error while logging in Admin");
         throw new Error("Network error");
       } else if (response.status === 400) {
-        console.log("Invalid access code");
+        console.error("Invalid access code");
         throw new Error("Invalid or wrong access code for Admin");
       }
     }
@@ -100,7 +100,7 @@ export const sendSMS = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
-      console.log(query, envs);
+      //console.log(query, envs);
       if (response.status !== 200) {
         if (response.status === 500) {
           console.error("error while sending SMS code to Admin");
@@ -126,7 +126,7 @@ export const verifyLogin = createAsyncThunk(
     const query = `query {
       verifyCode(userId: "${adminID}" code: "${code}")
   }`;
-    console.log(query);
+    //console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -149,7 +149,7 @@ export const verifyLogin = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Catch: Invalid verification code on web", error);
+      console.error("Catch: Invalid verification code on web", error);
       return rejectWithValue(error.message);
     }
   }

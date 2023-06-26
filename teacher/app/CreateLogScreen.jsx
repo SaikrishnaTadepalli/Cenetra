@@ -94,7 +94,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
     ) {
       dispatch(action)
         .then(() => {
-          console.log("dispatching");
+          // console.log("dispatching");
           setEditable(false);
           setIsInputEmpty(false);
           setIsSaved(true);
@@ -105,13 +105,14 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
             setEditable(true);
           }, 2000);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     } else {
       setIsInputEmpty(true);
       setIsCancelled(false);
       setIsSaved(false);
     }
   };
+
   const onSave = () => {
     // console.log(inputs);
     const teacherID = localStorage.getItem("teacherID");

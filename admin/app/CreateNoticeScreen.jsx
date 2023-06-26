@@ -12,37 +12,46 @@ import colors from "../src/constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createNotices,
+  editNotices,
   getIsNewNoticeAdded,
   setIsNewNoticeAdded,
 } from "../src/redux/noticeSlice";
-import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
-import { Checkbox } from "react-native-paper";
-import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import typeColorMapping from "../api/typeColorMapping";
 import Dropdown from "../src/components/DropDown";
 
-const CreateNoticeScreen = ({ date }) => {
+const CreateNoticeScreen = ({ date, noticeID }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
-  const { createNoticesError, createNoticesPending } = useSelector(
+  const { createNoticesError, createNoticesPending, notices } = useSelector(
     (state) => state.notices
   );
+  const notice = notices
+    .flatMap((innerArray) => innerArray)
+    .find((obj) => obj._id === noticeID);
   const state = useSelector((state) => state);
   const s = localStorage.getItem("students");
   const s2 = JSON.parse(s);
   const students = JSON.parse(s2).students;
-  const [subject, setSubject] = useState("");
-  const [details, setDetails] = useState("");
+  const noticeDetails = notice && JSON.parse(notice.details);
+  const [subject, setSubject] = useState(
+    noticeDetails ? noticeDetails.subject : ""
+  );
+  const [details, setDetails] = useState(
+    noticeDetails ? noticeDetails.details : ""
+  );
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewNoticeSelected = getIsNewNoticeAdded(state);
   const types = ["Urgent", "Serious", "Casual"];
-  const [selectedType, setSelectedType] = useState(types[0]);
-  const studentInfo = students.map(
-    (student) => student.firstName + " " + student.lastName
+  const [selectedType, setSelectedType] = useState(
+    notice ? notice.noticeType : types[0]
   );
+  const studentInfo = students.map((student) => ({
+    key: `"${student._id}"`,
+    value: student.firstName + " " + student.lastName,
+  }));
   const [selectedStudents, setSelectedStudents] = useState(studentInfo);
 
   const handleCheckboxSelection = (input) => {
@@ -57,6 +66,12 @@ const CreateNoticeScreen = ({ date }) => {
     }
   };
 
+  const onPressDelete = (idx) => {
+    const updatedItems = [...selectedStudents];
+    updatedItems.splice(idx, 1);
+    setSelectedStudents(updatedItems);
+  };
+
   const handleSelectAll = () => {
     if (studentInfo.length === selectedStudents.length) {
       // Deselect all options
@@ -68,24 +83,16 @@ const CreateNoticeScreen = ({ date }) => {
   };
 
   const onSave = () => {
-    const teacherID = localStorage.getItem("teacherID");
-
-    //console.log(selectedStudents);
     if (subject && details) {
       const newNotice = {
         subject: subject,
         details: details,
       };
-      const studentIDs = students
-        .filter((student) =>
-          selectedStudents.includes(student.firstName + " " + student.lastName)
-        )
-        .map(({ _id }) => `"${_id}"`);
-      // const studentIDs = students.map(({ _id }) => `"${_id}"`);
-      //console.log(selectedStudents, selectedType);
+      const studentIDs = selectedStudents.map((student) => student.key);
+      //console.log(studentIDs);
       dispatch(
-        createNotices({
-          teacherID: teacherID,
+        editNotices({
+          noticeID: noticeID,
           studentIDs: studentIDs,
           details: newNotice,
           noticeType: selectedType,
@@ -134,9 +141,11 @@ const CreateNoticeScreen = ({ date }) => {
             style={[
               styles.noticeTypeContainer,
               {
-                borderColor: typeColorMapping[type],
+                borderColor: typeColorMapping[type].dotColor,
                 backgroundColor:
-                  selectedType === type ? typeColorMapping[type] : "white",
+                  selectedType === type
+                    ? typeColorMapping[type].backgroundColor
+                    : "white",
               },
             ]}
             onPress={() => setSelectedType(type)}
@@ -145,7 +154,7 @@ const CreateNoticeScreen = ({ date }) => {
             <View
               style={[
                 styles.dotContainer,
-                { backgroundColor: typeColorMapping[type] },
+                { backgroundColor: typeColorMapping[type].dotColor },
               ]}
             />
             <Text>{type}</Text>
@@ -157,6 +166,17 @@ const CreateNoticeScreen = ({ date }) => {
 
   return (
     <>
+      {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
+      {isError ? (
+        <View>
+          <Text>
+            There was an error in creating the notice. Please try again.
+          </Text>
+          <TouchableOpacity onPress={handleRefresh}>
+            <Text>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
       <ScrollView contentContainerStyle={styles.listView}>
         {createNoticesPending ? <Text>Saving your changes.</Text> : null}
         {isAddNewNoticeSelected && !createNoticesPending ? (
@@ -169,6 +189,7 @@ const CreateNoticeScreen = ({ date }) => {
                 selectedOptions={selectedStudents}
                 setSelectedOptions={handleCheckboxSelection}
                 onSelectAll={handleSelectAll}
+                onPressDelete={onPressDelete}
               />
             </View>
             <View>
@@ -212,17 +233,6 @@ const CreateNoticeScreen = ({ date }) => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-        ) : null}
-        {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
-        {isError ? (
-          <View>
-            <Text>
-              There was an error in creating the notice. Please try again.
-            </Text>
-            <TouchableOpacity onPress={handleRefresh}>
-              <Text>Try Again</Text>
-            </TouchableOpacity>
           </View>
         ) : null}
       </ScrollView>

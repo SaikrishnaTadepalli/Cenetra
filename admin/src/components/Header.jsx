@@ -9,8 +9,13 @@ import { logout } from "../redux/authSlice";
 
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const pages = ["Home", "Daily Logs", "Approvals"];
-  const screens = ["HomeScreen", "DailyLogsScreen", "ApprovalsScreen"];
+  const pages = ["Home", "Daily Logs", "Notices", "Approvals"];
+  const screens = [
+    "HomeScreen",
+    "DailyLogsScreen",
+    "NoticesScreen",
+    "ApprovalsScreen",
+  ];
   const [activeButton, setActiveButton] = useState("Home");
   const loggedIn = localStorage.getItem("isLoggedIn");
   const router = useRouter();

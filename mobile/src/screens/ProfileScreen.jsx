@@ -23,13 +23,15 @@ import { useFocusEffect } from "@react-navigation/native";
 
 const ProfileScreen = ({ navigation }) => {
   // const [isEditable, setEditable] = useState(false);
-  const { studentInfo, lastUpdated } = useSelector(
-    (state) => state.studentProfile
-  );
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const { fetchProfileLoading, fetchProfileError, isEditDisabled } =
-    useSelector((state) => state.studentProfile);
+  const {
+    fetchProfileLoading,
+    fetchProfileError,
+    isEditDisabled,
+    studentInfo,
+    lastUpdated,
+  } = useSelector((state) => state.studentProfile);
 
   const onPressEdit = () => {
     navigation.navigate("EditProfile", {
@@ -41,7 +43,7 @@ const ProfileScreen = ({ navigation }) => {
     const studentID = await AsyncStorage.getItem("studentID");
     dispatch(fetchProfile(studentID))
       .then((response) => {})
-      .catch((error) => console.log("Error in Profile Screen screen", error));
+      .catch((error) => console.error("Error in Profile Screen screen", error));
   };
 
   const getPendingProfile = async () => {
@@ -49,7 +51,7 @@ const ProfileScreen = ({ navigation }) => {
     dispatch(fetchPendingProfile(studentID))
       .then((response) => {})
       .catch((error) =>
-        console.log("Error in fetching pending Profile Screen screen", error)
+        console.error("Error in fetching pending Profile Screen screen", error)
       );
   };
 
@@ -65,6 +67,7 @@ const ProfileScreen = ({ navigation }) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     retrieveData();
+    getPendingProfile();
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
   //console.log(isEditDisabled);
@@ -97,7 +100,7 @@ const ProfileScreen = ({ navigation }) => {
             }
           >
             <View style={styles.profileContainer}>
-              <TouchableOpacity onPress={onPressEdit} disabled={isEditDisabled}>
+              <TouchableOpacity onPress={onPressEdit} disabled={false}>
                 <Text
                   style={[
                     styles.buttonText,

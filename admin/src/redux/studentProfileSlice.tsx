@@ -30,7 +30,7 @@ export const fetchProfile = createAsyncThunk(
           );
           //return "500";
         } else if (response.status === 400) {
-          console.log(
+          console.error(
             "Response status 400 while fetching student profile for teacher"
           );
           throw new Error(
@@ -39,11 +39,12 @@ export const fetchProfile = createAsyncThunk(
         }
       }
       const data = await response.json();
-      //console.log(data.data.getLatestProfileInfo);
-      const details = JSON.parse(data.data.getLatestProfileInfo.details);
+      const details = data.data.getLatestProfileInfo.details;
+      const cleanedData = details.replace(/\\/g, "");
+
       const result = {
         lastUpdated: data.data.getLatestProfileInfo.createdAt,
-        studentInfo: details,
+        studentInfo: JSON.parse(cleanedData),
         id: data.data.getLatestProfileInfo.student._id,
       };
       return result;
@@ -111,14 +112,14 @@ export const fetchPendingProfile = createAsyncThunk(
 export const approvePendingProfile = createAsyncThunk(
   "studentProfile/approvePendingProfile",
   async ({ adminID, profileID }, { rejectWithValue }) => {
-    //console.log(studentID);
+    //console.log(profileID, adminID);
     const query = `
     mutation {
       approveProfileInfo(adminId:"${adminID}", profileId:"${profileID}") {
           _id
       }
-            `;
-    //console.log(query);
+    }`;
+    //console.log(query, envs);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -127,6 +128,7 @@ export const approvePendingProfile = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
+      //console.log(response);
       if (response.status !== 200) {
         if (response.status === 500) {
           throw new Error(
@@ -142,6 +144,7 @@ export const approvePendingProfile = createAsyncThunk(
           );
         }
       }
+
       const data = await response.json();
       return data;
     } catch (error) {
@@ -166,6 +169,7 @@ export interface ProfileState {
   pendingProfileID: string;
   approvePendingProfileLoading: boolean;
   approvePendingProfileError: boolean;
+  approvePendingProfileSuccessful: boolean;
 }
 
 const initialState: ProfileState = {
@@ -180,6 +184,7 @@ const initialState: ProfileState = {
   pendingProfileID: "",
   approvePendingProfileLoading: null,
   approvePendingProfileError: false,
+  approvePendingProfileSuccessful: false,
 };
 
 export const studentProfileSlice = createSlice({
@@ -191,10 +196,12 @@ export const studentProfileSlice = createSlice({
       .addCase(fetchProfile.pending, (state) => {
         state.fetchProfileLoading = true;
         state.fetchProfileError = false;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(fetchProfile.rejected, (state) => {
         state.fetchProfileLoading = null;
         state.fetchProfileError = true;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.studentInfo = action.payload.studentInfo;
@@ -210,31 +217,38 @@ export const studentProfileSlice = createSlice({
         });
         state.fetchProfileLoading = false;
         state.fetchProfileError = false;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(fetchPendingProfile.pending, (state) => {
         state.fetchPendingProfileLoading = true;
         state.fetchPendingProfileError = false;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(fetchPendingProfile.rejected, (state) => {
         state.fetchPendingProfileLoading = null;
         state.fetchPendingProfileError = true;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(fetchPendingProfile.fulfilled, (state, action) => {
         state.pendingStudentInfo = action.payload;
         state.fetchPendingProfileLoading = false;
         state.fetchPendingProfileError = false;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(approvePendingProfile.pending, (state) => {
         state.approvePendingProfileLoading = true;
         state.approvePendingProfileError = false;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(approvePendingProfile.rejected, (state) => {
         state.approvePendingProfileLoading = null;
         state.approvePendingProfileError = true;
+        state.approvePendingProfileSuccessful = false;
       })
       .addCase(approvePendingProfile.fulfilled, (state, action) => {
         state.approvePendingProfileLoading = false;
         state.approvePendingProfileError = false;
+        state.approvePendingProfileSuccessful = true;
       });
   },
 });

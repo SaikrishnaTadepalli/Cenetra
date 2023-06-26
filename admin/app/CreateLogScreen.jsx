@@ -94,7 +94,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
     ) {
       dispatch(action)
         .then(() => {
-          console.log("dispatching");
+          // console.log("dispatching");
           setEditable(false);
           setIsInputEmpty(false);
           setIsSaved(true);
@@ -115,31 +115,6 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
   const onSave = () => {
     // console.log(inputs);
     const teacherID = localStorage.getItem("teacherID");
-    // const sectionActivities = [];
-    // const radioButtonQuestions = [];
-    // const checkBoxQuestions = [];
-    // const openEndedQuestions = [];
-    // radioQuestionState.map((radioQuestion) => {
-    //   radioButtonQuestions.push({
-    //     question: radioQuestion.question,
-    //     answer: radioQuestion.answer,
-    //   });
-    // });
-
-    // checkBoxQuestionState.map((checkBoxQuestion) => {
-    //   checkBoxQuestions.push({
-    //     question: checkBoxQuestion.question,
-    //     answer: checkBoxQuestion.answer,
-    //   });
-    // });
-
-    // openEndedQuestionState.map((OpenEndedQuestion) => {
-    //   openEndedQuestions.push({
-    //     question: OpenEndedQuestion.question,
-    //     answer: OpenEndedQuestion.answer,
-    //   });
-    // });
-    //console.log(radioQuestions, checkBoxQuestions, OpenEndedQuestions);
     const data = {
       radioButtonQuestions: radioQuestionState,
       checkBoxQuestions: checkBoxQuestionState,
@@ -312,6 +287,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
                       answers={question.options}
                       checkedItems={question.answer}
                       disabled={false}
+                      isDropdown={false}
                       setCheckedItems={(option) =>
                         handleCheckboxSelection(idx, option)
                       }

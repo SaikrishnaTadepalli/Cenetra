@@ -29,7 +29,7 @@ export const fetchNotices = createAsyncThunk(
         if (response.status === 500) {
           throw new Error("Response status 500: Error while fetching notices");
         } else if (response.status === 400) {
-          console.log("Response status 400 while fetching notices");
+          console.error("Response status 400 while fetching notices");
           throw new Error("Response status 400 while fetching notices");
         }
       }
@@ -66,7 +66,7 @@ export const markNoticeAsRead = createAsyncThunk(
             "Response status 500: Error while marking notices as read"
           );
         } else if (response.status === 400) {
-          console.log("Response status 400 while marking notices as read");
+          console.error("Response status 400 while marking notices as read");
           throw new Error("Response status 400 while  marking notices as read");
         }
       }

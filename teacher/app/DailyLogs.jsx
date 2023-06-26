@@ -52,7 +52,7 @@ const DailyLogsScreen = ({
   };
 
   const onPressEdit = (date) => {
-    console.log(date);
+    //console.log(date);
     setIsOldLogSelected(false);
     setDate(date);
   };

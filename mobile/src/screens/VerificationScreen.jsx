@@ -24,6 +24,7 @@ const VerificationScreen = () => {
   const { curStudentDetails } = useSelector((state) => state.auth);
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+  const [isCodeSent, setIsCodeSent] = useState(false);
   const ref = useBlurOnFulfill({ value, cellCount: 5 });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
@@ -51,6 +52,20 @@ const VerificationScreen = () => {
       .catch((error) =>
         console.error("Error in dispatching verifyLogin", error)
       );
+  };
+
+  const onResend = () => {
+    dispatch(sendSMS(curStudentDetails._id))
+      .then((response) => {
+        if (response.error) {
+          setError("Error while resending code");
+          setTimeout(() => setError(""), 2000);
+        } else {
+          setIsCodeSent(true);
+          setTimeout(() => setIsCodeSent(false), 2000);
+        }
+      })
+      .catch((error) => console.error("Error in sending SMS", error));
   };
 
   return (
@@ -91,6 +106,10 @@ const VerificationScreen = () => {
           </View>
         )}
       />
+      <TouchableOpacity onPress={onResend}>
+        <Text style={styles.resendCodeText}>Resend Code?</Text>
+      </TouchableOpacity>
+      {isCodeSent ? <Text>Code resent successfully!</Text> : null}
       {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
       <TouchableOpacity style={styles.buttonContainer} onPress={handleClick}>
         <Text style={styles.buttonText}>Verify</Text>
@@ -123,11 +142,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
+  resendCodeText: {
+    marginLeft: 180,
+    marginTop: 10,
+    color: colors.darkPurple,
+  },
   codeText: {
     color: colors.darkPurple,
     fontSize: 16,
     fontFamily: "InterRegular",
-    marginLeft: 5,
+    marginLeft: 25,
   },
   boxContainer: {
     flexDirection: "row",
