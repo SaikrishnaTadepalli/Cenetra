@@ -127,6 +127,7 @@ type RootQuery {
 
     noticesForStudent(studentId: ID!): [[Notice!]!]!
     noticesByTeacher(teacherId: ID!): [[Notice!]!]!
+    noticesForAdmin(adminId: ID!): [[[Notice!]!]!]!
 
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
@@ -150,14 +151,14 @@ type RootMutation {
 
     createAdmin(adminInput: AdminInput!): Admin!
 
-    createClass(teacherId: ID!, details: String): Class!
+    createClass(teacherId: ID!, details: String, className: String!): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
-
+    addStudentsToClass(classId: ID!, studentIds: [ID!]!): Class!
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
-    editLog(logId: ID!, details: String!, rating: Int!): Log!
+    editLog(logId: ID!, details: String!, rating: Int!, editorName: String!): Log!
 
     createNotice(teacherId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
-    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!): Notice!
+    editNotice(noticeId: ID!, studentIds: [ID!]!, details: String!, noticeType: String!, editorName: String!): Notice!
     deleteNotice(teacherId: ID!, noticeId: ID!): Notice!
     markNoticeAsRead(studentId: ID!, noticeId: ID!): Notice!
 

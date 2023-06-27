@@ -66,6 +66,38 @@ module.exports = {
     }
   },
 
+  noticesByAdmin: async (args) => {
+    try {
+      const admin = await Admin.findById(args.adminId);
+
+      if (!admin) {
+        throw new Error("Admin does not exist.");
+      }
+
+      const teachers = await Teacher.find();
+
+      const result = await Promise.all(
+        teachers.map(async (teacher) => {
+          const teacherId = teacher.id;
+
+          const fetchedNotices = await Notice.find({
+            teacher: teacherId,
+          }).sort({ createdAt: -1 });
+
+          const formattedNotices = fetchedNotices.map((notice) =>
+            transformNotice(notice, teacherId)
+          );
+
+          return groupObjectsByDate(formattedNotices);
+        })
+      );
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   createNotice: async (args) => {
     try {
@@ -87,16 +119,6 @@ module.exports = {
         return fetchedStudent;
       });
 
-      // for (let i = 0; i < args.studentIds.length; i++) {
-      //   const fetchedStudent = await Student.findOne({
-      //     _id: args.studentIds[i],
-      //   });
-
-      //   if (!fetchedStudent) {
-      //     throw new Error(`Student does not exist: ${stuId}.`);
-      //   }
-      // }
-
       const readArr = args.studentIds.map((x) => false);
 
       const notice = new Notice({
@@ -104,6 +126,7 @@ module.exports = {
         students: args.studentIds,
         details: args.details,
         noticeType: args.noticeType,
+        edits: [],
         read: readArr,
       });
 
@@ -138,9 +161,15 @@ module.exports = {
         }
       }
 
+      const currentDate = new Date();
       const readArr = args.studentIds.map((x) => false);
 
       fetchedNotice.students = args.studentIds;
+      fetchedNotice.edits.push({
+        edit: fetchedNotice.details,
+        editedBy: args.editorName,
+        editedOn: currentDate.toISOString(),
+      });
       fetchedNotice.details = args.details;
       fetchedNotice.noticeType = args.noticeType;
       fetchedNotice.read = readArr;

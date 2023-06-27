@@ -64,6 +64,7 @@ module.exports = {
         teacher: args.teacherId,
         students: [],
         details: args.details,
+        className: args.className,
       });
 
       const classSaveRes = await curClass.save();
@@ -93,7 +94,37 @@ module.exports = {
 
       const classUpdateRes = await fetchedClass.save();
 
-      return transformClass(fetchedClass);
+      return transformClass(classUpdateRes);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  addStudentsToClass: async (args) => {
+    try {
+      const fetchedClass = await Class.findOne({ _id: args.classId });
+
+      if (!fetchedClass) {
+        throw new Error("Class does not exist");
+      }
+
+      for (let i = 0; i < args.studentIds.length; i++) {
+        const fetchedStudent = await Student.findOne({
+          _id: args.studentIds[i],
+        });
+
+        if (!fetchedStudent) {
+          throw new Error(`Student does not exist: ${stuId}.`);
+        }
+      }
+
+      args.studentIds.map((studentId) => fetchedClass.students.push(studentId));
+
+      fetchedClass.students.push(args.studentId);
+
+      const classUpdateRes = await fetchedClass.save();
+
+      return transformClass(classUpdateRes);
     } catch (err) {
       throw err;
     }

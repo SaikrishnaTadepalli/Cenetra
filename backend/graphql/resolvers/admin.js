@@ -28,7 +28,7 @@ module.exports = {
   // Queries
   admins: async () => {
     try {
-      const admins = await Admin.find();
+      const admins = await Admin.find().sort({ firstName: 1 });
 
       return admins.map((admin) => ({ ...admin._doc, _id: admin.id }));
     } catch (err) {

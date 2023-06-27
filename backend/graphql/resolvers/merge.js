@@ -136,7 +136,9 @@ const admin = async (adminId) => {
 
 const students = async (stuIds) => {
   try {
-    return stuIds.map((stuId) => student(stuId));
+    mappedStudents = stuIds.map((stuId) => student(stuId));
+    mappedStudents.sort((a, b) => a.firstName.localeCompare(b.firstName));
+    return mappedStudents;
   } catch (err) {
     throw err;
   }
