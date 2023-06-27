@@ -21,16 +21,12 @@ import {
 const ApprovalsScreen = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
-  const state = useSelector((state) => state);
-  const c = localStorage.getItem("classes");
-  const c2 = JSON.parse(c);
-  const classes = JSON.parse(c2);
   const {
     fetchPendingProfileLoading,
     fetchProfileLoading,
     approvePendingProfileSuccessful,
-  } = state.studentProfile;
-  const { isLoggedIn } = state.auth;
+  } = useSelector((state) => state.studentProfile);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const [error, setError] = useState("");
   const [differencesObj, setDifferencesObj] = useState([]);
   const [dataDifferences, setDataDifferences] = useState([]);
@@ -188,10 +184,7 @@ const ApprovalsScreen = () => {
   };
 
   const retrieveData = async () => {
-    // console.log(classes.classes[0].students[0]);
-    await dispatch(
-      fetchPendingProfile(classes.classes[0].students[0]._id)
-    ).then((response) => {
+    await dispatch(fetchPendingProfile("")).then((response) => {
       if (response.error) {
         setError("Something went wrong, please try again.");
       } else {

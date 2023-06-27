@@ -35,7 +35,7 @@ const LoginScreen = () => {
         if (!response.error) {
           router.push("/VerificationScreen");
           const adminID = response.payload.data.adminByAdminNumber._id;
-          // console.log(teacherID);
+          console.log(adminID);
           localStorage.setItem("adminID", adminID);
           setIsDisabled(true);
           dispatch(sendSMS(adminID))
@@ -85,7 +85,7 @@ const LoginScreen = () => {
       </View>
       <View style={styles.imageContainer}>
         <Image
-          source={require("../assets/images/loginIllustration.png")}
+          source={require("../assets/images/SchoolLogo.png")}
           style={{
             width: "100%",
             height: "85%",

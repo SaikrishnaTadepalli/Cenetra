@@ -21,7 +21,6 @@ const DailyLogsScreen = () => {
   const c = localStorage.getItem("classes");
   const c2 = JSON.parse(c);
   const classes = JSON.parse(c2).classes;
-  const { isAdmin } = useSelector((state) => state.auth);
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const dispatch = useDispatch();
   const router = useRouter();
