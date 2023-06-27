@@ -127,7 +127,7 @@ type RootQuery {
 
     noticesForStudent(studentId: ID!): [[Notice!]!]!
     noticesByTeacher(teacherId: ID!): [[Notice!]!]!
-    noticesForAdmin(adminId: ID!): [[Notice!]!]!
+    noticesForAdmin(adminId: ID!): [[[Notice!]!]!]!
 
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!

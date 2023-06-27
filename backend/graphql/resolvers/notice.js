@@ -74,13 +74,25 @@ module.exports = {
         throw new Error("Admin does not exist.");
       }
 
-      const fetchedNotices = await Notice.find().sort({ createdAt: -1 });
+      const teachers = await Teacher.find();
 
-      const formattedNotices = fetchedNotices.map((notice) =>
-        transformNotice(notice, args.teacherId)
+      const result = await Promise.all(
+        teachers.map(async (teacher) => {
+          const teacherId = teacher.id;
+
+          const fetchedNotices = await Notice.find({
+            teacher: teacherId,
+          }).sort({ createdAt: -1 });
+
+          const formattedNotices = fetchedNotices.map((notice) =>
+            transformNotice(notice, teacherId)
+          );
+
+          return groupObjectsByDate(formattedNotices);
+        })
       );
 
-      return groupObjectsByDate(formattedNotices);
+      return result;
     } catch (err) {
       throw err;
     }
