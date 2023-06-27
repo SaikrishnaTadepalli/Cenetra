@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { Checkbox, Provider, DefaultTheme } from "react-native-paper";
 
@@ -64,31 +70,34 @@ const MultiSelectQuestion = ({
             />
           </View>
         )}
-        {answers.map((input, idx) => (
-          <View style={styles.checkBoxContainer} key={`multi-select-${idx}`}>
-            {!disabled && (
-              <Checkbox
-                status={
-                  checkedItems.findIndex(
-                    (item) =>
-                      (isDropdown && item.key === input.key) ||
-                      (!isDropdown && item === input)
-                  ) !== -1
-                    ? "checked"
-                    : "unchecked"
-                }
-                onPress={() => {
-                  setCheckedItems(input);
-                }}
-                disabled={disabled}
-                color="#6750A4"
-              />
-            )}
-            <Text style={styles.answerText}>
-              {isDropdown ? input.value : input}
-            </Text>
-          </View>
-        ))}
+        <ScrollView contentContainerStyle={{ height: "100" }}>
+          {answers.map((input, idx) => (
+            <View style={styles.checkBoxContainer} key={`multi-select-${idx}`}>
+              {!disabled && (
+                <Checkbox
+                  status={
+                    checkedItems.findIndex(
+                      (item) =>
+                        (isDropdown && item.key === input.key) ||
+                        (!isDropdown && item === input)
+                    ) !== -1
+                      ? "checked"
+                      : "unchecked"
+                  }
+                  onPress={() => {
+                    setCheckedItems(input);
+                  }}
+                  disabled={disabled}
+                  color="#6750A4"
+                />
+              )}
+
+              <Text style={styles.answerText}>
+                {isDropdown ? input.value : input}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
       </Provider>
     </>
   );

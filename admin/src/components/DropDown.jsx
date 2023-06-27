@@ -17,7 +17,7 @@ const DropDown = ({
   };
   //console.log(selectedOptions);
   return (
-    <>
+    <View style={{ flexDirection: "column" }}>
       <TouchableOpacity style={styles.boxContainer} onPress={onPress}>
         {selectedOptions.length > 0 ? (
           <View style={styles.selectedOptionsContainer}>
@@ -60,7 +60,7 @@ const DropDown = ({
           />
         </View>
       )}
-    </>
+    </View>
   );
 };
 
