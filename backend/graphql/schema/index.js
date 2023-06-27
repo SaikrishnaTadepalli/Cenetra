@@ -127,6 +127,7 @@ type RootQuery {
 
     noticesForStudent(studentId: ID!): [[Notice!]!]!
     noticesByTeacher(teacherId: ID!): [[Notice!]!]!
+    noticesForAdmin(adminId: ID!): [[Notice!]!]!
 
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
@@ -152,7 +153,7 @@ type RootMutation {
 
     createClass(teacherId: ID!, details: String, className: String!): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
-
+    addStudentsToClass(classId: ID!, studentIds: [ID!]!): Class!
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
     editLog(logId: ID!, details: String!, rating: Int!, editorName: String!): Log!
 

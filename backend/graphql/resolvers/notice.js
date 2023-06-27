@@ -66,6 +66,26 @@ module.exports = {
     }
   },
 
+  noticesByAdmin: async (args) => {
+    try {
+      const admin = await Admin.findById(args.adminId);
+
+      if (!admin) {
+        throw new Error("Admin does not exist.");
+      }
+
+      const fetchedNotices = await Notice.find().sort({ createdAt: -1 });
+
+      const formattedNotices = fetchedNotices.map((notice) =>
+        transformNotice(notice, args.teacherId)
+      );
+
+      return groupObjectsByDate(formattedNotices);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   // Mutations
   createNotice: async (args) => {
     try {
