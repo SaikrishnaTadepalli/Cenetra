@@ -33,9 +33,13 @@ const LoginScreen = () => {
     dispatch(getTeacherID(accessCode)).then((response) => {
       if (!response.error) {
         router.push("/VerificationScreen");
-        const teacherID = response.payload.data.teacherByTeacherNumber._id;
+        const responseData = response.payload.data.teacherByTeacherNumber;
+        const teacherID = responseData._id;
+        const teacherName =
+          responseData.firstName + " " + responseData.lastName;
         // console.log(teacherID);
         localStorage.setItem("teacherID", teacherID);
+        localStorage.setItem("teacherName", teacherName);
         setIsDisabled(true);
         dispatch(sendSMS(teacherID))
           .then(() => {})

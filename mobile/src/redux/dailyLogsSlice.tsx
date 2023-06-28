@@ -78,6 +78,6 @@ export const dailyLogsSlice = createSlice({
 });
 
 export const selectLogByID = (state, logID: string) =>
-  state.dailyLogs.logs.find((log) => log._id === logID);
+  state.logs.find((log) => log._id === logID);
 
 export default dailyLogsSlice.reducer;

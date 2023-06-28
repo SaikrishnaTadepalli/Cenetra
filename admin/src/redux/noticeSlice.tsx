@@ -228,6 +228,6 @@ export const noticeSlice = createSlice({
 
 export const { setIsNewNoticeAdded } = noticeSlice.actions;
 
-export const getIsNewNoticeAdded = (state) => state.notices.isNewNoticeAdded;
+export const getIsNewNoticeAdded = (state) => state.isNewNoticeAdded;
 
 export default noticeSlice.reducer;

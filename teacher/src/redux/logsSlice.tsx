@@ -220,6 +220,6 @@ export const logSlice = createSlice({
 
 export const { setIsNewLogAdded } = logSlice.actions;
 
-export const getIsNewLogAdded = (state) => state.log.isNewLogAdded;
+export const getIsNewLogAdded = (state) => state.isNewLogAdded;
 
 export default logSlice.reducer;

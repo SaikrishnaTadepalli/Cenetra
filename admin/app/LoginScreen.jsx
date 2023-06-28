@@ -34,9 +34,13 @@ const LoginScreen = () => {
       .then((response) => {
         if (!response.error) {
           router.push("/VerificationScreen");
-          const adminID = response.payload.data.adminByAdminNumber._id;
+          const responseData = response.payload.data.adminByAdminNumber;
+          const adminID = responseData._id;
+          const adminName =
+            responseData.firstName + " " + responseData.lastName;
           console.log(adminID);
           localStorage.setItem("adminID", adminID);
+          localStorage.setItem("adminName", adminName);
           setIsDisabled(true);
           dispatch(sendSMS(adminID))
             .then(() => {})

@@ -30,10 +30,9 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
   const rating = log ? parseInt(log.rating) : 0;
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
-  const { updateLogsPending, updateLogsSuccessful } = useSelector(
-    (state) => state.log
-  );
-  const state = useSelector((state) => state);
+  const state = useSelector((state) => state.log);
+  const { updateLogsPending, updateLogsSuccessful } = state;
+
   const [openEndedQuestionState, setOpenEndedQuestionState] = useState([
     {
       question: "Additional Comments",
@@ -41,6 +40,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
     },
   ]);
   const [isCancelled, setIsCancelled] = useState(false);
+  const [error, setError] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewLogSelected = getIsNewLogAdded(state);
@@ -93,54 +93,37 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
       filledStars
     ) {
       dispatch(action)
-        .then(() => {
+        .then((response) => {
           // console.log("dispatching");
-          setEditable(false);
-          setIsInputEmpty(false);
-          setIsSaved(true);
-          setIsCancelled(false);
-          setFilledStars(0);
-          setTimeout(() => {
-            setIsSaved(false);
-            setEditable(true);
-          }, 2000);
+          if (response.error) {
+            setError(response.payload.message);
+            setTimeout(() => setError(""), 2000);
+          } else {
+            setEditable(false);
+            setIsInputEmpty(false);
+            setIsSaved(true);
+            setIsCancelled(false);
+            setFilledStars(0);
+            setTimeout(() => {
+              setIsSaved(false);
+              setEditable(true);
+            }, 2000);
+          }
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          setTimeout(() => setError(""));
+          console.log(error);
+        });
     } else {
       setIsInputEmpty(true);
       setIsCancelled(false);
       setIsSaved(false);
     }
   };
-
   const onSave = () => {
     // console.log(inputs);
     const teacherID = localStorage.getItem("teacherID");
-    // const sectionActivities = [];
-    // const radioButtonQuestions = [];
-    // const checkBoxQuestions = [];
-    // const openEndedQuestions = [];
-    // radioQuestionState.map((radioQuestion) => {
-    //   radioButtonQuestions.push({
-    //     question: radioQuestion.question,
-    //     answer: radioQuestion.answer,
-    //   });
-    // });
-
-    // checkBoxQuestionState.map((checkBoxQuestion) => {
-    //   checkBoxQuestions.push({
-    //     question: checkBoxQuestion.question,
-    //     answer: checkBoxQuestion.answer,
-    //   });
-    // });
-
-    // openEndedQuestionState.map((OpenEndedQuestion) => {
-    //   openEndedQuestions.push({
-    //     question: OpenEndedQuestion.question,
-    //     answer: OpenEndedQuestion.answer,
-    //   });
-    // });
-    //console.log(radioQuestions, checkBoxQuestions, OpenEndedQuestions);
+    const teacherName = localStorage.getItem("teacherName");
     const data = {
       radioButtonQuestions: radioQuestionState,
       checkBoxQuestions: checkBoxQuestionState,
@@ -152,6 +135,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
         logID: logID,
         details: data,
         rating: filledStars,
+        teacherName: teacherName,
       });
     } else {
       action = updateLogs({
@@ -313,6 +297,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
                       answers={question.options}
                       checkedItems={question.answer}
                       disabled={false}
+                      isDropdown={false}
                       setCheckedItems={(option) =>
                         handleCheckboxSelection(idx, option)
                       }
@@ -338,6 +323,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
                   </Text>
                 ) : null}
                 {updateLogsPending ? <Text>Saving your changes.</Text> : null}
+                {error !== "" && <Text>{error}</Text>}
                 <View style={styles.buttonsContainer}>
                   <TouchableOpacity
                     style={styles.saveButtonContainer}

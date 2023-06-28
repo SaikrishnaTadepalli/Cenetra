@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+} from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import MultiSelectQuestion from "./MultiSelectQuestion";
 
@@ -24,18 +30,22 @@ const DropDown = ({
             {selectedOptions.map(
               (option, idx) =>
                 option && (
-                  <View
+                  <TouchableOpacity
+                    key={`dropdown-options-${idx}`}
+                    onPress={() => onPressDelete(idx)}
                     style={styles.selectedOptionContainer}
-                    key={`dropdown-selected-options-${idx}`}
                   >
                     <Text style={styles.selectedOptionText}>
                       {option.value}
                     </Text>
 
-                    <TouchableOpacity onPress={() => onPressDelete(idx)}>
-                      <MaterialIcons name="clear" size={14} color="black" />
-                    </TouchableOpacity>
-                  </View>
+                    <MaterialIcons
+                      name="clear"
+                      size={14}
+                      color="black"
+                      style={{ marginTop: 2, marginLeft: 5 }}
+                    />
+                  </TouchableOpacity>
                 )
             )}
           </View>
@@ -49,7 +59,7 @@ const DropDown = ({
         />
       </TouchableOpacity>
       {isOptionsShown && (
-        <View style={styles.dropdownContainer}>
+        <ScrollView style={styles.dropdownContainer}>
           <MultiSelectQuestion
             setCheckedItems={setSelectedOptions}
             checkedItems={selectedOptions}
@@ -58,7 +68,7 @@ const DropDown = ({
             onSelectAll={onSelectAll}
             isDropdown={true}
           />
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -96,7 +106,7 @@ const styles = StyleSheet.create({
     width: 270,
     borderRadius: 10,
     marginTop: 5,
-    paddingBottom: 20,
+    height: 250,
   },
   placeholderText: {
     color: "#719792",
@@ -136,6 +146,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#99B8BE33",
   },
   selectedOptionText: {
     fontSize: 14,
