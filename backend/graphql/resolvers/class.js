@@ -109,9 +109,7 @@ module.exports = {
       }
 
       for (let i = 0; i < args.studentIds.length; i++) {
-        const fetchedStudent = await Student.findOne({
-          _id: args.studentIds[i],
-        });
+        const fetchedStudent = await Student.findById(args.studentIds[i]);
 
         if (!fetchedStudent) {
           throw new Error(`Student does not exist: ${stuId}.`);
@@ -119,8 +117,6 @@ module.exports = {
       }
 
       args.studentIds.map((studentId) => fetchedClass.students.push(studentId));
-
-      fetchedClass.students.push(args.studentId);
 
       const classUpdateRes = await fetchedClass.save();
 

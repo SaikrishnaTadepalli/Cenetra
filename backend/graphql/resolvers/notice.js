@@ -66,7 +66,7 @@ module.exports = {
     }
   },
 
-  noticesByAdmin: async (args) => {
+  noticesForAdmin: async (args) => {
     try {
       const admin = await Admin.findById(args.adminId);
 

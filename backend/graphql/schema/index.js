@@ -33,6 +33,7 @@ type Class {
     teacher: Teacher!
     students: [Student!]!
     details: String
+    className: String!
 }
 
 type Log {
@@ -154,6 +155,7 @@ type RootMutation {
     createClass(teacherId: ID!, details: String, className: String!): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
     addStudentsToClass(classId: ID!, studentIds: [ID!]!): Class!
+    
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
     editLog(logId: ID!, details: String!, rating: Int!, editorName: String!): Log!
 
