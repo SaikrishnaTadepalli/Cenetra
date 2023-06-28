@@ -30,7 +30,7 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
   const [students, setStudents] = useState([]);
   const [isCreateClassSelected, setIsCreateClassSelected] = useState(false);
-  console.log(classes);
+  //console.log(classes);
   const classInfo = classes.map((item) => ({
     key: item._id,
     value: item.details,

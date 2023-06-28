@@ -157,6 +157,57 @@ export const approvePendingProfile = createAsyncThunk(
   }
 );
 
+export const addNewProfile = createAsyncThunk(
+  "studentProfile/addNewProfile",
+  async ({ studentID, details }, { rejectWithValue }) => {
+    //console.log(profileID, adminID);
+    const stringifiedDetails = JSON.stringify(details)
+      .replace(/\\/g, "\\\\") // Escape backslashes
+      .replace(/"/g, '\\"'); // Escape double quotes
+    const query = `
+    mutation {
+      addProfileInfo(studentId:"${studentID}", details:"${stringifiedDetails}") {
+          _id
+      }
+    }`;
+    console.log(query, envs);
+    try {
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      //console.log(response);
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          throw new Error(
+            "Response status 500: Error while adding new  student profile for admin"
+          );
+          //return "500";
+        } else if (response.status === 400) {
+          console.error(
+            "Response status 400 while adding new  student profile for admin"
+          );
+          throw new Error(
+            "Response status 400 while adding new  student profile for admin"
+          );
+        }
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        "Catch: Error while adding new  student profile for admin",
+        error
+      );
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export interface ProfileState {
   studentInfo: object;
   studentID: string;
@@ -170,6 +221,10 @@ export interface ProfileState {
   approvePendingProfileLoading: boolean;
   approvePendingProfileError: boolean;
   approvePendingProfileSuccessful: boolean;
+  addNewProfileLoading: boolean;
+  addNewProfileError: boolean;
+  addNewProfileSuccessful: boolean;
+  isNewProfileAdded: boolean;
 }
 
 const initialState: ProfileState = {
@@ -185,12 +240,20 @@ const initialState: ProfileState = {
   approvePendingProfileLoading: null,
   approvePendingProfileError: false,
   approvePendingProfileSuccessful: false,
+  addNewProfileLoading: false,
+  addNewProfileError: false,
+  addNewProfileSuccessful: false,
+  isNewProfileAdded: false,
 };
 
 export const studentProfileSlice = createSlice({
   name: "studentProfile",
   initialState,
-  reducers: {},
+  reducers: {
+    setIsNewProfileAdded: (state, action) => {
+      state.isNewProfileAdded = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.pending, (state) => {
@@ -246,11 +309,28 @@ export const studentProfileSlice = createSlice({
         state.approvePendingProfileSuccessful = false;
       })
       .addCase(approvePendingProfile.fulfilled, (state, action) => {
-        state.approvePendingProfileLoading = false;
-        state.approvePendingProfileError = false;
-        state.approvePendingProfileSuccessful = true;
+        state.addNewProfileLoading = false;
+        state.addNewProfileError = false;
+        state.addNewProfileSuccessful = true;
+      })
+      .addCase(addNewProfile.pending, (state) => {
+        state.addNewProfileLoading = true;
+        state.addNewProfileError = false;
+        state.addNewProfileSuccessful = false;
+      })
+      .addCase(addNewProfile.rejected, (state) => {
+        state.addNewProfileLoading = null;
+        state.addNewProfileError = true;
+        state.addNewProfileSuccessful = false;
+      })
+      .addCase(addNewProfile.fulfilled, (state, action) => {
+        state.addNewProfileLoading = false;
+        state.addNewProfileError = false;
+        state.addNewProfileSuccessful = true;
       });
   },
 });
 
 export default studentProfileSlice.reducer;
+
+export const { setIsNewProfileAdded } = studentProfileSlice.actions;

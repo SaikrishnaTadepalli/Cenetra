@@ -81,18 +81,6 @@ const LogsScreen = ({
                     <Text style={styles.dateText}>
                       {moment(log.createdAt).format("DD MMMM YYYY")}
                     </Text>
-                    {/* {moment(log.createdAt).format("DD MMMM YYYY") ===
-                      curDate && (
-                      <TouchableOpacity
-                        onPress={() => onPressEdit(log.createdAt)}
-                      >
-                        <MaterialCommunityIcons
-                          name="pencil-outline"
-                          size={20}
-                          color="#024552"
-                        />
-                      </TouchableOpacity>
-                    )} */}
                   </View>
                 ) : null}
               </TouchableOpacity>
