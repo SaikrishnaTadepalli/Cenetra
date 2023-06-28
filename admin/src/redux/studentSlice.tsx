@@ -3,15 +3,16 @@ import envs from "../../config/env";
 
 export const createStudent = createAsyncThunk(
   "student/createStudent",
-  async (studentInput) => {
+  async (studentInput, { rejectWithValue }) => {
     const query = `
     mutation CreateStudent($studentInput: StudentInput!) {
       createStudent(studentInput: $studentInput) {
         _id
+        studentNumber
       }
     }
   `;
-    //console.log(query, StudentInput);
+    console.log(query, studentInput);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -45,6 +46,7 @@ export const createStudent = createAsyncThunk(
       return data;
     } catch (error) {
       console.error("Catch: while creating Student", error);
+      rejectWithValue(error);
     }
   }
 );
@@ -94,7 +96,8 @@ export interface StudentState {
   logs: string[];
   createStudentPending: boolean;
   createStudentError: boolean;
-  StudentID: string;
+  studentID: string;
+  studentNumber: string;
   fetchStudentsError: boolean;
   fetchStudentsPending: boolean;
   isNewStudentAdded: boolean;
@@ -106,7 +109,8 @@ const initialState: StudentState = {
   fetchStudentsError: false,
   fetchStudentsPending: null,
   logs: [],
-  StudentID: "",
+  studentID: "",
+  studentNumber: "",
   isNewStudentAdded: false,
 };
 
@@ -123,21 +127,20 @@ export const studentSlice = createSlice({
       .addCase(createStudent.pending, (state) => {
         state.createStudentPending = true;
         state.createStudentError = false;
-        state.isNewStudentAdded = false;
       })
       .addCase(createStudent.rejected, (state) => {
         state.createStudentPending = null;
         state.createStudentError = true;
-        state.isNewStudentAdded = false;
       })
       .addCase(createStudent.fulfilled, (state, action) => {
         state.createStudentPending = false;
         state.createStudentError = false;
+        state.studentID = action.payload.data.createStudent._id;
+        state.studentNumber = action.payload.data.createStudent.studentNumber;
       })
       .addCase(fetchStudents.pending, (state) => {
         state.fetchStudentsPending = true;
         state.fetchStudentsError = false;
-        state.isNewStudentAdded = false;
         // state.updateLogsSuccessful = false;
       })
       .addCase(fetchStudents.rejected, (state) => {
@@ -148,7 +151,6 @@ export const studentSlice = createSlice({
       .addCase(fetchStudents.fulfilled, (state, action) => {
         state.fetchStudentsPending = false;
         state.fetchStudentsError = false;
-        state.isNewStudentAdded = false;
         //state.fetchStudentsSuccessful = true;
       });
   },

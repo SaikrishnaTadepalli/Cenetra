@@ -1,16 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import envs from "../../config/env";
 
-export const addStudentToClass = createAsyncThunk(
-  "class/addStudentToClass",
-  async ({ classID, studentID }) => {
+export const addStudentsToClass = createAsyncThunk(
+  "class/addStudentsToClass",
+  async ({ classID, studentIDs }, { rejectWithValue }) => {
     const query = `mutation {
-      addStudentToClass(classId: "${classID}", studentId: ${studentID}) {
+      addStudentsToClass(classId: "${classID}", studentIds: [${studentIDs}]) {
         _id
       }
     }
   `;
-    //console.log(query);
+    console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -42,15 +42,16 @@ export const addStudentToClass = createAsyncThunk(
       return data;
     } catch (error) {
       console.error("Catch: while adding student to class", error);
+      return rejectWithValue(error);
     }
   }
 );
 
 export const createClass = createAsyncThunk(
   "class/createClass",
-  async ({ teacherID, className, details }) => {
+  async ({ teacherID, className, details }, { rejectWithValue }) => {
     const query = `mutation {
-        createClass(teacherId: ${teacherID} details: "${details}") {
+        createClass(teacherId: ${teacherID} details: "${details}", className: "${className}") {
         _id
     }
   }`;
@@ -77,6 +78,7 @@ export const createClass = createAsyncThunk(
       return data;
     } catch (error) {
       console.error("Catch: Error while creating class by admin", error);
+      return rejectWithValue(error);
     }
   }
 );
@@ -128,8 +130,8 @@ export interface ClassState {
   createClassPending: boolean;
   createClassError: boolean;
   createClassSuccessful: boolean;
-  addStudentToClassPending: boolean;
-  addStudentToClassError: boolean;
+  addStudentsToClassPending: boolean;
+  addStudentsToClassError: boolean;
   teacherID: string;
   fetchClassesError: boolean;
   fetchClassesPending: boolean;
@@ -140,13 +142,13 @@ const initialState: ClassState = {
   createClassPending: null,
   createClassError: false,
   createClassSuccessful: false,
-  addStudentToClassPending: null,
-  addStudentToClassError: false,
+  addStudentsToClassPending: null,
+  addStudentsToClassError: false,
   fetchClassesError: false,
   fetchClassesPending: null,
   logs: [],
   teacherID: "",
-  isNewClassAdded: false,
+  isNewClassAdded: true,
 };
 
 export const classSlice = createSlice({
@@ -159,26 +161,22 @@ export const classSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addStudentToClass.pending, (state) => {
-        state.addStudentToClassPending = true;
-        state.addStudentToClassError = false;
-        state.isNewClassAdded = false;
+      .addCase(addStudentsToClass.pending, (state) => {
+        state.addStudentsToClassPending = true;
+        state.addStudentsToClassError = false;
       })
-      .addCase(addStudentToClass.rejected, (state) => {
-        state.addStudentToClassPending = null;
-        state.addStudentToClassError = true;
-        state.isNewClassAdded = false;
+      .addCase(addStudentsToClass.rejected, (state) => {
+        state.addStudentsToClassPending = null;
+        state.addStudentsToClassError = true;
       })
-      .addCase(addStudentToClass.fulfilled, (state, action) => {
-        state.addStudentToClassPending = false;
-        state.addStudentToClassError = false;
-        state.isNewClassAdded = false;
+      .addCase(addStudentsToClass.fulfilled, (state, action) => {
+        state.addStudentsToClassPending = false;
+        state.addStudentsToClassError = false;
         state.createClassSuccessful = false;
       })
       .addCase(createClass.pending, (state) => {
         state.createClassPending = true;
         state.createClassError = false;
-        state.isNewClassAdded = false;
         state.createClassSuccessful = false;
       })
       .addCase(createClass.rejected, (state) => {
@@ -189,13 +187,11 @@ export const classSlice = createSlice({
       .addCase(createClass.fulfilled, (state, action) => {
         state.createClassPending = false;
         state.createClassError = false;
-        state.isNewClassAdded = false;
         state.createClassSuccessful = true;
       })
       .addCase(fetchClasses.pending, (state) => {
         state.fetchClassesPending = true;
         state.fetchClassesError = false;
-        state.isNewClassAdded = false;
         // state.updateLogsSuccessful = false;
       })
       .addCase(fetchClasses.rejected, (state) => {
@@ -206,7 +202,6 @@ export const classSlice = createSlice({
       .addCase(fetchClasses.fulfilled, (state, action) => {
         state.fetchClassesPending = false;
         state.fetchClassesError = false;
-        state.isNewClassAdded = false;
         //state.fetchClassesSuccessful = true;
       });
   },

@@ -76,9 +76,13 @@ const VerificationScreen = () => {
                 setTimeout(() => setError(""), 1000);
               }
             })
-            .catch((error) =>
-              setError(`Something went wrong try again, ${error}`)
-            );
+            .catch((error) => {
+              console.error(
+                "Catch: logging in admin verification screen",
+                error
+              );
+              setError("Something went wrong try again");
+            });
         }
       })
       .catch((error) =>

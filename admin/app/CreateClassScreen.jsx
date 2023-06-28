@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addStudentToClass,
+  addStudentsToClass,
   createClass,
   createTeacher,
   fetchClasses,
@@ -25,7 +25,7 @@ const CreateClassScreen = () => {
   const dispatch = useDispatch();
   const {
     isNewClassAdded,
-    addStudentToClassPending,
+    addStudentsToClassPending,
     createClassPending,
     fetchClassesPending,
   } = useSelector((state) => state.class);
@@ -34,6 +34,7 @@ const CreateClassScreen = () => {
     name: "",
     details: "",
   });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [students, setStudents] = useState([]);
@@ -109,45 +110,51 @@ const CreateClassScreen = () => {
             );
           } else {
             console.log(response);
+            setIsButtonDisabled(true);
             const classID = response.payload.data.createClass._id;
-            selectedStudents.map((student) =>
-              dispatch(addStudentToClass({ classID, studentID: student.key }))
-                .then((response) => {
-                  if (response.error) {
-                    setError(
-                      "Something went wrong while adding a student to a class please try again."
-                    );
-                  } else {
-                    console.log("added student", student);
-                  }
-                })
-                .catch((error) => {
-                  console.error(
-                    "Catch: Error while adding students to a class in home screen",
-                    error
-                  );
-                  setError("Error while adding students to a class");
-                })
-            );
-            dispatch(fetchClasses()).then((response) => {
+            const studentIDs = selectedStudents.map((student) => student.key);
+            dispatch(
+              addStudentsToClass({ classID, studentIDs: studentIDs })
+            ).then((response) => {
               if (response.error) {
-                console.error(
-                  "error while fetching classes after creating a new class"
+                setError(
+                  "Something went wrong while adding a student to a class please try again."
                 );
+                setIsButtonDisabled(false);
+                return;
               } else {
-                localStorage.removeItem("classes");
-                const classes = response.payload.data.classes;
-                dispatch(setClasses(classes));
-                const stringifiedDetails = JSON.stringify({ classes })
-                  .replace(/\\/g, "\\\\") // Escape backslashes
-                  .replace(/"/g, '\\"');
-                localStorage.setItem("classes", `"${stringifiedDetails}"`);
-                setIsSaved(true);
-                setIsCancelled(false);
-                dispatch(setIsNewClassAdded(false));
-                setTimeout(() => {
-                  setIsSaved(false);
-                }, 2000);
+                dispatch(fetchClasses())
+                  .then((response) => {
+                    if (response.error) {
+                      console.error(
+                        "error while fetching classes after creating a new class"
+                      );
+                      setError("Something went wrong please try again.");
+                      setIsButtonDisabled(false);
+                      return;
+                    } else {
+                      localStorage.removeItem("classes");
+                      const classes = response.payload.data.classes;
+                      dispatch(setClasses(classes));
+                      const stringifiedDetails = JSON.stringify({ classes })
+                        .replace(/\\/g, "\\\\") // Escape backslashes
+                        .replace(/"/g, '\\"');
+                      localStorage.setItem(
+                        "classes",
+                        `"${stringifiedDetails}"`
+                      );
+                      setIsButtonDisabled(true);
+                      setIsSaved(true);
+                      setIsCancelled(false);
+                      setTimeout(() => {
+                        setIsSaved(false);
+                      }, 2000);
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Catch: error while fetching classes", error);
+                    setError("Something went wrong please try again.");
+                  });
               }
             });
           }
@@ -167,7 +174,6 @@ const CreateClassScreen = () => {
 
   const onCancel = () => {
     setIsCancelled(true);
-    setIsNewTeacherAdded(false);
     dispatch(setIsNewClassAdded(false));
     setTimeout(() => {
       setIsCancelled(false);
@@ -205,15 +211,10 @@ const CreateClassScreen = () => {
 
   useEffect(() => retrieveData(), []);
   return (
-    <View style={{ paddingLeft: 40 }}>
-      {isSaved ? <Text>Your class have been created successfully!</Text> : null}
-      {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
-      {(addStudentToClassPending ||
-        createClassPending ||
-        fetchClassesPending) && <Text>Your class is being created.</Text>}
+    <View style={{ paddingLeft: 40, marginTop: 30 }}>
       {isNewClassAdded && (
         <>
-          <Text style={styles.headerText}>Create class</Text>
+          <Text style={styles.subHeaderText}>Class details</Text>
           {renderText("Name of class", "name", classState, setClassState)}
           {renderText("Details of class", "details", classState, setClassState)}
           <View style={styles.infoLineContainer}>
@@ -248,10 +249,23 @@ const CreateClassScreen = () => {
               searchPlaceholder="Search for teacher"
             />
           </View>
+          {isSaved ? (
+            <Text>Your class have been created successfully!</Text>
+          ) : null}
+          {(addStudentsToClassPending ||
+            createClassPending ||
+            fetchClassesPending) && (
+            <Text>Your class is being created....</Text>
+          )}
+          {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
-              style={styles.saveButtonContainer}
+              style={[
+                styles.saveButtonContainer,
+                { opacity: isButtonDisabled ? 0.5 : 1 },
+              ]}
               onPress={onSave}
+              disabled={isButtonDisabled}
             >
               <Text style={styles.saveButtonText}>Create</Text>
             </TouchableOpacity>
@@ -271,11 +285,10 @@ const CreateClassScreen = () => {
 export default CreateClassScreen;
 
 const styles = StyleSheet.create({
-  headerText: {
+  subHeaderText: {
     marginBottom: 24,
-    fontSize: 48,
+    fontSize: 20,
     fontFamily: "InterBold",
-    marginTop: 60,
   },
   infoLineContainer: {
     flexDirection: "row",
