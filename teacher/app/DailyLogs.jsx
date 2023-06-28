@@ -26,8 +26,8 @@ const DailyLogsScreen = ({
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const state = useSelector((state) => state);
-  const { logs, fetchLogsPending } = state.log;
+  const state = useSelector((state) => state.log);
+  const { logs, fetchLogsPending } = state;
   const curDate = moment().format("DD MMMM YYYY");
   //const [date, setDate] = useState("");
   //const [isOldLogSelected, setIsOldLogSelected] = useState(false);

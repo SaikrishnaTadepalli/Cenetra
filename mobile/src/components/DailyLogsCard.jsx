@@ -13,7 +13,7 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
   // console.log("dailylogscard", date);
   const pictures = [];
   const stars = 3;
-  const state = useSelector((state) => state);
+  const state = useSelector((state) => state.dailyLogs);
 
   const handleClick = () => {
     const curLog = selectLogByID(state, logID);

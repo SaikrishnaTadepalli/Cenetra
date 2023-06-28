@@ -22,14 +22,14 @@ import EmptyState from "../assets/icons/emptyState.svg";
 const NoticesScreen = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
-  const state = useSelector((state) => state);
+  const state = useSelector((state) => state.notices);
   const {
     fetchNoticesPending,
     isNewNoticeAdded,
     createNoticesSuccessful,
     editNoticesSuccessful,
-  } = state.notices;
-  const { isLoggedIn } = state.auth;
+  } = state;
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const curDate = moment().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldNoticeSelected, setIsOldNoticeSelected] = useState(false);
