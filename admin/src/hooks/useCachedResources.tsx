@@ -22,7 +22,6 @@ export default function useCachedResources() {
           InterThin: require("../../assets/fonts/Inter-Thin.ttf"),
         });
       } catch (e) {
-        // We might want to provide this error information to an error reporting service
         console.warn(e);
       } finally {
         setLoadingComplete(true);
