@@ -9,7 +9,9 @@ const NoticeInfoCard = ({ subject, details, time }) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>{subject}</Text>
-        <Text style={styles.timeText}>{moment(time).format("HH:mm")}</Text>
+        <Text style={styles.timeText}>
+          {moment(time).utc().format("h:mm a")}
+        </Text>
       </View>
       <Text style={styles.noticeText}>{details}</Text>
     </View>

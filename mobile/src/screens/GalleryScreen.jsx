@@ -6,15 +6,19 @@ import colors from "../constants/Colors";
 
 const GalleryScreen = ({ navigation, route }) => {
   return (
-    <FlatList
-      columnWrapperStyle={styles.imagesContainer}
-      data={route.params.pictures}
-      keyExtractor={(idx) => `gallery.id${idx}`}
-      ListFooterComponent={<View />}
-      ListFooterComponentStyle={{ height: 20 }}
-      numColumns={3}
-      renderItem={({ item }) => <Picture navigation={navigation} uri={item} />}
-    />
+    <View style={{ paddingHorizontal: 10 }}>
+      <FlatList
+        columnWrapperStyle={styles.imagesContainer}
+        data={route.params.pictures}
+        keyExtractor={(idx) => `gallery.id${idx}`}
+        ListFooterComponent={<View />}
+        ListFooterComponentStyle={{ height: 20 }}
+        numColumns={3}
+        renderItem={({ item }) => (
+          <Picture navigation={navigation} uri={item} />
+        )}
+      />
+    </View>
   );
 };
 
@@ -22,11 +26,8 @@ export default GalleryScreen;
 
 const styles = StyleSheet.create({
   imagesContainer: {
-    backgroundColor: colors.white,
-    flex: 1,
     marginVertical: 10,
-    paddingHorizontal: 10,
-    // justifyContent: "space-between",
+    justifyContent: "space-between",
     width: "100%",
   },
 });

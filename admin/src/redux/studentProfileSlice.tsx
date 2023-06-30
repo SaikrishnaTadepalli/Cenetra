@@ -267,6 +267,7 @@ export const studentProfileSlice = createSlice({
         state.approvePendingProfileSuccessful = false;
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
+        console.log(action.payload.studentInfo);
         state.studentInfo = action.payload.studentInfo;
         state.studentID = action.payload.id;
         const date = new Date(action.payload.lastUpdated);

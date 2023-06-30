@@ -48,7 +48,9 @@ const NoticeScreen = ({ noticeID, setNoticeID, setIsOldNoticeSelected }) => {
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={styles.date}>
-          {notice ? moment(notice.createdAt).format("MMMM D, YYYY") : null}
+          {notice
+            ? moment(notice.createdAt).utc().format("MMMM D, YYYY")
+            : null}
         </Text>
         <TouchableOpacity
           onPress={onPressEdit}
@@ -73,7 +75,7 @@ const NoticeScreen = ({ noticeID, setNoticeID, setIsOldNoticeSelected }) => {
         >
           {notice && renderFlag(notice.noticeType)}
           <Text style={styles.timeText}>
-            {notice && moment(notice.createdAt).format("h:mm a")}
+            {notice && moment(notice.createdAt).utc().format("h:mm a")}
           </Text>
         </View>
       </View>

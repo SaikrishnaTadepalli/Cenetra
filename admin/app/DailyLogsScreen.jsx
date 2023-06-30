@@ -30,7 +30,7 @@ const DailyLogsScreen = () => {
   const [isOldLogSelected, setIsOldLogSelected] = useState(false);
   const [isStudentNameSelected, setIsStudentNameSelected] = useState(false);
   const [logID, setLogID] = useState("");
-  const curDate = moment().format("MMMM D, YYYY");
+  const curDate = moment().utc().format("MMMM D, YYYY");
 
   const classInfo = classes.map((item) => ({
     key: item._id,

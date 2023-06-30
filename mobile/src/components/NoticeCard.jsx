@@ -7,10 +7,14 @@ import { Ionicons } from "@expo/vector-icons";
 import colors from "../constants/Colors";
 import typeColorMapping from "../../data/typeColorMapping";
 import { useDispatch } from "react-redux";
-import { markNoticeAsRead } from "../redux/noticesSlice";
+import {
+  markNoticeAsRead,
+  setIsNewNoticeAdded,
+  setNoticeAsRead,
+} from "../redux/noticesSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
+const NoticeCard = ({ isRead, details, date, type, noticeID }) => {
   const [isNoticeRead, setIsNoticeRead] = useState(isRead);
   const [isExpanded, setIsExpanded] = useState({});
   const parsedDetails = JSON.parse(details);
@@ -19,13 +23,19 @@ const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
 
   const handleExpandNotice = async (buttonId) => {
     const studentID = await AsyncStorage.getItem("studentID");
-    dispatch(
-      markNoticeAsRead({
-        studentID,
-        noticeID,
-      })
-    );
-    setIsNoticeRead(true);
+    if (!isNoticeRead) {
+      dispatch(
+        markNoticeAsRead({
+          studentID,
+          noticeID,
+        }).then((response) => {
+          if (!response.error) {
+          }
+        })
+      );
+      setIsNoticeRead(true);
+      dispatch(setIsNewNoticeAdded(true));
+    }
     setIsExpanded((prevState) => ({
       ...prevState,
       [buttonId]: !prevState[buttonId],
@@ -96,7 +106,7 @@ const NoticeCard = ({ navigation, isRead, details, date, type, noticeID }) => {
         )}
         <View style={styles.sectionHeader}>
           <Text style={styles.date}>
-            {moment(date).format("MMMM DD, YYYY   HH:mm a")}
+            {moment.utc(date).format("MMMM DD, YYYY   h:mm a")}
           </Text>
         </View>
       </TouchableOpacity>

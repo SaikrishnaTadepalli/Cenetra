@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     color: colors.darkPurple,
     fontSize: 16,
     fontFamily: "InterRegular",
-    marginLeft: 25,
+    marginLeft: 10,
   },
   boxContainer: {
     flexDirection: "row",

@@ -28,14 +28,14 @@ const DailyLogsScreen = ({
   const router = useRouter();
   const state = useSelector((state) => state.log);
   const { logs, fetchLogsPending } = state;
-  const curDate = moment().format("DD MMMM YYYY");
+  const curDate = moment().utc().format("DD MMMM YYYY");
   //const [date, setDate] = useState("");
   //const [isOldLogSelected, setIsOldLogSelected] = useState(false);
   // const [logID, setLogID] = useState("");
   const isDisabled =
     logs.length > 0 &&
     logs[0] &&
-    curDate === moment(logs[0].createdAt).format("DD MMMM YYYY");
+    curDate === moment(logs[0].createdAt).utc().format("DD MMMM YYYY");
 
   const handleClick = () => {
     setDate(curDate);
@@ -95,7 +95,7 @@ const DailyLogsScreen = ({
                     }}
                   >
                     <Text style={styles.dateText}>
-                      {moment(log.createdAt).format("DD MMMM YYYY")}
+                      {moment(log.createdAt).utc().format("DD MMMM YYYY")}
                     </Text>
                     {/* {moment(log.createdAt).format("DD MMMM YYYY") ===
                       curDate && (
