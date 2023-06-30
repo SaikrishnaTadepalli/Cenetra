@@ -12,7 +12,7 @@ export default function useCachedResources() {
       try {
         // Load fonts
         await Font.loadAsync({
-          InterBlack: require("../../assets/fonts/Inter-Black.ttf"),
+          InterBlack: require("teacher/assets/fonts/Inter-Black.ttf"),
           InterBold: require("../../assets/fonts/Inter-Bold.ttf"),
           InterExtraBold: require("../../assets/fonts/Inter-ExtraBold.ttf"),
           InterLight: require("../../assets/fonts/Inter-Light.ttf"),

@@ -13,22 +13,40 @@ import { setIsNewStudentAdded } from "../redux/studentSlice";
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const pages = ["Home", "Daily Logs", "Notices", "Approvals", "Create"];
-  const screens = [
-    "HomeScreen",
-    "DailyLogsScreen",
-    "NoticesScreen",
-    "ApprovalsScreen",
-    "CreateScreen",
-  ];
+  const screens = ["HomeScreen", "ApprovalsScreen", "CreateScreen"];
 
   const [activeButton, setActiveButton] = useState("Home");
   const loggedIn = localStorage.getItem("isLoggedIn");
   const router = useRouter();
   const dispatch = useDispatch();
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleDropdown = () => {
+    console.log("1");
+    setDropdownVisible(!isDropdownVisible);
+  };
 
   const handleClick = (idx, button) => {
-    router.push(`/${screens[idx]}`);
-    setActiveButton(button);
+    if (button === "Create") {
+      toggleDropdown();
+      setActiveButton(button);
+    } else {
+      router.push(`/${screens[idx]}`);
+      setActiveButton(button);
+      setDropdownVisible(false);
+    }
+  };
+
+  const handleDropdownOptions = () => {
+    // console.log(selected, "handle press");
+    if (selected === 1) {
+      dispatch(setIsNewClassAdded(true));
+    } else if (selected === 2) {
+      dispatch(setIsNewTeacherAdded(true));
+    } else if (selected === 3) {
+      dispatch(setIsNewStudentAdded(true));
+    }
+    router.push(`/${dropdownScreens[selected - 1]}`);
   };
 
   const handleLogOut = () => {
