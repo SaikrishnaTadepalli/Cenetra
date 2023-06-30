@@ -7,21 +7,35 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+
 import { createStudent, setIsNewStudentAdded } from "../src/redux/studentSlice";
+import { setIsNewProfileAdded } from "../src/redux/studentProfileSlice";
+import CreateProfileScreen from "./CreateProfileScreen";
 
 const AddStudentScreen = () => {
   const dispatch = useDispatch();
   const { isNewStudentAdded, createStudentPending } = useSelector(
     (state) => state.student
   );
-  const [studentState, setStudentState] = useState({
+  const { isNewProfileAdded } = useSelector((state) => state.studentProfile);
+  const initialState = {
     firstName: "",
     lastName: "",
     primaryContactNumber: "",
-  });
+  };
+  const [isEditable, setIsEditable] = useState(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [studentState, setStudentState] = useState(initialState);
   const [isCancelled, setIsCancelled] = useState(false);
   const [error, setError] = useState("");
   const [isSaved, setIsSaved] = useState(false);
+  const [isAddProfileDisabled, setIsAddProfileDisabled] = useState(false);
+  const [studentInfoState, setStudentInfoState] = useState({
+    name: "",
+    ID: "",
+    number: "",
+  });
 
   const areAllFieldsFilled = () => {
     return Object.values(studentState).every((value) => value !== "");
@@ -36,7 +50,7 @@ const AddStudentScreen = () => {
         <TextInput
           editable={true}
           style={styles.infoInputText}
-          value={studentState.info}
+          value={isEditable ? studentState[key] : ""}
           onChangeText={(value) => handleChange(key, value)}
         />
       </View>
@@ -52,26 +66,41 @@ const AddStudentScreen = () => {
 
   const onSave = () => {
     if (areAllFieldsFilled(studentState)) {
-      console.log(studentState);
+      //console.log(studentState);
       dispatch(createStudent(studentState))
         .then((response) => {
+          console.log(response);
           if (response.error) {
-            setError(response.error);
+            setError(response.payload.message);
             setTimeout(() => setError(""), 2000);
           } else {
-            dispatch(setIsNewStudentAdded(false));
+            console.log(response);
             if (!createStudentPending) {
               setIsSaved(true);
-              setTimeout(() => setIsSaved(false), 2000);
+              setIsButtonDisabled(true);
+              setIsEditable(false);
+              setStudentInfoState({
+                name: studentState.firstName + " " + studentState.lastName,
+                ID: response.payload.data.createStudent._id,
+                number: response.payload.data.createStudent.studentNumber,
+              });
+              setTimeout(() => {
+                setIsSaved(false);
+                setIsButtonDisabled(false);
+                setStudentState(initialState);
+                setIsEditable(true);
+              }, 2000);
             }
           }
         })
-        .catch((error) =>
+        .catch((error) => {
+          setIsButtonDisabled(false);
+          setError("Something went wrong please try again.");
           console.error(
             "Catch: Error while creating Student in home screen",
             error
-          )
-        );
+          );
+        });
     } else {
       setError("Please fill in all the fields.");
       setTimeout(() => setError(""), 2000);
@@ -85,32 +114,77 @@ const AddStudentScreen = () => {
       setIsCancelled(false);
     }, 2000);
   };
+
+  const handleClick = () => {
+    if (studentInfoState.ID === "") {
+      setError("Please create a student before adding a profile.");
+      setTimeout(() => setError(""), 3000);
+    } else {
+      dispatch(setIsNewProfileAdded(true));
+    }
+  };
   return (
-    <View style={{ paddingLeft: 40 }}>
-      {isSaved ? <Text>Student has been added successfully!</Text> : null}
-      {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
-      {createStudentPending && <Text>Student is being added.</Text>}
+    <View style={styles.container}>
       {isNewStudentAdded && (
         <>
-          <Text style={styles.headerText}>Add Student</Text>
-          <Text style={styles.subHeaderText}>Student details</Text>
-          {renderText("Student first name", "firstName")}
-          {renderText("Student last name", "lastName")}
-          {renderText("Parent phone number", "primaryContactNumber")}
-
-          <View style={styles.buttonsContainer}>
+          <View>
+            <Text style={styles.subHeaderText}>Student details</Text>
+            {renderText("Student first name", "firstName")}
+            {renderText("Student last name", "lastName")}
+            {renderText("Parent phone number", "primaryContactNumber")}
+            {isSaved ? <Text>Student has been added successfully!</Text> : null}
+            {error !== "" ? (
+              <Text style={styles.errorText}>{error}</Text>
+            ) : null}
+            {createStudentPending && <Text>Adding student...</Text>}
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.saveButtonContainer,
+                  { opacity: isButtonDisabled ? 0.5 : 1 },
+                ]}
+                onPress={onSave}
+              >
+                <Text style={styles.saveButtonText}>Create</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButtonContainer}
+                onPress={onCancel}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              style={styles.saveButtonContainer}
-              onPress={onSave}
+              style={
+                isAddProfileDisabled
+                  ? [styles.buttonContainer, styles.disabled]
+                  : styles.buttonContainer
+              }
+              onPress={handleClick}
+              disabled={isAddProfileDisabled}
             >
-              <Text style={styles.saveButtonText}>Create</Text>
+              <Ionicons name="add" size={20} color="#024552" />
+              <Text style={styles.buttonText} onPress={handleClick}>
+                Add a profile
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButtonContainer}
-              onPress={onCancel}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
+          </View>
+          <View style={styles.verticalDivider} />
+          <View
+            style={{
+              width: "50%",
+              height: "30%",
+              marginTop: 50,
+              marginLeft: 100,
+            }}
+          >
+            {/* {studentInfoState.ID !== "" && isNewProfileAdded ? ( */}
+            <CreateProfileScreen
+              studentID={studentInfoState.ID}
+              studentName={studentInfoState.name}
+              studentNumber={studentInfoState.number}
+            />
+            {/* ) : null} */}
           </View>
         </>
       )}
@@ -121,11 +195,12 @@ const AddStudentScreen = () => {
 export default AddStudentScreen;
 
 const styles = StyleSheet.create({
-  headerText: {
-    marginBottom: 24,
-    fontSize: 48,
-    fontFamily: "InterBold",
-    marginTop: 60,
+  container: {
+    paddingLeft: 40,
+    marginTop: 20,
+    flexDirection: "row",
+    height: "100%",
+    width: "100%",
   },
   subHeaderText: {
     marginBottom: 24,
@@ -141,7 +216,7 @@ const styles = StyleSheet.create({
   infoTypeText: {
     fontSize: 16,
     fontFamily: "InterMedium",
-    width: "12%",
+    width: "50%",
     // marginRight: 40,
   },
   infoInputText: {
@@ -200,5 +275,30 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 14,
     //alignSelf: "center",
+  },
+  verticalDivider: {
+    borderLeftColor: "#D9D9D980",
+    borderLeftWidth: 1,
+    // marginRight: 50,
+    marginLeft: 60,
+  },
+  buttonContainer: {
+    marginVertical: 20,
+    backgroundColor: "#99B8BE99",
+    height: 40,
+    width: 132,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    // alignSelf: "center",
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  buttonText: {
+    alignSelf: "center",
+    color: "#024552",
+    fontWeight: 600,
   },
 });

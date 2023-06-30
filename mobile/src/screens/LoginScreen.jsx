@@ -16,7 +16,6 @@ const LoginScreen = ({ navigation }) => {
   const [error, setError] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
 
   const handleClick = () => {
     dispatch(loginUser(studentNumber))

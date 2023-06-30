@@ -12,56 +12,23 @@ import { setIsNewStudentAdded } from "../redux/studentSlice";
 
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const pages = ["Home", "Approvals", "Notices", "Daily Logs", "Create"];
-  const [selected, setSelected] = useState(0);
+  const pages = ["Home", "Daily Logs", "Notices", "Approvals", "Create"];
   const screens = [
     "HomeScreen",
-    "ApprovalsScreen",
-    "NoticesScreen",
     "DailyLogsScreen",
+    "NoticesScreen",
+    "ApprovalsScreen",
+    "CreateScreen",
   ];
-  const dropdownOptions = [
-    { key: 1, value: "Create Class" },
-    { key: 2, value: "Add Teacher" },
-    { key: 3, value: "Add Student" },
-  ];
-  const dropdownScreens = [
-    "CreateClassScreen",
-    "AddTeacherScreen",
-    "AddStudentScreen",
-  ];
+
   const [activeButton, setActiveButton] = useState("Home");
   const loggedIn = localStorage.getItem("isLoggedIn");
   const router = useRouter();
   const dispatch = useDispatch();
-  const [isDropdownVisible, setDropdownVisible] = useState(false);
-
-  const toggleDropdown = () => {
-    console.log("1");
-    setDropdownVisible(!isDropdownVisible);
-  };
 
   const handleClick = (idx, button) => {
-    if (button === "Create") {
-      toggleDropdown();
-      setActiveButton(button);
-    } else {
-      router.push(`/${screens[idx]}`);
-      setActiveButton(button);
-      setDropdownVisible(false);
-    }
-  };
-
-  const handleDropdownOptions = () => {
-    // console.log(selected, "handle press");
-    if (selected === 1) {
-      dispatch(setIsNewClassAdded(true));
-    } else if (selected === 2) {
-      dispatch(setIsNewTeacherAdded(true));
-    } else if (selected === 3) {
-      dispatch(setIsNewStudentAdded(true));
-    }
-    router.push(`/${dropdownScreens[selected - 1]}`);
+    router.push(`/${screens[idx]}`);
+    setActiveButton(button);
   };
 
   const handleLogOut = () => {
@@ -98,49 +65,6 @@ const Header = () => {
                   </TouchableOpacity>
                 </View>
               ))}
-              <View style={{ marginTop: 50, zIndex: 1 }}>
-                <SelectList
-                  setSelected={(val) => setSelected(val)}
-                  onSelect={handleDropdownOptions}
-                  data={dropdownOptions}
-                  save="key"
-                />
-              </View>
-              {/* {isDropdownVisible && ( */}
-              {/* <View
-                style={{
-                  top: "170%",
-                  position: "relative",
-                  backgroundColor: "red",
-                }}
-                // onPress={() => console.log("dropdwonoption")}
-              >
-                {dropdownOptions.map((option, idx) => (
-                  <TouchableOpacity
-                    key={`options-${idx}`}
-                    style={{ marginBottom: 20 }}
-                    onPress={() => handleDropdownOptions(idx)}
-                  >
-                    <Text style={styles.optionsText}>{option}</Text>
-                  </TouchableOpacity>
-                ))}
-                <TouchableOpacity
-                  style={{ marginBottom: 20, backgroundColor: "pink" }}
-                >
-                  <Text style={styles.optionsText}>test</Text>
-                </TouchableOpacity>
-              </View> */}
-              {/* )} */}
-              {/* {isDropdownVisible && (
-                <TouchableOpacity style={styles.dropdownMenu}>
-                  <TouchableOpacity
-                    onPress={() => console.log("clicked button")}
-                    style={{ marginBottom: 20, backgroundColor: "pink" }}
-                  >
-                    <Text style={styles.optionsText}>test</Text>
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              )} */}
             </>
             <TouchableOpacity
               style={styles.logOutButtonContainer}

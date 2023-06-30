@@ -31,22 +31,20 @@ export const createTeacher = createAsyncThunk(
         if (response.status === 500) {
           //console.log(response);
           console.error("Error while creating teacher", response.statusText);
-          throw new Error("Network error");
+          throw new Error("Teacher already exists");
         } else if (response.status === 400) {
           console.error(
             "Invalid teacher details while creating teacher for admin",
             response.statusText
           );
-          throw new Error(
-            "Invalid or wrong teacher Info while creating teacher for admin"
-          );
+          throw new Error("Teacher already exists");
         }
       }
       const data = await response.json();
       return data;
     } catch (error) {
       console.error("Catch: while creating teacher", error);
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
   }
 );
@@ -125,22 +123,18 @@ export const teacherSlice = createSlice({
       .addCase(createTeacher.pending, (state) => {
         state.createTeacherPending = true;
         state.createTeacherError = false;
-        state.isNewTeacherAdded = false;
       })
       .addCase(createTeacher.rejected, (state) => {
         state.createTeacherPending = null;
         state.createTeacherError = true;
-        state.isNewTeacherAdded = false;
       })
-      .addCase(createTeacher.fulfilled, (state, action) => {
+      .addCase(createTeacher.fulfilled, (state) => {
         state.createTeacherPending = false;
         state.createTeacherError = false;
-        state.teacherID = action.payload.data.createTeacher._id;
       })
       .addCase(fetchTeachers.pending, (state) => {
         state.fetchTeachersPending = true;
         state.fetchTeachersError = false;
-        state.isNewTeacherAdded = false;
         // state.updateLogsSuccessful = false;
       })
       .addCase(fetchTeachers.rejected, (state) => {
@@ -148,11 +142,9 @@ export const teacherSlice = createSlice({
         state.fetchTeachersError = true;
         // state.editogsSuccessful = false;
       })
-      .addCase(fetchTeachers.fulfilled, (state, action) => {
-        state.logs = [action.payload.data.editLog, ...state.logs];
+      .addCase(fetchTeachers.fulfilled, (state) => {
         state.fetchTeachersPending = false;
         state.fetchTeachersError = false;
-        state.isNewTeacherAdded = false;
         //state.fetchTeachersSuccessful = true;
       });
   },

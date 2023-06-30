@@ -22,13 +22,11 @@ import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import typeColorMapping from "../api/typeColorMapping";
 import Dropdown from "../src/components/DropDown";
 
-const CreateNoticeScreen = ({ date, noticeID }) => {
+const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
-  const { createNoticesError, createNoticesPending, notices } = useSelector(
-    (state) => state.notices
-  );
-  const state = useSelector((state) => state);
+  const state = useSelector((state) => state.notices);
+  const { createNoticesError, createNoticesPending, notices } = state;
   const s = localStorage.getItem("students");
   const s2 = JSON.parse(s);
   const students = JSON.parse(s2).students;
@@ -45,7 +43,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
   );
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewNoticeSelected = getIsNewNoticeAdded(state);
   const types = ["Urgent", "Serious", "Casual"];
@@ -90,19 +88,29 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
     if (subject && details) {
       dispatch(action)
         // console.log("dispatching");
-        .then(() => {
-          setEditable(false);
-          setIsInputEmpty(false);
-          setIsSaved(true);
-          dispatch(setIsNewNoticeAdded(false));
-          setTimeout(() => {
-            setIsSaved(false);
-            setEditable(true);
-            setSubject("");
-            setDetails("");
-          }, 2000);
+        .then((response) => {
+          if (response.error) {
+            setError("Something went wrong please try again.");
+            setTimeout(() => setError(""), 2000);
+          } else {
+            setEditable(false);
+            setIsInputEmpty(false);
+            setIsSaved(true);
+            dispatch(setIsNewNoticeAdded(false));
+            noticeID !== "" && setNoticeID("");
+            setTimeout(() => {
+              setIsSaved(false);
+              setEditable(true);
+              setSubject("");
+              setDetails("");
+            }, 2000);
+          }
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          setError("Something went wrong please try again.");
+          setTimeout(() => setError(""), 2000);
+          console.error(error);
+        });
     } else {
       setIsInputEmpty(true);
     }
@@ -110,7 +118,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
 
   const onSave = () => {
     const teacherID = localStorage.getItem("teacherID");
-
+    const teacherName = localStorage.getItem("teacherName");
     //console.log(selectedStudents);
     if (subject && details) {
       const newNotice = {
@@ -146,6 +154,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
     setIsCancelled(true);
     setEditable(false);
     dispatch(setIsNewNoticeAdded(false));
+    noticeID !== "" && setNoticeID("");
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
@@ -251,7 +260,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
           </View>
         ) : null}
         {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
-        {isError ? (
+        {error ? (
           <View>
             <Text>
               There was an error in creating the log. Please try again.

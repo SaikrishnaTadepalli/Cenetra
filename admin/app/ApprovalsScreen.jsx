@@ -281,7 +281,7 @@ const ApprovalsScreen = () => {
                 <Text style={styles.subject}>{item.studentName}</Text>
               </View>
               <Text style={styles.date}>
-                {moment(item.lastUpdated).format("DD MMMM YYYY, h:mm a")}
+                {moment(item.lastUpdated).utc().format("DD MMMM YYYY, h:mm a")}
               </Text>
             </>
           ) : null}

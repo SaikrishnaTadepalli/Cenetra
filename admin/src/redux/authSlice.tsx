@@ -80,7 +80,7 @@ export const loginUser = createAsyncThunk("auth/login", async (adminID) => {
 
     return data;
   } catch (error) {
-    console.log("Catch: Error while logging in Admin", error);
+    console.error("Catch: Error while logging in Admin", error);
   }
 });
 

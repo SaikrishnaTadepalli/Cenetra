@@ -5,7 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createTeacher, setIsNewTeacherAdded } from "../src/redux/teacherSlice";
 
@@ -14,15 +14,18 @@ const AddTeacherScreen = () => {
   const { isNewTeacherAdded, createTeacherPending } = useSelector(
     (state) => state.teacher
   );
-  const [teacherState, setTeacherState] = useState({
+  const initialState = {
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
-  });
+  };
+  const [teacherState, setTeacherState] = useState(initialState);
   const [isCancelled, setIsCancelled] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [error, setError] = useState("");
   const [isSaved, setIsSaved] = useState(false);
+  const [isEditable, setIsEditable] = useState(true);
 
   const areAllFieldsFilled = () => {
     return Object.values(teacherState).every((value) => value !== "");
@@ -35,9 +38,9 @@ const AddTeacherScreen = () => {
           <Text style={styles.infoTypeText}>{infoType}</Text>
         ) : null}
         <TextInput
-          editable={true}
+          editable={isEditable}
           style={styles.infoInputText}
-          value={teacherState.info}
+          value={!isEditable ? "" : teacherState.key}
           onChangeText={(value) => handleChange(key, value)}
         />
       </View>
@@ -53,54 +56,64 @@ const AddTeacherScreen = () => {
 
   const onSave = () => {
     if (areAllFieldsFilled(teacherState)) {
-      console.log(teacherState);
       dispatch(createTeacher(teacherState))
         .then((response) => {
           if (response.error) {
-            setError(response.error);
+            //console.log(response);
+            setError(response.payload.message);
             setTimeout(() => setError(""), 2000);
+            setIsButtonDisabled(false);
           } else {
-            dispatch(setIsNewTeacherAdded(false));
             setIsSaved(true);
-            setTimeout(() => setIsSaved(false), 2000);
+            setIsButtonDisabled(true);
+            setIsEditable(false);
+            setTimeout(() => {
+              setIsSaved(false);
+              setIsButtonDisabled(false);
+              setTeacherState(initialState);
+              setIsEditable(true);
+            }, 2000);
           }
         })
-        .catch((error) =>
+        .catch((error) => {
           console.error(
             "Catch: Error while creating teacher in home screen",
             error
-          )
-        );
+          );
+          setIsButtonDisabled(false);
+        });
     } else {
       setError("Please fill in all the fields.");
       setTimeout(() => setError(""), 2000);
+      setIsButtonDisabled(false);
     }
   };
   const onCancel = () => {
     setIsCancelled(true);
     dispatch(setIsNewTeacherAdded(false));
-    //dispatch(setIsNewClassAdded(false));
     setTimeout(() => {
       setIsCancelled(false);
     }, 2000);
   };
+
   return (
-    <View style={{ paddingLeft: 40 }}>
-      {isSaved ? <Text>Teacher has been added successfully!</Text> : null}
-      {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
-      {createTeacherPending && <Text>Teacher is being added.</Text>}
+    <View style={{ paddingLeft: 40, marginTop: 30 }}>
       {isNewTeacherAdded && (
         <>
-          <Text style={styles.headerText}>Add teacher</Text>
           <Text style={styles.subHeaderText}>Teacher details</Text>
           {renderText("Teacher first name", "firstName")}
           {renderText("Teacher last name", "lastName")}
           {renderText("Phone number", "phoneNumber")}
           {renderText("Email", "email")}
-
+          {isSaved ? <Text>Teacher has been added successfully!</Text> : null}
+          {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
+          {createTeacherPending && <Text>Adding new teacher.</Text>}
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
-              style={styles.saveButtonContainer}
+              style={[
+                styles.saveButtonContainer,
+                { opacity: isButtonDisabled ? 0.5 : 1 },
+              ]}
               onPress={onSave}
             >
               <Text style={styles.saveButtonText}>Create</Text>
@@ -121,12 +134,6 @@ const AddTeacherScreen = () => {
 export default AddTeacherScreen;
 
 const styles = StyleSheet.create({
-  headerText: {
-    marginBottom: 24,
-    fontSize: 48,
-    fontFamily: "InterBold",
-    marginTop: 60,
-  },
   subHeaderText: {
     marginBottom: 24,
     fontSize: 20,
