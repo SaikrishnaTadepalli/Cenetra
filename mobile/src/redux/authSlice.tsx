@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import envs from "../config/env";
+import Constants from "expo-constants";
+
+const apiUrl2 = Constants.expoConfig.extra.apiUrl2;
+const apiUrl = Constants.expoConfig.extra.apiUrl;
 
 export const loginUser = createAsyncThunk(
   "auth/login",
@@ -16,7 +20,7 @@ export const loginUser = createAsyncThunk(
   }`;
     //console.log(query);
     try {
-      const response = await fetch(envs, {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +53,7 @@ export const sendSMS = createAsyncThunk(
         }
     }`;
     try {
-      const response = await fetch(envs, {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,18 +80,19 @@ export const verifyLogin = createAsyncThunk(
   "auth/verify",
   async ({ studentID, code }, { rejectWithValue }) => {
     //console.log(studentID, code);
+    console.log("verifyCode", envs, process.env.BACKEND_URI);
     const query = `query {
       verifyCode(userId: "${studentID}" code: "${code}") 
   }`;
     try {
-      const response = await fetch(envs, {
+      const response = await fetch(apiUrl2, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ query }),
       });
-      //console.log("verifyCode", envs, query);
+
       if (response.status !== 200) {
         if (response.status === 500) {
           console.error("Error while verifying code");
@@ -120,7 +125,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  isLoggedIn: true,
+  isLoggedIn: false,
   curStudentDetails: "",
   loginLoading: false,
   loginError: false,

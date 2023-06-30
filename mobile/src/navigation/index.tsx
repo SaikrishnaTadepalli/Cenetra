@@ -5,7 +5,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import { Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Octicons,
+} from "@expo/vector-icons";
 
 import colors from "../constants/Colors";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -22,7 +27,7 @@ import LoginScreen from "../screens/LoginScreen";
 import { RootState } from "../redux/store";
 import LogScreen from "../screens/LogScreen";
 import NoticeInfoScreen from "../screens/NoticeInfoScreen";
-import Logo from "../../assets/icons/logo.svg";
+// import Logo from "../../assets/icons/logo.svg";
 import IndividualChatScreen from "../screens/IndividualChatScreen";
 import VerificationScreen from "../screens/VerificationScreen";
 import ImageViewScreen from "../screens/ImageViewScreen";
@@ -172,7 +177,7 @@ const RootNavigator = () => {
                     marginLeft: 18,
                   }}
                 >
-                  <Logo />
+                  <MaterialIcons name="library-books" size={24} color="black" />
                   <Text
                     style={{
                       fontFamily: "InterMedium",
@@ -239,7 +244,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
               marginLeft: 18,
             }}
           >
-            <Logo />
+            <MaterialIcons name="library-books" size={24} color="black" />
             <Text
               style={{
                 fontFamily: "InterMedium",

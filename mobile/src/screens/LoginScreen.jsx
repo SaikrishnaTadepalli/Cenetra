@@ -16,7 +16,6 @@ const LoginScreen = ({ navigation }) => {
   const [error, setError] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
 
   const handleClick = () => {
     dispatch(loginUser(studentNumber))
@@ -44,7 +43,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome</Text>
+      <Text style={styles.text}>Welcomeeee 2</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.inputHeader}>Student Number</Text>
         <TextInput
