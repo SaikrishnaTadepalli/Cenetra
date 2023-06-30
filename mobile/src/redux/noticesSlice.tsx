@@ -85,6 +85,7 @@ export interface NoticesState {
   error: boolean;
   markAsReadLoading: boolean;
   markAsReadError: boolean;
+  markAsReadSuccessful: boolean;
   isNewNoticeAdded: boolean;
 }
 
@@ -95,6 +96,7 @@ const initialState: NoticesState = {
   markAsReadError: false,
   notices: [],
   isNewNoticeAdded: false,
+  markAsReadSuccessful: false,
 };
 
 export const noticesSlice = createSlice({
@@ -105,6 +107,7 @@ export const noticesSlice = createSlice({
       state.isNewNoticeAdded = action.payload;
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchNotices.pending, (state) => {
@@ -123,14 +126,17 @@ export const noticesSlice = createSlice({
       .addCase(markNoticeAsRead.pending, (state) => {
         state.markAsReadLoading = true;
         state.markAsReadError = false;
+        state.markAsReadSuccessful = false;
       })
       .addCase(markNoticeAsRead.rejected, (state) => {
         state.markAsReadLoading = null;
         state.markAsReadError = true;
+        state.markAsReadSuccessful = false;
       })
       .addCase(markNoticeAsRead.fulfilled, (state) => {
         state.markAsReadLoading = false;
         state.markAsReadError = false;
+        state.markAsReadSuccessful = true;
       });
   },
 });
@@ -139,5 +145,9 @@ export const { setIsNewNoticeAdded } = noticesSlice.actions;
 
 export const selectNoticeByID = (state, noticeID) =>
   state.notices.notices[noticeID];
+
+export const setNoticeAsRead = (state, action) => {
+  state.markAsReadLoading = false;
+};
 
 export default noticesSlice.reducer;

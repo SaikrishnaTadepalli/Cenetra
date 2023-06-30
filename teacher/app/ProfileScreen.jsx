@@ -70,7 +70,7 @@ const ProfileScreen = ({ curStudentID }) => {
       // console.log(data);
       setAllergies(studentInfo.information[2].section);
       setMedications(studentInfo.information[3].section);
-      setBloodGroup(studentInfo.information[4].section[0].name);
+      setBloodGroup(studentInfo.information[4].section[0]);
     }
   }, []);
 

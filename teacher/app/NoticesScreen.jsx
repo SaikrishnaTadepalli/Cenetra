@@ -30,7 +30,7 @@ const NoticesScreen = () => {
     editNoticesSuccessful,
   } = state;
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const curDate = moment().format("DD MMMM YYYY");
+  const curDate = moment().utc().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldNoticeSelected, setIsOldNoticeSelected] = useState(false);
   const [noticeID, setNoticeID] = useState("");
@@ -58,7 +58,7 @@ const NoticesScreen = () => {
   };
 
   const formatDate = (date) => {
-    return moment(date).format("DD MMMM YYYY");
+    return moment(date).utc().format("DD MMMM YYYY");
   };
 
   const retrieveData = () => {
@@ -133,7 +133,7 @@ const NoticesScreen = () => {
                   </Text>
                 </View>
                 <Text style={styles.date}>
-                  {moment(item.createdAt).format("DD MMMM YYYY, h:mm a")}
+                  {moment(item.createdAt).utc().format("DD MMMM YYYY, h:mm a")}
                 </Text>
               </>
             ) : null}
@@ -244,7 +244,11 @@ const NoticesScreen = () => {
                     setIsOldNoticeSelected={setIsOldNoticeSelected}
                   />
                 ) : isNewNoticeAdded ? (
-                  <CreateNoticeScreen date={date} noticeID={noticeID} />
+                  <CreateNoticeScreen
+                    date={date}
+                    noticeID={noticeID}
+                    setNoticeID={setNoticeID}
+                  />
                 ) : (
                   notices &&
                   notices.length > 0 && (

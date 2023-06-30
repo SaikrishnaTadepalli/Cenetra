@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
 const ProfileScreen = ({ navigation }) => {
-  // const [isEditable, setEditable] = useState(false);
+  //const [isEditable, setEditable] = useState(false);
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
   const {
@@ -100,7 +100,7 @@ const ProfileScreen = ({ navigation }) => {
             }
           >
             <View style={styles.profileContainer}>
-              <TouchableOpacity onPress={onPressEdit} disabled={false}>
+              <TouchableOpacity onPress={onPressEdit} disabled={isEditDisabled}>
                 <Text
                   style={[
                     styles.buttonText,

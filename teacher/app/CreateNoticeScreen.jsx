@@ -22,7 +22,7 @@ import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import typeColorMapping from "../api/typeColorMapping";
 import Dropdown from "../src/components/DropDown";
 
-const CreateNoticeScreen = ({ date, noticeID }) => {
+const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const state = useSelector((state) => state.notices);
@@ -97,6 +97,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
             setIsInputEmpty(false);
             setIsSaved(true);
             dispatch(setIsNewNoticeAdded(false));
+            noticeID !== "" && setNoticeID("");
             setTimeout(() => {
               setIsSaved(false);
               setEditable(true);
@@ -153,6 +154,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
     setIsCancelled(true);
     setEditable(false);
     dispatch(setIsNewNoticeAdded(false));
+    noticeID !== "" && setNoticeID("");
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
