@@ -33,6 +33,7 @@ type Admin {
 
 type Class {
     _id: ID!
+    className: String
     teacher: Teacher!
     students: [Student!]!
     details: String

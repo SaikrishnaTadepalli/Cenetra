@@ -1,16 +1,26 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import Colors from "../constants/Colors";
 import { useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { logout } from "../redux/authSlice";
+import { SelectList } from "react-native-dropdown-select-list";
+import { setIsNewClassAdded } from "../redux/classSlice";
+import { setIsNewTeacherAdded } from "../redux/teacherSlice";
+import { setIsNewStudentAdded } from "../redux/studentSlice";
 
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const pages = ["Home", "Daily Logs", "Approvals"];
-  const screens = ["HomeScreen", "DailyLogsScreen", "ApprovalsScreen"];
+  const pages = ["Home", "Daily Logs", "Notices", "Approvals", "Create"];
+  const screens = [
+    "HomeScreen",
+    "DailyLogsScreen",
+    "NoticesScreen",
+    "ApprovalsScreen",
+    "CreateScreen",
+  ];
+
   const [activeButton, setActiveButton] = useState("Home");
   const loggedIn = localStorage.getItem("isLoggedIn");
   const router = useRouter();
@@ -28,33 +38,34 @@ const Header = () => {
   };
 
   useEffect(() => {}, [isLoggedIn]);
-
   return (
     <>
       {loggedIn === "true" ? (
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Cenetra</Text>
-            {pages.map((page, idx) => (
-              <View
-                key={`page-${idx}`}
-                style={
-                  page === activeButton
-                    ? [
-                        styles.optionsButtonContainer,
-                        {
-                          borderBottomColor: "black",
-                          borderBottomWidth: 2,
-                        },
-                      ]
-                    : styles.optionsButtonContainer
-                }
-              >
-                <TouchableOpacity onPress={() => handleClick(idx, page)}>
-                  <Text style={styles.optionsText}>{page}</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+            <>
+              {pages.map((page, idx) => (
+                <View
+                  key={`page-${idx}`}
+                  style={
+                    page === activeButton
+                      ? [
+                          styles.optionsButtonContainer,
+                          {
+                            borderBottomColor: "black",
+                            borderBottomWidth: 2,
+                          },
+                        ]
+                      : styles.optionsButtonContainer
+                  }
+                >
+                  <TouchableOpacity onPress={() => handleClick(idx, page)}>
+                    <Text style={styles.optionsText}>{page}</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </>
             <TouchableOpacity
               style={styles.logOutButtonContainer}
               onPress={handleLogOut}
@@ -118,5 +129,14 @@ const styles = StyleSheet.create({
     width: 90,
     // backgroundColor: "lightblue",
     alignItems: "center",
+  },
+  dropdownMenu: {
+    //marginTop: 220,
+    top: "100%",
+    marginLeft: "-15%",
+    width: 120,
+    backgroundColor: "#f9f9f9",
+    padding: 10,
+    //zIndex: 1,
   },
 });

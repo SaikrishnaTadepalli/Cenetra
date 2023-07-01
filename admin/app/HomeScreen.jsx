@@ -8,11 +8,17 @@ import {
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import colors from "../src/constants/Colors";
 import ProfileScreen from "./ProfileScreen";
 import { fetchProfile } from "../src/redux/studentProfileSlice";
 import DropDown from "../src/components/DropDown";
+import CreateClassScreen from "./CreateClassScreen";
+import {
+  getisNewClassAdded,
+  setIsNewClassAdded,
+} from "../src/redux/classSlice";
 
 const HomeScreen = () => {
   const { loginLoading } = useSelector((state) => state.auth);
@@ -23,6 +29,8 @@ const HomeScreen = () => {
   const classes = c2 && JSON.parse(c2).classes;
   const dispatch = useDispatch();
   const [students, setStudents] = useState([]);
+  const [isCreateClassSelected, setIsCreateClassSelected] = useState(false);
+  //console.log(classes);
   const classInfo = classes.map((item) => ({
     key: item._id,
     value: item.details,
@@ -68,6 +76,12 @@ const HomeScreen = () => {
     setSelectedClasses(updatedItems);
   };
 
+  const onPressCreate = () => {
+    dispatch(setIsNewClassAdded(true));
+    setIsCreateClassSelected(true);
+    setStudentID("");
+  };
+
   const handleClick = (studentID) => {
     // console.log(studentID);
     setStudentID(studentID);
@@ -79,7 +93,7 @@ const HomeScreen = () => {
             response.payload ===
             "Response status 500: Error while fetching student profile for teacher"
           ) {
-            console.log("-----response-------");
+            // console.log("-----response-------");
             setError("500");
           }
         }
@@ -109,7 +123,18 @@ const HomeScreen = () => {
             onPressDelete={onPressDelete}
             dropdownText="Select class to view"
           />
-          <View style={{ flexDirection: "row" }}>
+          {/* <TouchableOpacity
+            onPress={onPressCreate}
+            style={styles.createButtonContainer}
+          >
+            <MaterialCommunityIcons
+              name="pencil-outline"
+              size={20}
+              color="#024552"
+            />
+            <Text style={styles.createButtonText}>Create a class</Text>
+          </TouchableOpacity> */}
+          <View style={{ flexDirection: "row", height: "100%" }}>
             <ScrollView
               contentContainerStyle={styles.listView}
               nestedScrollEnabled={true}
@@ -153,10 +178,9 @@ const HomeScreen = () => {
             <View
               style={{
                 flexDirection: "row",
-                // height: "100%",
+                height: "100%",
                 width: "50%",
-                // marginTop: -45,
-                // backgroundColor: "green",
+                marginTop: -45,
               }}
             >
               <View style={styles.verticalDivider} />
@@ -166,9 +190,9 @@ const HomeScreen = () => {
                     No profile exists for this student
                   </Text>
                 </View>
-              ) : (
+              ) : studentID ? (
                 <ProfileScreen curStudentID={studentID} />
-              )}
+              ) : null}
             </View>
           </View>
         </>
@@ -182,7 +206,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     // width: "80%",
-    // height: "100%",
+    //height: "100%",
     paddingLeft: 30,
     // backgroundColor: "red",
   },
@@ -219,6 +243,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     marginRight: 50,
     marginLeft: "-45%",
+    marginTop: "-10%",
   },
   emptyText: {
     fontFamily: "InterSemiBold",
@@ -230,5 +255,23 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     marginBottom: 300,
     alignItems: "center",
+  },
+  createButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingHorizontal: 5,
+    marginTop: 20,
+    marginLeft: 50,
+    backgroundColor: "#99B8BE99",
+    width: 150,
+    height: 40,
+    borderRadius: 5,
+  },
+  createButtonText: {
+    color: "#024552",
+    fontSize: 14,
+    fontFamily: "InterMedium",
+    textAlign: "right",
   },
 });

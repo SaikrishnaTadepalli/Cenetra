@@ -29,7 +29,7 @@ export const fetchNotices = createAsyncThunk(
         if (response.status === 500) {
           throw new Error("Response status 500: Error while fetching notices");
         } else if (response.status === 400) {
-          console.log("Response status 400 while fetching notices");
+          console.error("Response status 400 while fetching notices");
           throw new Error("Response status 400 while fetching notices");
         }
       }
@@ -66,7 +66,7 @@ export const markNoticeAsRead = createAsyncThunk(
             "Response status 500: Error while marking notices as read"
           );
         } else if (response.status === 400) {
-          console.log("Response status 400 while marking notices as read");
+          console.error("Response status 400 while marking notices as read");
           throw new Error("Response status 400 while  marking notices as read");
         }
       }
@@ -85,6 +85,7 @@ export interface NoticesState {
   error: boolean;
   markAsReadLoading: boolean;
   markAsReadError: boolean;
+  markAsReadSuccessful: boolean;
   isNewNoticeAdded: boolean;
 }
 
@@ -95,6 +96,7 @@ const initialState: NoticesState = {
   markAsReadError: false,
   notices: [],
   isNewNoticeAdded: false,
+  markAsReadSuccessful: false,
 };
 
 export const noticesSlice = createSlice({
@@ -105,6 +107,7 @@ export const noticesSlice = createSlice({
       state.isNewNoticeAdded = action.payload;
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchNotices.pending, (state) => {
@@ -123,14 +126,17 @@ export const noticesSlice = createSlice({
       .addCase(markNoticeAsRead.pending, (state) => {
         state.markAsReadLoading = true;
         state.markAsReadError = false;
+        state.markAsReadSuccessful = false;
       })
       .addCase(markNoticeAsRead.rejected, (state) => {
         state.markAsReadLoading = null;
         state.markAsReadError = true;
+        state.markAsReadSuccessful = false;
       })
       .addCase(markNoticeAsRead.fulfilled, (state) => {
         state.markAsReadLoading = false;
         state.markAsReadError = false;
+        state.markAsReadSuccessful = true;
       });
   },
 });
@@ -139,5 +145,9 @@ export const { setIsNewNoticeAdded } = noticesSlice.actions;
 
 export const selectNoticeByID = (state, noticeID) =>
   state.notices.notices[noticeID];
+
+export const setNoticeAsRead = (state, action) => {
+  state.markAsReadLoading = false;
+};
 
 export default noticesSlice.reducer;

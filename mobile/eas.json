@@ -1,0 +1,34 @@
+{
+  "cli": {
+    "version": ">= 3.14.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "BACKEND_URI": "http://18.206.57.12:8080/graphql"
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "env": {
+        "BACKEND_URI": "http://18.206.57.12:8080/graphql"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "vipasha2002@gmail.com",
+        "ascAppId": "6450723983",
+        "appleTeamId": "2FURF9A33X"
+      }
+    }
+  }
+}

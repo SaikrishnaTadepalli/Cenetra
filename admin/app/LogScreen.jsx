@@ -27,7 +27,7 @@ const LogScreen = ({
   const log = logs.find((log) => (log ? log._id === logID : null));
   const parsedLog = log ? JSON.parse(log.details) : null;
   const rating = log ? parseInt(log.rating) : 0;
-  const date = log ? moment(log.createdAt).format("MMMM D, YYYY") : "";
+  const date = log ? moment(log.createdAt).utc().format("MMMM D, YYYY") : "";
   const dispatch = useDispatch();
 
   const renderIcon = (name, idx) => (
@@ -121,6 +121,7 @@ const LogScreen = ({
               question={checkBoxQuestion.question}
               answers={checkBoxQuestion.answer}
               checkedItems={checkBoxQuestion.options}
+              isDropdown={false}
             />
           </View>
         ))}

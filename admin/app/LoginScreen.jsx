@@ -34,9 +34,13 @@ const LoginScreen = () => {
       .then((response) => {
         if (!response.error) {
           router.push("/VerificationScreen");
-          const adminID = response.payload.data.adminByAdminNumber._id;
-          // console.log(teacherID);
+          const responseData = response.payload.data.adminByAdminNumber;
+          const adminID = responseData._id;
+          const adminName =
+            responseData.firstName + " " + responseData.lastName;
+          console.log(adminID);
           localStorage.setItem("adminID", adminID);
+          localStorage.setItem("adminName", adminName);
           setIsDisabled(true);
           dispatch(sendSMS(adminID))
             .then(() => {})
@@ -49,11 +53,11 @@ const LoginScreen = () => {
         }
       })
       .catch((error) => {
-        console.log("Catch:", error);
+        console.error("Catch:", error);
         setError("Something went wrong");
       });
   }
-  console.log(error);
+  // console.log(error);
   return (
     <View style={styles.container}>
       <View style={styles.loginContainer}>
@@ -85,7 +89,7 @@ const LoginScreen = () => {
       </View>
       <View style={styles.imageContainer}>
         <Image
-          source={require("../assets/images/loginIllustration.png")}
+          source={require("../assets/images/SchoolLogo.png")}
           style={{
             width: "100%",
             height: "85%",

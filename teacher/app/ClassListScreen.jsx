@@ -30,7 +30,7 @@ const ClassListScreen = () => {
   const [isOldLogSelected, setIsOldLogSelected] = useState(false);
   const [isStudentNameSelected, setIsStudentNameSelected] = useState(false);
   const [logID, setLogID] = useState("");
-  const curDate = moment().format("MMMM D, YYYY");
+  const curDate = moment().utc().format("MMMM D, YYYY");
 
   const onClickLog = (logID) => {
     setIsOldLogSelected(true);
@@ -44,7 +44,7 @@ const ClassListScreen = () => {
     setIsStudentNameSelected(true);
     dispatch(fetchLogs(studentID))
       .then(() => {})
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
   useEffect(() => {
     if (!isLoggedIn) {

@@ -51,10 +51,11 @@ const VerificationScreen = () => {
 
     dispatch(verifyLogin({ teacherID, code: value }))
       .then(async (response) => {
+        // console.log(response.payload.data.verifyCode);
         if (response.error) {
           setError(response.payload);
           setTimeout(() => setError(""), 2000);
-        } else if (!response.payload.data.verifyCode) {
+        } else if (!verificationLoading && !response.payload.data.verifyCode) {
           setError("Invalid login code");
           setTimeout(() => setError(""), 2000);
         } else {
@@ -94,11 +95,18 @@ const VerificationScreen = () => {
 
   const onResend = () => {
     dispatch(sendSMS(teacherID))
-      .then(() => {
-        setIsCodeSent(true);
+      .then((response) => {
+        if (response.error) {
+          setError("Error while resending code");
+          setTimeout(() => setError(""), 2000);
+        } else {
+          setIsCodeSent(true);
+          setTimeout(() => setIsCodeSent(false), 2000);
+        }
       })
       .catch((error) => console.error("Error in sending SMS", error));
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.verificationContainer}>

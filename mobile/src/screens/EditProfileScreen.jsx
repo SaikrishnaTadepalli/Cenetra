@@ -482,7 +482,8 @@ const styles = StyleSheet.create({
   infoInputText: {
     fontSize: 16,
     fontFamily: "InterRegular",
-    width: "90%",
+    width: "70%",
+    flex: "wrap",
   },
   healthInfoContainer: {
     flexDirection: "row",

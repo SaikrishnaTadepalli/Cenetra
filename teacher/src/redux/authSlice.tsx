@@ -13,7 +13,7 @@ export const getTeacherID = createAsyncThunk(
         phoneNumber
     }
   }`;
-    console.log(query, envs);
+    //console.log(query, envs);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -27,7 +27,7 @@ export const getTeacherID = createAsyncThunk(
           console.error("Error while getting teacher ID");
           throw new Error("Invalid Access code");
         } else if (response.status === 400) {
-          console.log("Invalid teacher number");
+          console.error("Invalid teacher number");
           throw new Error("Invalid or wrong teacher number");
         }
       }
@@ -71,7 +71,7 @@ export const loginUser = createAsyncThunk("auth/login", async (teacherID) => {
         console.error("Error while logging in teacher");
         throw new Error("Network error");
       } else if (response.status === 400) {
-        console.log("Invalid access code");
+        console.error("Invalid access code");
         throw new Error("Invalid or wrong access code for teacher");
       }
     }
@@ -79,7 +79,7 @@ export const loginUser = createAsyncThunk("auth/login", async (teacherID) => {
 
     return data;
   } catch (error) {
-    console.log("Catch: Error while logging in teacher", error);
+    console.error("Catch: Error while logging in teacher", error);
   }
 });
 
@@ -136,7 +136,7 @@ export const verifyLogin = createAsyncThunk(
           console.error("Error while verifying code for teacher");
           throw new Error("Network error");
         } else if (response.status === 400) {
-          console.log("Invalid code");
+          console.error("Invalid code");
           throw new Error("Invalid or wrong verification code for teacher");
         }
       }
@@ -144,7 +144,7 @@ export const verifyLogin = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Catch: Invalid verification code on web", error);
+      console.error("Catch: Invalid verification code on web", error);
       return rejectWithValue(error.message);
     }
   }

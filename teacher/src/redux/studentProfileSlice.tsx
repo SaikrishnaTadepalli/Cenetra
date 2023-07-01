@@ -23,6 +23,7 @@ export const fetchProfile = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
+      //console.log(query);
       if (response.status !== 200) {
         if (response.status === 500) {
           throw new Error(
@@ -30,7 +31,7 @@ export const fetchProfile = createAsyncThunk(
           );
           //return "500";
         } else if (response.status === 400) {
-          console.log(
+          console.error(
             "Response status 400 while fetching student profile for teacher"
           );
           throw new Error(
@@ -38,12 +39,15 @@ export const fetchProfile = createAsyncThunk(
           );
         }
       }
+      //console.log(response);
       const data = await response.json();
-      //console.log(data.data.getLatestProfileInfo);
-      const details = JSON.parse(data.data.getLatestProfileInfo.details);
+      const details = data.data.getLatestProfileInfo.details;
+      const cleanedData = details.replace(/\\/g, "");
+      //console.log(data);
+
       const result = {
         lastUpdated: data.data.getLatestProfileInfo.createdAt,
-        studentInfo: details,
+        studentInfo: JSON.parse(cleanedData),
         id: data.data.getLatestProfileInfo.student._id,
       };
       return result;

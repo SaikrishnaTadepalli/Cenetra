@@ -40,6 +40,7 @@ const VerificationScreen = () => {
     loginLoading,
     adminInfo,
   } = useSelector((state) => state.auth);
+
   const adminID = localStorage.getItem("adminID");
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
@@ -75,9 +76,13 @@ const VerificationScreen = () => {
                 setTimeout(() => setError(""), 1000);
               }
             })
-            .catch((error) =>
-              setError(`Something went wrong try again, ${error}`)
-            );
+            .catch((error) => {
+              console.error(
+                "Catch: logging in admin verification screen",
+                error
+              );
+              setError("Something went wrong try again");
+            });
         }
       })
       .catch((error) =>
@@ -87,11 +92,18 @@ const VerificationScreen = () => {
 
   const onResend = () => {
     dispatch(sendSMS(adminID))
-      .then(() => {
-        setIsCodeSent(true);
+      .then((response) => {
+        if (response.error) {
+          setError("Error while resending code");
+          setTimeout(() => setError(""), 2000);
+        } else {
+          setIsCodeSent(true);
+          setTimeout(() => setIsCodeSent(false), 2000);
+        }
       })
       .catch((error) => console.error("Error in sending SMS", error));
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.verificationContainer}>

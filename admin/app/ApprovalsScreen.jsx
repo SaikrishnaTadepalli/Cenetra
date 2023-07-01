@@ -21,13 +21,12 @@ import {
 const ApprovalsScreen = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
-  const state = useSelector((state) => state);
-  const c = localStorage.getItem("classes");
-  const c2 = JSON.parse(c);
-  const classes = JSON.parse(c2);
-  const { fetchPendingProfileLoading, fetchProfileLoading } =
-    state.studentProfile;
-  const { isLoggedIn } = state.auth;
+  const {
+    fetchPendingProfileLoading,
+    fetchProfileLoading,
+    approvePendingProfileSuccessful,
+  } = useSelector((state) => state.studentProfile);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const [error, setError] = useState("");
   const [differencesObj, setDifferencesObj] = useState([]);
   const [dataDifferences, setDataDifferences] = useState([]);
@@ -58,11 +57,22 @@ const ApprovalsScreen = () => {
       for (let i = 0; i < 5; i++) {
         const info1 = student1.information[i];
         const info2 = student2.information[i];
+        var oldData = [];
+        var newData = [];
         // Compare the section array
-        const oldData = [];
-        const newData = [];
-        if (info1.section.length !== info2.section.length) {
-          //  console.log(info1, info2);
+        if (info1.section.length > info2.section.length) {
+          // console.log("that if condition", info1.sectionHeader);
+          for (let j = info2.section.length; j < info1.section.length; j++) {
+            oldData.push(info1.section[j]);
+          }
+          differences.push({
+            sectionHeader: info1.sectionHeader,
+            oldData,
+            newData: [],
+          });
+        }
+        if (info1.section.length < info2.section.length) {
+          //console.log("this if condition");
           for (let j = info1.section.length; j < info2.section.length; j++) {
             newData.push(info2.section[j]);
           }
@@ -72,10 +82,13 @@ const ApprovalsScreen = () => {
             newData,
           });
         }
+
         for (let k = 0; k < info1.section.length; k++) {
           const section1 = info1.section[k];
           const section2 = info2.section[k];
-          // console.log(section1);
+          oldData = [];
+          newData = [];
+          // console.log(info1.section[k]);
           if (
             info1.sectionHeader === "PRIMARY CONTACTS" ||
             info1.sectionHeader === "EMERGENCY CONTACTS"
@@ -111,10 +124,11 @@ const ApprovalsScreen = () => {
           if (info1.sectionHeader === "ALLERGIES") {
             //console.log(section1, section2);
             if (
-              section1.name !== section2.name ||
-              section1.severity !== section2.severity
+              section2 &&
+              (section1.name !== section2.name ||
+                section1.severity !== section2.severity)
             ) {
-              //console.log("Difference");
+              // console.log("Difference");
               oldData.push({
                 name: section1.name,
                 severity: section1.severity,
@@ -132,10 +146,11 @@ const ApprovalsScreen = () => {
           }
           if (info1.sectionHeader === "MEDICATIONS") {
             if (
-              section1.name !== section2.name ||
-              section1.dosage !== section2.dosage ||
-              section1.frequency !== section2.frequency ||
-              section1.length !== section2.length
+              section2 &&
+              (section1.name !== section2.name ||
+                section1.dosage !== section2.dosage ||
+                section1.frequency !== section2.frequency ||
+                section1.length !== section2.length)
             ) {
               oldData.push({
                 name: section1.name,
@@ -169,50 +184,51 @@ const ApprovalsScreen = () => {
   };
 
   const retrieveData = async () => {
-    // console.log(classes.classes[0].students[0]);
-    await dispatch(
-      fetchPendingProfile(classes.classes[0].students[0]._id)
-    ).then((response) => {
+    await dispatch(fetchPendingProfile("")).then((response) => {
       if (response.error) {
         setError("Something went wrong, please try again.");
       } else {
         //console.log(response);
-        const d = [];
         const data = response.payload.data.getAllMatchedPendingProfileInfos[0];
-        const newDetails = data[0].details.replace(/\\/g, "");
-        const oldDetails = data[1].details.replace(/\\/g, "");
-        const oldStudentData = JSON.parse(oldDetails);
-        const updatedStudentData = JSON.parse(newDetails);
-        // console.log(newDetails);
+        if (data) {
+          const newDetails = data[0].details.replace(/\\/g, "");
+          const oldDetails = data[1].details.replace(/\\/g, "");
+          const oldStudentData = JSON.parse(oldDetails);
+          const updatedStudentData = JSON.parse(newDetails);
+          const d = [];
+          // console.log(newDetails);
 
-        getInfo(
-          {
+          getInfo(
+            {
+              profileID: data[0]._id,
+              details: updatedStudentData,
+              lastUpdated: data[0].updatedAt,
+            },
+            { details: data[1] ? oldStudentData : null },
+            d
+          );
+          // console.log(typeof oldDetails);
+          const updatedData = {
             profileID: data[0]._id,
-            details: updatedStudentData,
+            differences: d,
+            studentName: oldStudentData.name,
             lastUpdated: data[0].updatedAt,
-          },
-          { details: data[1] ? oldStudentData : null },
-          d
-        );
-        //console.log(d);
-        // console.log(typeof oldDetails);
-        const updatedData = {
-          profileID: data[0]._id,
-          differences: d,
-          studentName: oldStudentData.name,
-          lastUpdated: data[0].updatedAt,
-        };
-        const updated = [...differencesObj];
-        updated.push(updatedData);
-        setDifferencesObj(updated);
-        //console.log(updatedData);
+          };
+          // console.log(updatedData.differences);
+          const updated = [...differencesObj];
+          updated.push(updatedData);
+          setDifferencesObj(updated);
+        } else {
+          setDataDifferences([]);
+          setDifferencesObj([]);
+        }
       }
     });
   };
 
   useEffect(() => {
     retrieveData();
-  }, []);
+  }, [approvePendingProfileSuccessful]);
 
   const getInfo = (updatedStudentData, oldStudentData, d) => {
     //console.log(updatedStudentData, oldStudentData);
@@ -265,7 +281,7 @@ const ApprovalsScreen = () => {
                 <Text style={styles.subject}>{item.studentName}</Text>
               </View>
               <Text style={styles.date}>
-                {moment(item.lastUpdated).format("DD MMMM YYYY, HH:mm a")}
+                {moment(item.lastUpdated).utc().format("DD MMMM YYYY, h:mm a")}
               </Text>
             </>
           ) : null}
@@ -273,12 +289,12 @@ const ApprovalsScreen = () => {
       </>
     );
   };
-  //onsole.log(differencesObj);
+  //console.log(differencesObj);
   return (
     <>
       <View style={styles.container}>
         <Text style={styles.headerText}>Approvals</Text>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", height: "100%" }}>
           <>
             {fetchPendingProfileLoading || fetchProfileLoading ? (
               <View
@@ -309,13 +325,17 @@ const ApprovalsScreen = () => {
               <View>
                 <Text>{error}</Text>
               </View>
-            ) : null}
+            ) : (
+              <Text>No changes to approve.</Text>
+            )}
             <View
               style={{
                 flex: 3,
                 width: "50%",
                 marginTop: "-2%",
+                marginLeft: differencesObj.length > 0 ? "-5%" : "10%",
                 flexDirection: "row",
+                height: "100%",
               }}
             >
               <View style={styles.verticalDivider} />
@@ -328,16 +348,11 @@ const ApprovalsScreen = () => {
               )}
               <View style={{ flexDirection: "column", width: "100%" }}>
                 {studentName ? (
-                  <View>
-                    <Text style={[styles.subHeaderText, { marginBottom: 20 }]}>
-                      Student Name: {studentName}
-                    </Text>
-                    <NewInfoScreen
-                      differences={dataDifferences}
-                      studentName={studentName}
-                      profileID={profileID}
-                    />
-                  </View>
+                  <NewInfoScreen
+                    differences={dataDifferences}
+                    studentName={studentName}
+                    profileID={profileID}
+                  />
                 ) : null}
               </View>
             </View>
@@ -355,6 +370,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "pink",
     // width: "100%",
     marginLeft: 20,
+    height: "100%",
     marginTop: 60,
   },
   headerText: {
@@ -431,7 +447,6 @@ const styles = StyleSheet.create({
     color: colors.darkGrey,
   },
   verticalDivider: {
-    height: "150%",
     borderLeftColor: "#D9D9D980",
     borderLeftWidth: 1,
     marginRight: 50,

@@ -33,11 +33,11 @@ const DailyLogsScreen = ({ navigation }) => {
     // console.log(studentID);
     dispatch(fetchLogs(studentID))
       .then((response) => {})
-      .catch((error) => console.log("Error in Daily logs screen", error));
+      .catch((error) => console.error("Error in Daily logs screen", error));
     dispatch(getAllMedia(studentID))
       .then((response) => {})
       .catch((error) =>
-        console.log("Error in Daily logs screen getting media", error)
+        console.error("Error in Daily logs screen getting media", error)
       );
   };
 

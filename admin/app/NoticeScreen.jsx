@@ -1,14 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { setIsNewNoticeAdded } from "../src/redux/noticeSlice";
 
-const NoticeScreen = ({ id }) => {
+const NoticeScreen = ({ noticeID, setNoticeID, setIsOldNoticeSelected }) => {
   const { notices } = useSelector((state) => state.notices);
+  const dispatch = useDispatch();
 
   const notice = notices
     .flatMap((innerArray) => innerArray)
-    .find((obj) => obj._id === id);
+    .find((obj) => obj._id === noticeID);
 
   const details = notice ? JSON.parse(notice.details) : "";
 
@@ -33,11 +36,33 @@ const NoticeScreen = ({ id }) => {
       </View>
     );
   };
+
+  const onPressEdit = () => {
+    dispatch(setIsNewNoticeAdded(true));
+    setNoticeID(noticeID);
+    setIsOldNoticeSelected(false);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.date}>
-        {notice ? moment(notice.createdAt).format("MMMM D, YYYY") : null}
-      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={styles.date}>
+          {notice
+            ? moment(notice.createdAt).utc().format("MMMM D, YYYY")
+            : null}
+        </Text>
+        <TouchableOpacity
+          onPress={onPressEdit}
+          style={styles.editButtonContainer}
+        >
+          <MaterialCommunityIcons
+            name="pencil-outline"
+            size={20}
+            color="#024552"
+          />
+          <Text style={styles.editButtonText}>Edit Notice</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.cardContainer}>
         <Text style={styles.subjectText}>{details.subject}</Text>
         <Text style={styles.detailsText}>{details.details}</Text>
@@ -49,7 +74,7 @@ const NoticeScreen = ({ id }) => {
         >
           {notice && renderFlag(notice.noticeType)}
           <Text style={styles.timeText}>
-            {notice && moment(notice.createdAt).format("H:mm a")}
+            {notice && moment(notice.createdAt).utc().format("h:mm a")}
           </Text>
         </View>
       </View>
@@ -108,5 +133,21 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginRight: 8,
+  },
+  editButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingHorizontal: 5,
+    backgroundColor: "#99B8BE99",
+    width: 120,
+    height: 40,
+    borderRadius: 5,
+  },
+  editButtonText: {
+    color: "#024552",
+    fontSize: 14,
+    fontFamily: "InterMedium",
+    textAlign: "right",
   },
 });

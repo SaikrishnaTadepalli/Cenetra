@@ -25,13 +25,15 @@ import { useFocusEffect } from "@react-navigation/native";
 const NoticeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const { loading, error } = useSelector((state) => state.notices);
+  const { loading, error, markAsReadSuccessful } = useSelector(
+    (state) => state.notices
+  );
   const [notices, setNotices] = useState([]);
   const [isExpanded, setIsExpanded] = useState({});
   const types = ["Urgent", "Casual", "Serious"];
 
   const formatDate = (date) => {
-    return moment(date).format("MMMM D, YYYY");
+    return moment.utc(date).format("MMMM D, YYYY");
   };
   // console.log("-----", envs);
   const retrieveData = async () => {
@@ -45,6 +47,7 @@ const NoticeScreen = ({ navigation }) => {
           const curDate = formatDate(notice[0].createdAt);
           const data = [];
           notice.forEach((item, idx) => {
+            //console.log("item", item);
             data.push({
               _id: item._id,
               createdAt: item.createdAt,
@@ -69,7 +72,7 @@ const NoticeScreen = ({ navigation }) => {
   //     return () => {
   //       // Clean up any resources if needed
   //     };
-  //   }, [])
+  //   }, [markAsReadSuccessful])
   // );
 
   useEffect(() => {
@@ -90,11 +93,14 @@ const NoticeScreen = ({ navigation }) => {
   };
 
   const renderSectionHeader = ({ section: { date } }) => {
+    // console.log(date);
     const style = () => {
       return !isExpanded[date]
         ? { borderBottomColor: "black", borderBottomWidth: 1, marginBottom: 20 }
         : null;
     };
+    //console.log(isExpanded);
+    // console.log(notices);
 
     return (
       <TouchableOpacity
@@ -104,7 +110,7 @@ const NoticeScreen = ({ navigation }) => {
         <Text style={styles.sectionHeaderText}>{date}</Text>
         <Ionicons
           name={
-            isExpanded[date]
+            isExpanded[formatDate(date)]
               ? "chevron-up-circle-outline"
               : "chevron-down-circle-outline"
           }

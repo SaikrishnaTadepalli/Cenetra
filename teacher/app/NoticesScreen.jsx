@@ -22,13 +22,17 @@ import EmptyState from "../assets/icons/emptyState.svg";
 const NoticesScreen = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
-  const state = useSelector((state) => state);
-  const { fetchNoticesPending, isNewNoticeAdded, createNoticesSuccessful } =
-    state.notices;
-  const { isLoggedIn } = state.auth;
-  const curDate = moment().format("DD MMMM YYYY");
+  const state = useSelector((state) => state.notices);
+  const {
+    fetchNoticesPending,
+    isNewNoticeAdded,
+    createNoticesSuccessful,
+    editNoticesSuccessful,
+  } = state;
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const curDate = moment().utc().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
-  const [isOldNoticeSelected, setisOldNoticeSelected] = useState(false);
+  const [isOldNoticeSelected, setIsOldNoticeSelected] = useState(false);
   const [noticeID, setNoticeID] = useState("");
   const isDisabled = false;
   const [notices, setNotices] = useState([]);
@@ -44,17 +48,17 @@ const NoticesScreen = () => {
 
   const handleClick = () => {
     setDate(curDate);
-    setisOldNoticeSelected(false);
+    setIsOldNoticeSelected(false);
     dispatch(setIsNewNoticeAdded(true));
   };
 
   const onClickNotice = (id) => {
-    setisOldNoticeSelected(true);
+    setIsOldNoticeSelected(true);
     setNoticeID(id);
   };
 
   const formatDate = (date) => {
-    return moment(date).format("DD MMMM YYYY");
+    return moment(date).utc().format("DD MMMM YYYY");
   };
 
   const retrieveData = () => {
@@ -82,43 +86,13 @@ const NoticesScreen = () => {
           });
         });
         setNotices(newNotices);
-        // var curDate = formatDate(mainData[0].createdAt);
-        // var data = [];
-        // const newNotices = [];
-        // mainData.forEach((notice, idx) => {
-        //   // console.log(formatDate(notice.createdAt), curDate);
-        //   if (formatDate(notice.createdAt) === curDate) {
-        //     data.push({
-        //       _id: notice._id,
-        //       createdAt: notice.createdAt,
-        //       updatedAt: notice.updatedAt,
-        //       details: notice.details,
-        //       type: types[idx % 3],
-        //     });
-        //   } else {
-        //     console.log("add to new notice");
-        //     newNotices.push({
-        //       date: curDate,
-        //       data: data,
-        //       type: types[idx % 3],
-        //     });
-        //     data = [];
-        //     curDate = formatDate(notice.createdAt);
-        //     data.push({
-        //       _id: notice._id,
-        //       createdAt: notice.createdAt,
-        //       updatedAt: notice.updatedAt,
-        //       details: notice.details,
-        //       type: types[idx % 3],
-        //     });
       }
     });
-    // setNotices([]);
   };
 
   useEffect(() => {
     retrieveData();
-  }, [createNoticesSuccessful]);
+  }, [createNoticesSuccessful, editNoticesSuccessful]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -159,7 +133,7 @@ const NoticesScreen = () => {
                   </Text>
                 </View>
                 <Text style={styles.date}>
-                  {moment(item.createdAt).format("DD MMMM YYYY, HH:mm")}
+                  {moment(item.createdAt).utc().format("DD MMMM YYYY, h:mm a")}
                 </Text>
               </>
             ) : null}
@@ -228,31 +202,6 @@ const NoticesScreen = () => {
                   renderItem={renderItem}
                   renderSectionHeader={renderSectionHeader}
                 />
-                {/* <View
-                  style={{
-                    flex: 3,
-                    marginLeft: "-15%",
-                    marginTop: "-5%",
-                    flexDirection: "row",
-                  }}
-                >
-                  <View style={styles.verticalDivider} />
-                  <View style={{ flexDirection: "column", width: "100%" }}>
-                    {!isNewNoticeAdded || isOldNoticeSelected ? (
-                      <TouchableOpacity
-                        style={
-                          isDisabled
-                            ? [styles.buttonContainer, styles.disabled]
-                            : styles.buttonContainer
-                        }
-                        onPress={handleClick}
-                        disabled={isDisabled}
-                      >
-                        <Text style={styles.buttonText}>Create notice</Text>
-                      </TouchableOpacity>
-                    ) : null}
-                  </View>
-                </View> */}
               </>
             ) : error !== "" ? (
               <View>
@@ -289,9 +238,17 @@ const NoticesScreen = () => {
                   </TouchableOpacity>
                 ) : null}
                 {isOldNoticeSelected ? (
-                  <NoticeScreen id={noticeID} />
+                  <NoticeScreen
+                    noticeID={noticeID}
+                    setNoticeID={setNoticeID}
+                    setIsOldNoticeSelected={setIsOldNoticeSelected}
+                  />
                 ) : isNewNoticeAdded ? (
-                  <CreateNoticeScreen date={date} />
+                  <CreateNoticeScreen
+                    date={date}
+                    noticeID={noticeID}
+                    setNoticeID={setNoticeID}
+                  />
                 ) : (
                   notices &&
                   notices.length > 0 && (

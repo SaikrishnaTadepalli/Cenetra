@@ -6,23 +6,11 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import Colors from "../constants/Colors";
+import colors from "../constants/Colors";
 
 const ProfileCard = ({ sectionHeader, data, title }) => {
-  const renderButton = (infoType, info) => {
-    return (
-      <View style={styles.infoLineContainer}>
-        {infoType !== "" ? (
-          <Text style={styles.infoTypeText}>{infoType}</Text>
-        ) : null}
-        <TouchableOpacity>
-          <Text style={styles.infoInputText}>{info} </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   const renderText = (infoType, info) => {
+    info.trim();
     return (
       <View style={styles.infoLineContainer}>
         {infoType !== "" ? (
@@ -43,9 +31,9 @@ const ProfileCard = ({ sectionHeader, data, title }) => {
           <Text style={styles.headerText}>{item.title}</Text>
           {renderText("Name:", item.name)}
           {renderText("Relationship:", item.relationship)}
-          {renderButton("Phone Number:", item.phoneNumber)}
-          {renderButton("Email Address:", item.email)}
-          {renderButton("Home Address:", item.address)}
+          {renderText("Phone Number:", item.phoneNumber)}
+          {renderText("Email:", item.email)}
+          {renderText("Address:", item.address)}
           {data.indexOf(item) !== data.length - 1 ? (
             <View style={styles.divider} />
           ) : null}
@@ -96,10 +84,10 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "white",
     paddingVertical: 16,
-    borderColor: Colors.lightGrey,
+    borderColor: colors.lightGrey,
     borderWidth: 1,
     borderRadius: 10,
-    shadowColor: Colors.lightGrey,
+    shadowColor: colors.lightGrey,
     shadowOffset: { height: 5 },
     shadowRadius: 5,
     shadowOpacity: 0.2,
@@ -109,7 +97,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   sectionHeaderText: {
-    color: Colors.navyBlue,
+    color: colors.navyBlue,
     fontFamily: "InterSemiBold",
     fontSize: 16,
     marginBottom: 10,
@@ -133,13 +121,14 @@ const styles = StyleSheet.create({
   infoInputText: {
     fontSize: 16,
     fontFamily: "InterRegular",
-    width: "100%",
+    width: "70%",
+    flex: "wrap",
   },
   healthInfoContainer: {
     flexDirection: "row",
   },
   divider: {
-    borderColor: Colors.lightGrey,
+    borderColor: colors.lightGrey,
     width: "95%",
     marginRight: 10,
     marginVertical: 10,

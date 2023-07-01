@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import envs from "../../config/env";
 
-export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
-  const query = `
+export const fetchLogs = createAsyncThunk(
+  "logs/getLogs",
+  async (studentID, { rejectWithValue }) => {
+    const query = `
   query {
     logs(studentId: "${studentID}") {
         _id
@@ -13,29 +15,31 @@ export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
     }
 }
 `;
-  try {
-    const response = await fetch(envs, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query }),
-    });
-    if (response.status !== 200) {
-      if (response.status === 500) {
-        console.error("Error while fetching logs for teacher");
-        throw new Error("Network error");
-      } else if (response.status === 400) {
-        console.log("Invalid teacher details");
-        throw new Error("Invalid or wrong teacher Info");
+    try {
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          console.error("Error while fetching logs for teacher");
+          throw new Error("Network error");
+        } else if (response.status === 400) {
+          console.error("Invalid teacher details");
+          throw new Error("Invalid or wrong teacher Info");
+        }
       }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Catch: while fetching logs for teacher", error);
+      rejectWithValue(error);
     }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.log("Catch: while fetching logs for teacher", error);
   }
-});
+);
 
 export const updateLogs = createAsyncThunk(
   "logs/updateLogs",
@@ -69,7 +73,7 @@ export const updateLogs = createAsyncThunk(
           console.error("Error while creating logs");
           throw new Error("Network error");
         } else if (response.status === 400) {
-          console.log("Invalid details");
+          console.error("Invalid details");
           throw new Error(
             "Invalid or wrong details for teacher while creating logs"
           );
@@ -78,14 +82,14 @@ export const updateLogs = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Catch: Error while creating logs by teacher", error);
+      console.error("Catch: Error while creating logs by teacher", error);
     }
   }
 );
 
 export const editLogs = createAsyncThunk(
   "logs/editLogs",
-  async ({ logID, details, rating }) => {
+  async ({ logID, details, rating, adminName }, { rejectWithValue }) => {
     // console.log(details);
 
     const stringifiedDetails = JSON.stringify(details)
@@ -93,14 +97,14 @@ export const editLogs = createAsyncThunk(
       .replace(/"/g, '\\"'); // Escape double quotes
 
     const query = `mutation {
-    editLog(logId: "${logID}" details: "${stringifiedDetails}", rating: ${rating}) {
+    editLog(logId: "${logID}" details: "${stringifiedDetails}", rating: ${rating}, editorName: "${adminName}") {
         _id
         details
         createdAt
         rating
     }
   }`;
-    // console.log(query);
+    console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -114,7 +118,7 @@ export const editLogs = createAsyncThunk(
           console.error("Error while editing logs");
           throw new Error("Network error");
         } else if (response.status === 400) {
-          console.log("Invalid details");
+          console.error("Invalid details");
           throw new Error(
             "Invalid or wrong details for teacher while editing logs"
           );
@@ -123,7 +127,8 @@ export const editLogs = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Catch: Error while editing logs by teacher", error);
+      console.error("Catch: Error while editing logs by teacher", error);
+      rejectWithValue(error);
     }
   }
 );
@@ -220,6 +225,6 @@ export const logSlice = createSlice({
 
 export const { setIsNewLogAdded } = logSlice.actions;
 
-export const getIsNewLogAdded = (state) => state.log.isNewLogAdded;
+export const getIsNewLogAdded = (state) => state.isNewLogAdded;
 
 export default logSlice.reducer;

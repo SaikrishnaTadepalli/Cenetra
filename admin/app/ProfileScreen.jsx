@@ -36,7 +36,7 @@ const ProfileScreen = ({ curStudentID }) => {
   const retrieveData = async () => {
     dispatch(fetchProfile(curStudentID))
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.error) {
           setError(response.error);
         } else {
@@ -67,13 +67,12 @@ const ProfileScreen = ({ curStudentID }) => {
         });
       });
       setData(d);
-      // console.log(data);
       setAllergies(studentInfo.information[2].section);
       setMedications(studentInfo.information[3].section);
-      setBloodGroup(studentInfo.information[4].section[0].name);
+      setBloodGroup(studentInfo.information[4].section[0]);
     }
   }, []);
-  // console.log(studentInfo);
+  console.log(studentInfo);
   return (
     <>
       {curStudentID === "" && !fetchProfileLoading && (
@@ -138,15 +137,16 @@ const ProfileScreen = ({ curStudentID }) => {
               {studentInfo.information
                 ? studentInfo.information.map(
                     (item, idx) =>
-                      item.sectionHeader === "PRIMARY CONTACTS" ||
-                      (item.sectionHeader === "EMERGENCY CONTACTS" && (
+                      (item.sectionHeader === "PRIMARY CONTACTS" ||
+                        item.sectionHeader === "EMERGENCY CONTACTS") && (
                         <ProfileCard
                           sectionHeader={item.sectionHeader}
                           data={item.section}
                           key={idx}
                           title={item.title}
+                          isApproval={false}
                         />
-                      ))
+                      )
                   )
                 : null}
               <View style={{ flexDirection: "row" }}>

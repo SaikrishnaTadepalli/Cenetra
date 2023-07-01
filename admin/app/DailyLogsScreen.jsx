@@ -21,7 +21,6 @@ const DailyLogsScreen = () => {
   const c = localStorage.getItem("classes");
   const c2 = JSON.parse(c);
   const classes = JSON.parse(c2).classes;
-  const { isAdmin } = useSelector((state) => state.auth);
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const dispatch = useDispatch();
   const router = useRouter();
@@ -31,7 +30,7 @@ const DailyLogsScreen = () => {
   const [isOldLogSelected, setIsOldLogSelected] = useState(false);
   const [isStudentNameSelected, setIsStudentNameSelected] = useState(false);
   const [logID, setLogID] = useState("");
-  const curDate = moment().format("MMMM D, YYYY");
+  const curDate = moment().utc().format("MMMM D, YYYY");
 
   const classInfo = classes.map((item) => ({
     key: item._id,
@@ -117,10 +116,8 @@ const DailyLogsScreen = () => {
         >
           {selectedClasses &&
             selectedClasses.map((cls, idx) => (
-              <>
-                <Text key={`class-list=${idx}`} style={styles.className}>
-                  {cls.value}
-                </Text>
+              <View key={`class-list=${idx}`}>
+                <Text style={styles.className}>{cls.value}</Text>
                 {cls.students.map((student, idx) => (
                   <TouchableOpacity
                     style={[
@@ -153,7 +150,7 @@ const DailyLogsScreen = () => {
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </>
+              </View>
             ))}
         </ScrollView>
         <View

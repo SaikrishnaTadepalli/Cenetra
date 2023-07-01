@@ -13,14 +13,14 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
   // console.log("dailylogscard", date);
   const pictures = [];
   const stars = 3;
-  const state = useSelector((state) => state);
+  const state = useSelector((state) => state.dailyLogs);
 
   const handleClick = () => {
     const curLog = selectLogByID(state, logID);
     navigation.navigate("Log", {
       data: data,
       pictures: pictures,
-      title: moment(curLog.createdAt).format("MMMM D, YYYY"),
+      title: moment(curLog.createdAt).utc().format("MMMM D, YYYY"),
       date: curLog.createdAt,
     });
   };
@@ -42,7 +42,7 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
       <View style={styles.headerRow}>
         <Text style={styles.titleText}>
-          {moment(date).format("MMMM D, YYYY")}
+          {moment(date).utc().format("MMMM D, YYYY")}
         </Text>
         <View style={{ alignItems: "center", flexDirection: "row" }}>
           {renderIcons(rating, "star")}

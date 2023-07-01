@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./app/LoginScreen";
 import Colors from "./src/constants/Colors";
-import ClassListScreen from "./app/DailyLogsScreen";
+import DailyLogsScreen from "./app/DailyLogsScreen";
 import { Provider, useSelector } from "react-redux";
 import { store } from "./src/redux/store";
 
@@ -13,7 +13,7 @@ const App = () => {
       <View style={styles.header}>
         <Text style={styles.text}>Cenetra</Text>
       </View>
-      {isLoggedIn ? <LoginScreen /> : <ClassListScreen />}
+      {isLoggedIn ? <LoginScreen /> : <DailyLogsScreen />}
     </View>
   );
 };
