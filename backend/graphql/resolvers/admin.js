@@ -1,4 +1,5 @@
 const Admin = require("../../models/admin");
+const DEFAULT_PROFILE_PIC = require("../../utils/s3");
 
 const getNewNum = (numDigits) => {
   const min = 10 ** (numDigits - 1);
@@ -91,6 +92,7 @@ module.exports = {
         lastName: args.adminInput.lastName,
         permissionLevel: args.adminInput.permissionLevel,
         phoneNumber: args.adminInput.phoneNumber,
+        profilePic: DEFAULT_PROFILE_PIC,
       });
 
       const adminSaveRes = await newAdmin.save();
@@ -98,6 +100,51 @@ module.exports = {
       return {
         ...adminSaveRes._doc,
         _id: adminSaveRes.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  changeAdminProfilePic: async (args) => {
+    try {
+      // Make sure to have uploaded the Image to s3 first
+      const fetchedAdmin = await Admin.findById(args.adminId);
+
+      if (!fetchedAdmin) {
+        throw error("Admin does not exist.");
+      }
+
+      fetchedAdmin.profilePic = args.fileName;
+
+      const result = await fetchedAdmin.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  removeAdminProfilePic: async (args) => {
+    try {
+      const fetchedAdmin = await Admin.findById(args.adminId);
+
+      if (!fetchedAdmin) {
+        throw error("Admin does not exist.");
+      }
+
+      // await deleteS3Object(fetchedAdmin.profilePic);
+
+      fetchedAdmin.profilePic = DEFAULT_PROFILE_PIC;
+
+      const result = await fetchedAdmin.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
       };
     } catch (err) {
       throw err;

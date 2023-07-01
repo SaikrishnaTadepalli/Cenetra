@@ -1,4 +1,5 @@
 const Teacher = require("../../models/teacher");
+const DEFAULT_PROFILE_PIC = require("../../utils/s3");
 
 const getNewNum = (numDigits) => {
   const min = 10 ** (numDigits - 1);
@@ -91,6 +92,7 @@ module.exports = {
         lastName: args.teacherInput.lastName,
         email: args.teacherInput.email,
         phoneNumber: args.teacherInput.phoneNumber,
+        profilePic: DEFAULT_PROFILE_PIC,
       });
 
       const teacherSaveRes = await newTeacher.save();
@@ -98,6 +100,51 @@ module.exports = {
       return {
         ...teacherSaveRes._doc,
         _id: teacherSaveRes.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  changeTeacherProfilePic: async (args) => {
+    try {
+      // Make sure to have uploaded the Image to s3 first
+      const fetchedTeacher = await Teacher.findById(args.teacherId);
+
+      if (!fetchedTeacher) {
+        throw error("Teacher does not exist.");
+      }
+
+      fetchedTeacher.profilePic = args.fileName;
+
+      const result = await fetchedTeacher.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  removeTeacherProfilePic: async (args) => {
+    try {
+      const fetchedTeacher = await Teacher.findById(args.teacherId);
+
+      if (!fetchedTeacher) {
+        throw error("Teacher does not exist.");
+      }
+
+      // await deleteS3Object(fetchedTeacher.profilePic);
+
+      fetchedTeacher.profilePic = DEFAULT_PROFILE_PIC;
+
+      const result = await fetchedTeacher.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
       };
     } catch (err) {
       throw err;

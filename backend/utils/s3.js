@@ -41,7 +41,26 @@ const generateUploadURL = async () => {
   };
 };
 
+const deleteS3Object = async (fileName) => {
+  const params = {
+    Bucket: bucketName,
+    Key: fileName,
+  };
+
+  s3.deleteObject(params, (err, data) => {
+    if (err) {
+      console.log("ERROR: ", err);
+    } else {
+      console.log(data);
+    }
+  });
+};
+
+const DEFAULT_PROFILE_PIC = "defaultProfilePic.png";
+
 module.exports = {
   generateUploadURL,
   getViewURL,
+  deleteS3Object,
+  DEFAULT_PROFILE_PIC,
 };

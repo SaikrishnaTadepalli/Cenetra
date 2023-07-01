@@ -23,6 +23,10 @@ const adminSchema = new Schema({
     type: Number,
     required: true,
   },
+  profilePic: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Admin", adminSchema);

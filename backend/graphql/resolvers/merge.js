@@ -135,7 +135,12 @@ const admin = async (adminId) => {
 };
 
 const students = async (stuIds) => {
-  return stuIds.map((stuId) => student(stuId));
+  try {
+    mappedStudents = stuIds.map((stuId) => student(stuId));
+    return mappedStudents;
+  } catch (err) {
+    throw err;
+  }
 };
 
 exports.transformClass = transformClass;

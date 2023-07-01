@@ -1,24 +1,11 @@
 const Student = require("../../models/student");
 const Teacher = require("../../models/teacher");
+const Admin = require("../../models/admin");
 const Notice = require("../../models/notice");
 
 const { sendSMS } = require("../../utils/sms");
 const { transformNotice } = require("./merge");
-
-const groupObjectsByDate = (objects) => {
-  return objects.reduce((result, obj) => {
-    const createdAtDate = obj.createdAt.split("T")[0];
-    const lastGroup = result[result.length - 1];
-
-    if (lastGroup?.[0].createdAt.startsWith(createdAtDate)) {
-      lastGroup.push(obj);
-    } else {
-      result.push([obj]);
-    }
-
-    return result;
-  }, []);
-};
+const { groupByDate } = require("../../utils/date");
 
 module.exports = {
   // Queries
@@ -38,7 +25,7 @@ module.exports = {
         transformNotice(notice, args.studentId)
       );
 
-      return groupObjectsByDate(formattedNotices);
+      return groupByDate(formattedNotices);
     } catch (err) {
       throw err;
     }
@@ -60,13 +47,13 @@ module.exports = {
         transformNotice(notice, args.teacherId)
       );
 
-      return groupObjectsByDate(formattedNotices);
+      return groupByDate(formattedNotices);
     } catch (err) {
       throw err;
     }
   },
 
-  noticesByAdmin: async (args) => {
+  noticesForAdmin: async (args) => {
     try {
       const admin = await Admin.findById(args.adminId);
 
@@ -88,7 +75,7 @@ module.exports = {
             transformNotice(notice, teacherId)
           );
 
-          return groupObjectsByDate(formattedNotices);
+          return groupByDate(formattedNotices);
         })
       );
 

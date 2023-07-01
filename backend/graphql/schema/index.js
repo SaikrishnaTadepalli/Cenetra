@@ -9,6 +9,7 @@ type Teacher {
     lastName: String!
     email: String!
     phoneNumber: String!
+    profilePic: String!
 }
 
 type Student {
@@ -17,6 +18,7 @@ type Student {
     firstName: String!
     lastName: String!
     primaryContactNumber: String!
+    profilePic: String!
 }
 
 type Admin {
@@ -26,6 +28,7 @@ type Admin {
     lastName: String!
     phoneNumber: String!
     permissionLevel: Int!
+    profilePic: String!
 }
 
 type Class {
@@ -34,6 +37,7 @@ type Class {
     teacher: Teacher!
     students: [Student!]!
     details: String
+    className: String!
 }
 
 type Log {
@@ -73,6 +77,11 @@ type ProfileInfo {
     createdAt: String!
     updatedAt: String!
     approverName: String
+}
+
+type LogGroup {
+    segment: String!
+    data: [Log!]!
 }
 
 union User = Student | Teacher | Admin
@@ -123,7 +132,7 @@ type RootQuery {
     classById(classId: ID!): Class!
     classByTeacherId(teacherId: ID!): Class!
 
-    logs(studentId: ID!): [Log!]!
+    logs(studentId: ID!): [LogGroup!]!
     logByDate(studentId: ID!, date: String!): [Log!]!
 
     noticesForStudent(studentId: ID!): [[Notice!]!]!
@@ -146,15 +155,24 @@ type RootQuery {
 }
 
 type RootMutation {
+    test(inp: String!): String!
+
     createTeacher(teacherInput: TeacherInput!): Teacher!
+    changeTeacherProfilePic(teacherId: ID!, fileName: String!): Teacher!
+    removeTeacherProfilePic(teacherId: ID!): Teacher!
 
     createStudent(studentInput: StudentInput!): Student!
+    changeStudentProfilePic(studentId: ID!, fileName: String!): Student!
+    removeStudentProfilePic(studentId: ID!): Student!
 
     createAdmin(adminInput: AdminInput!): Admin!
+    changeAdminProfilePic(adminId: ID!, fileName: String!): Admin!
+    removeAdminProfilePic(adminId: ID!): Admin!
 
     createClass(teacherId: ID!, details: String, className: String!): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
     addStudentsToClass(classId: ID!, studentIds: [ID!]!): Class!
+    
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
     editLog(logId: ID!, details: String!, rating: Int!, editorName: String!): Log!
 
