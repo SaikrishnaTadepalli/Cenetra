@@ -23,6 +23,10 @@ const teacherSchema = new Schema({
     type: String,
     required: true,
   },
+  profilePic: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Teacher", teacherSchema);

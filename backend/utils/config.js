@@ -18,6 +18,10 @@ const SNS_ACCESS_KEY_ID = process.env.SNS_ACCESS_KEY_ID;
 const SNS_SECRET_ACCESS_KEY = process.env.SNS_SECRET_ACCESS_KEY;
 const SNS_REGION = process.env.SNS_REGION;
 
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_NUMBER = process.env.TWILIO_NUMBER;
+
 module.exports = {
   MONGODB_URI,
   PORT,
@@ -29,4 +33,7 @@ module.exports = {
   SNS_ACCESS_KEY_ID,
   SNS_SECRET_ACCESS_KEY,
   SNS_REGION,
+  TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN,
+  TWILIO_NUMBER,
 };

@@ -4,6 +4,7 @@ const Log = require("../../models/log");
 
 const { sendSMS } = require("../../utils/sms");
 const { transformLog } = require("./merge");
+const { segmentDates } = require("../../utils/date");
 
 module.exports = {
   // Queries
@@ -22,7 +23,7 @@ module.exports = {
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
 
-      return sortedLogs;
+      return segmentDates(sortedLogs);
     } catch (err) {
       throw err;
     }

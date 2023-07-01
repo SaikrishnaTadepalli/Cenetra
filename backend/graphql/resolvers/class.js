@@ -102,12 +102,12 @@ module.exports = {
 
   addStudentsToClass: async (args) => {
     try {
-      const fetchedClass = await Class.findOne({ _id: args.classId });
+      const fetchedClass = await Class.findById(args.classId);
 
       if (!fetchedClass) {
         throw new Error("Class does not exist");
       }
-
+      console.log("1");
       for (let i = 0; i < args.studentIds.length; i++) {
         const fetchedStudent = await Student.findById(args.studentIds[i]);
 
@@ -115,13 +115,16 @@ module.exports = {
           throw new Error(`Student does not exist: ${stuId}.`);
         }
       }
-
+      console.log("2");
       args.studentIds.map((studentId) => fetchedClass.students.push(studentId));
-
+      console.log("3");
       const classUpdateRes = await fetchedClass.save();
-
-      return transformClass(classUpdateRes);
+      console.log("4");
+      const transformedClass = transformClass(classUpdateRes);
+      console.log("5");
+      return transformedClass;
     } catch (err) {
+      console.log("ERR: ", err);
       throw err;
     }
   },
