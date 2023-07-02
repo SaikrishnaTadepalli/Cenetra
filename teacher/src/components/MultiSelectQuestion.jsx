@@ -38,15 +38,17 @@ const MultiSelectQuestion = ({
       <Provider theme={theme}>
         <Text style={styles.questionText}>{question}</Text>
         {!disabled && (
-          <View style={styles.checkBoxContainer}>
+          <TouchableOpacity
+            style={styles.checkBoxContainer}
+            onPress={onSelectAll}
+          >
             <Checkbox
               status={
                 checkedItems.length === answers.length ? "checked" : "unchecked"
               }
-              onPress={onSelectAll}
               color="#6750A4"
             />
-            <Text>
+            <Text style={styles.answerText}>
               {checkedItems.length === answers.length
                 ? "Deselect All"
                 : "Select All"}
@@ -60,24 +62,27 @@ const MultiSelectQuestion = ({
                 },
               ]}
             />
-          </View>
+          </TouchableOpacity>
         )}
         {answers.map((input, idx) => (
-          <View style={styles.checkBoxContainer} key={`multi-select-${idx}`}>
+          <TouchableOpacity
+            style={styles.checkBoxContainer}
+            key={`multi-select-${idx}`}
+            onPress={() => {
+              setCheckedItems(input);
+            }}
+          >
             {!disabled && (
               <Checkbox
                 status={
                   checkedItems.indexOf(input) !== -1 ? "checked" : "unchecked"
                 }
-                onPress={() => {
-                  setCheckedItems(input);
-                }}
                 disabled={disabled}
                 color="#6750A4"
               />
             )}
             <Text style={styles.answerText}>{input}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </Provider>
     </>
@@ -93,10 +98,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   answerText: {
-    marginTop: 10,
     fontSize: 15,
     fontFamily: "InterRegular",
-    marginLeft: 20,
+    marginLeft: 10,
   },
   checkBoxContainer: {
     marginLeft: 20,

@@ -185,7 +185,7 @@ const CreateClassScreen = () => {
       if (response.error) {
         setError("Error while fetching teachers, please try again.");
       } else {
-        console.log("fetch");
+        //console.log("fetch");
         const teacherInfo = response.payload.data.teachers;
         const newTeachers = teacherInfo.map((teacher) => ({
           key: `"${teacher._id}"`,
@@ -198,7 +198,7 @@ const CreateClassScreen = () => {
       if (response.error) {
         setError("Error while fetching students, please try again.");
       } else {
-        console.log("fetch 2");
+        //console.log("fetch 2");
         const studentInfo = response.payload.data.students;
         const newStudents = studentInfo.map((student) => ({
           key: `"${student._id}"`,

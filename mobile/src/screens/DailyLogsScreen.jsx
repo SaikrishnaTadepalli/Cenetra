@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
+  SectionList,
+  FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -20,6 +22,8 @@ import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllMedia } from "../redux/mediaSlice";
 import { BACKEND_URI } from "../../utils/config";
+import moment from "moment-timezone";
+import { Ionicons } from "@expo/vector-icons";
 
 const DailyLogsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -27,6 +31,8 @@ const DailyLogsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { logs, loading, error } = useSelector((state) => state.dailyLogs);
   const { allPictures } = useSelector((state) => state.media);
+  const [isExpanded, setIsExpanded] = useState([]);
+  const curMonth = moment().utc().format("MMMM YYYY");
 
   const retrieveData = async () => {
     const studentID = await AsyncStorage.getItem("studentID");
@@ -54,6 +60,71 @@ const DailyLogsScreen = ({ navigation }) => {
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
 
+  const handleButtonPress = (buttonId) => {
+    setIsExpanded((prevState) => ({
+      ...prevState,
+      [buttonId]: !prevState[buttonId],
+    }));
+  };
+
+  const renderSectionHeader = ({ section: { segment } }) => {
+    const style = () => {
+      return !isExpanded[segment]
+        ? { borderBottomColor: "black", borderBottomWidth: 1, marginBottom: 20 }
+        : null;
+    };
+    return (
+      <TouchableOpacity
+        style={[styles.sectionHeader, style()]}
+        onPress={() => handleButtonPress(segment)}
+      >
+        <Text style={styles.sectionHeaderText}>{segment}</Text>
+        <Ionicons
+          name={
+            isExpanded[segment]
+              ? "chevron-up-circle-outline"
+              : "chevron-down-circle-outline"
+          }
+          size={20}
+          color="black"
+        />
+      </TouchableOpacity>
+    );
+  };
+  const renderItem = ({ item }) => {
+    const itemDate = moment(item.createdAt).utc().format("MMMM YYYY");
+    const date = itemDate === curMonth ? "This Month" : itemDate;
+    return (
+      <>
+        {isExpanded[date] ? (
+          <TouchableOpacity
+            style={styles.cardContainer}
+            onPress={() => onClickLog(item._id)}
+          >
+            {item ? (
+              <View style={styles.logsContainer}>
+                <DailyLogsCard
+                  navigation={navigation}
+                  date={item.createdAt}
+                  data={item.details}
+                  logID={item._id}
+                  rating={item.rating}
+                />
+              </View>
+            ) : null}
+          </TouchableOpacity>
+        ) : null}
+      </>
+    );
+  };
+
+  // Function to render each picture item
+  const renderPictureItem = ({ item }) => (
+    <View style={styles.imageContainer}>
+      <Picture navigation={navigation} uri={item} />
+    </View>
+  );
+
   return (
     <>
       {error ? (
@@ -75,46 +146,44 @@ const DailyLogsScreen = ({ navigation }) => {
         />
       ) : (
         !error && (
-          <ScrollView
+          <SectionList
+            sections={logs}
             style={styles.mainContainer}
-            nestedScrollEnabled={true}
+            stickySectionHeadersEnabled={false}
+            keyExtractor={(log) => log._id}
+            ListFooterComponent={<View />}
+            ListFooterComponentStyle={{ height: 20 }}
+            contentContainerStyle={styles.listView}
+            renderItem={renderItem}
+            renderSectionHeader={renderSectionHeader}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
-          >
-            <Text style={styles.titleText}>Daily Logs</Text>
-            {allPictures.length > 0 ? (
-              <TouchableOpacity
-                style={styles.buttonText}
-                onPress={() =>
-                  navigation.navigate("Gallery", { pictures: allPictures })
-                }
-              >
-                <Text style={styles.buttonText}>See All</Text>
-              </TouchableOpacity>
-            ) : null}
-            <ScrollView horizontal={true} style={styles.imagesContainer}>
-              {allPictures.map((picture, idx) =>
-                idx < 10 ? (
-                  <View key={`picture-${idx}`} style={styles.imageContainer}>
-                    <Picture navigation={navigation} uri={picture} />
-                  </View>
-                ) : null
-              )}
-            </ScrollView>
-            {logs.length === 0 && <Text>No logs are available.</Text>}
-            {logs.map((log, idx) => (
-              <View style={styles.logsContainer} key={`daily-logs-card-${idx}`}>
-                <DailyLogsCard
-                  navigation={navigation}
-                  date={log.createdAt}
-                  data={log.details}
-                  logID={log._id}
-                  rating={log.rating}
+            ListHeaderComponent={
+              <View>
+                <Text style={styles.titleText}>Daily Logs</Text>
+                {allPictures.length > 0 && (
+                  <TouchableOpacity
+                    style={styles.buttonText}
+                    onPress={() =>
+                      navigation.navigate("Gallery", {
+                        pictures: allPictures,
+                      })
+                    }
+                  >
+                    <Text style={styles.buttonText}>See All</Text>
+                  </TouchableOpacity>
+                )}
+                <FlatList
+                  data={allPictures.slice(0, 10)}
+                  renderItem={renderPictureItem}
+                  keyExtractor={(item, index) => `picture-${index}`}
+                  horizontal
+                  style={styles.imagesContainer}
                 />
               </View>
-            ))}
-          </ScrollView>
+            }
+          />
         )
       )}
     </>
@@ -129,12 +198,30 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     width: "100%",
     paddingHorizontal: 20,
+    height: "100%",
+    //backgroundColor: "red",
   },
   indicator: {
     alignSelf: "center",
     justifyContent: "center",
     flex: 1,
     borderRadius: 999,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 10,
+  },
+  sectionHeaderText: {
+    fontFamily: "InterSemiBold",
+    fontSize: 18,
+    marginBottom: 8,
+    marginTop: 10,
+  },
+  listView: {
+    paddingBottom: 30,
   },
   titleText: {
     fontSize: 24,
@@ -153,7 +240,7 @@ const styles = StyleSheet.create({
   },
   imagesContainer: {
     width: "100%",
-    marginBottom: 18,
+    marginBottom: 40,
   },
   imageContainer: {
     marginRight: 10,

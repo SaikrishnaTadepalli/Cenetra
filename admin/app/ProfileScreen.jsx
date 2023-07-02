@@ -72,7 +72,6 @@ const ProfileScreen = ({ curStudentID }) => {
       setBloodGroup(studentInfo.information[4].section[0]);
     }
   }, []);
-  console.log(studentInfo);
   return (
     <>
       {curStudentID === "" && !fetchProfileLoading && (
@@ -111,7 +110,6 @@ const ProfileScreen = ({ curStudentID }) => {
           <ScrollView
             style={styles.container}
             contentContainerStyle={{ paddingBottom: 50 }}
-            // showsVerticalScrollIndicator={false}
           >
             <View style={styles.profileContainer}>
               <View style={styles.imageAndChildInfoContainer}>
@@ -127,7 +125,7 @@ const ProfileScreen = ({ curStudentID }) => {
                     Student ID: {studentInfo.student_number}
                   </Text>
                   <Text style={styles.studentId}>
-                    Blood group: {bloodGroup}
+                    Blood group: {bloodGroup.name}
                   </Text>
                 </View>
               </View>

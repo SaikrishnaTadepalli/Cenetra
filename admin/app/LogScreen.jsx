@@ -24,7 +24,19 @@ const LogScreen = ({
   setLogID,
 }) => {
   const { logs } = useSelector((state) => state.log);
-  const log = logs.find((log) => (log ? log._id === logID : null));
+  const findLogById = (id) => {
+    let foundLog = null;
+
+    logs.forEach((segment) => {
+      const log = segment.data.find((item) => item._id === id);
+      if (log) {
+        foundLog = log;
+      }
+    });
+
+    return foundLog;
+  };
+  const log = findLogById(logID);
   const parsedLog = log ? JSON.parse(log.details) : null;
   const rating = log ? parseInt(log.rating) : 0;
   const date = log ? moment(log.createdAt).utc().format("MMMM D, YYYY") : "";

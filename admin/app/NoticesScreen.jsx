@@ -62,29 +62,34 @@ const NoticesScreen = () => {
   };
 
   const retrieveData = () => {
-    const teacherID = localStorage.getItem("teacherID");
-    dispatch(fetchNotices(teacherID)).then((response) => {
+    const adminID = localStorage.getItem("adminID");
+    dispatch(fetchNotices(adminID)).then((response) => {
       if (response.error) {
         setError("Something went wrong, please try again.");
       } else {
         const newNotices = [];
-        const mainData = response.payload.data.noticesByTeacher;
-        mainData.forEach((notice, idx) => {
-          const curDate = formatDate(notice[0].createdAt);
-          const data = [];
-          notice.forEach((item, idx) => {
-            data.push({
-              _id: item._id,
-              createdAt: item.createdAt,
-              details: item.details,
-              type: item.noticeType,
-            });
-          });
-          newNotices.push({
-            date: curDate,
-            data: data,
-          });
-        });
+        const mainData = response.payload.data.noticesForAdmin;
+        console.log(mainData);
+        // mainData.forEach((notice, idx) => {
+        //   const curDate = notice.length > 0 && formatDate(notice[0].createdAt);
+        //   const data = [];
+        //   if (notice.length === 0) return;
+        //   console.log(notice);
+        //   notice.forEach((item, idx) => {
+        //     console.log(item);
+        //     data.push({
+        //       _id: item._id,
+        //       createdAt: item.createdAt,
+        //       details: item.details,
+        //       type: item.noticeType,
+        //     });
+        //   });
+        //   newNotices.push({
+        //     date: curDate,
+        //     data: data,
+        //   });
+        // });
+        // console.log(newNotices);
         setNotices(newNotices);
       }
     });

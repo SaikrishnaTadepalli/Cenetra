@@ -12,11 +12,24 @@ import { useSelector } from "react-redux";
 const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
   // console.log("dailylogscard", date);
   const pictures = [];
-  const stars = 3;
-  const state = useSelector((state) => state.dailyLogs);
+  const { logs } = useSelector((state) => state.dailyLogs);
+
+  const findLogById = (id) => {
+    let foundLog = null;
+
+    logs.forEach((segment) => {
+      const log = segment.data.find((item) => item._id === id);
+      if (log) {
+        foundLog = log;
+      }
+    });
+
+    return foundLog;
+  };
 
   const handleClick = () => {
-    const curLog = selectLogByID(state, logID);
+    const curLog = findLogById(logID);
+    //console.log(curLog);
     navigation.navigate("Log", {
       data: data,
       pictures: pictures,

@@ -20,7 +20,7 @@ export const loginUser = createAsyncThunk(
   }`;
     //console.log(query);
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export const sendSMS = createAsyncThunk(
         }
     }`;
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ export const verifyLogin = createAsyncThunk(
       verifyCode(userId: "${studentID}" code: "${code}") 
   }`;
     try {
-      const response = await fetch(apiUrl2, {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +125,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  isLoggedIn: false,
+  isLoggedIn: true,
   curStudentDetails: "",
   loginLoading: false,
   loginError: false,

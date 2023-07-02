@@ -76,7 +76,7 @@ export const createNotices = createAsyncThunk(
 
 export const editNotices = createAsyncThunk(
   "notices/editNotices",
-  async ({ noticeID, studentIDs, details, noticeType }) => {
+  async ({ noticeID, studentIDs, details, noticeType, teacherName }) => {
     // console.log(details);
 
     const stringifiedDetails = JSON.stringify(details)
@@ -85,7 +85,7 @@ export const editNotices = createAsyncThunk(
 
     const query = `mutation {
     editNotice(noticeId: "${noticeID}", studentIds: [${studentIDs}], 
-                details: "${stringifiedDetails}", noticeType: "${noticeType}") {
+                details: "${stringifiedDetails}", noticeType: "${noticeType}", editorName: "${teacherName}") {
         _id
         noticeType
         details
@@ -179,13 +179,11 @@ export const noticeSlice = createSlice({
         state.createNoticesPending = true;
         state.createNoticesError = false;
         state.createNoticesSuccessful = false;
-        state.editNoticesSuccessful = false;
       })
       .addCase(createNotices.rejected, (state) => {
         state.createNoticesPending = null;
         state.createNoticesError = true;
         state.createNoticesSuccessful = false;
-        state.editNoticesSuccessful = false;
       })
       .addCase(createNotices.fulfilled, (state, action) => {
         //state.notices = [action.payload.data.createNotice, ...state.notices];
@@ -204,12 +202,10 @@ export const noticeSlice = createSlice({
         state.createNoticesPending = false;
         state.createNoticesError = false;
         state.createNoticesSuccessful = true;
-        state.editNoticesSuccessful = false;
       })
       .addCase(editNotices.pending, (state) => {
         state.editNoticesPending = true;
         state.editNoticesError = false;
-        state.isNewNoticeAdded = false;
         state.editNoticesSuccessful = false;
       })
       .addCase(editNotices.rejected, (state) => {
@@ -221,7 +217,6 @@ export const noticeSlice = createSlice({
         state.notices = [action.payload.data.editNotice, ...state.notices];
         state.editNoticesPending = false;
         state.editNoticesError = false;
-        state.isNewNoticeAdded = false;
         state.editNoticesSuccessful = true;
       });
   },

@@ -8,18 +8,20 @@
       "distribution": "internal",
       "ios": {
         "simulator": true
-      },
-      "env": {
-        "BACKEND_URI": "http://18.206.57.12:8080/graphql"
       }
+      // "env": {
+      //   "BACKEND_URI": "http://18.206.57.12:8080/graphql",
+      //   "TEST_BACKEND_URI": "http://localhost:3000/graphql"
+      // }
     },
     "preview": {
       "distribution": "internal"
     },
     "production": {
-      "env": {
-        "BACKEND_URI": "http://18.206.57.12:8080/graphql"
-      }
+      // "env": {
+      //   "BACKEND_URI": "http://18.206.57.12:8080/graphql",
+      //   "TEST_BACKEND_URI": "http://localhost:3000/graphql"
+      // }
     }
   },
   "submit": {

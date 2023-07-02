@@ -6,7 +6,7 @@ import colors from "../constants/Colors";
 
 const GalleryScreen = ({ navigation, route }) => {
   return (
-    <View style={{ paddingHorizontal: 10 }}>
+    <View style={{ paddingHorizontal: 10, height: "100%" }}>
       <FlatList
         columnWrapperStyle={styles.imagesContainer}
         data={route.params.pictures}

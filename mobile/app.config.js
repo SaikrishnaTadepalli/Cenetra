@@ -8,8 +8,8 @@ module.exports = {
     icon: "./assets/images/AppIcon.png",
     userInterfaceStyle: "light",
     extra: {
-      apiUrl: process.env.BACKEND_URI,
-      apiUrl2: "http://18.206.57.12:8080/graphql",
+      apiUrl: process.env.TEST_BACKEND_URI,
+      //apiUrl2: "http://18.206.57.12:8080/graphql",
       eas: {
         projectId: "7cb0273a-ca8a-494b-8af6-0fffb36709bf",
       },

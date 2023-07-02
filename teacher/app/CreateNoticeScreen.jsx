@@ -16,9 +16,6 @@ import {
   getIsNewNoticeAdded,
   setIsNewNoticeAdded,
 } from "../src/redux/noticeSlice";
-import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
-import { Checkbox } from "react-native-paper";
-import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import typeColorMapping from "../api/typeColorMapping";
 import Dropdown from "../src/components/DropDown";
 
@@ -26,7 +23,12 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const state = useSelector((state) => state.notices);
-  const { createNoticesError, createNoticesPending, notices } = state;
+  const {
+    createNoticesError,
+    createNoticesPending,
+    notices,
+    editNoticesPending,
+  } = state;
   const s = localStorage.getItem("students");
   const s2 = JSON.parse(s);
   const students = JSON.parse(s2).students;
@@ -96,9 +98,9 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
             setEditable(false);
             setIsInputEmpty(false);
             setIsSaved(true);
-            dispatch(setIsNewNoticeAdded(false));
-            noticeID !== "" && setNoticeID("");
+            setNoticeID("");
             setTimeout(() => {
+              dispatch(setIsNewNoticeAdded(false));
               setIsSaved(false);
               setEditable(true);
               setSubject("");
@@ -119,7 +121,7 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
   const onSave = () => {
     const teacherID = localStorage.getItem("teacherID");
     const teacherName = localStorage.getItem("teacherName");
-    //console.log(selectedStudents);
+    // console.log(teacherName);
     if (subject && details) {
       const newNotice = {
         subject: subject,
@@ -137,6 +139,7 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
           studentIDs: studentIDs,
           details: newNotice,
           noticeType: selectedType,
+          teacherName: teacherName,
         });
       } else {
         action = createNotices({
@@ -202,8 +205,7 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
   return (
     <>
       <ScrollView contentContainerStyle={styles.listView}>
-        {createNoticesPending ? <Text>Saving your changes.</Text> : null}
-        {isAddNewNoticeSelected && !createNoticesPending ? (
+        {isAddNewNoticeSelected ? (
           <View style={styles.container}>
             <Text style={styles.headerText}>Create a new notice</Text>
             <Text style={styles.date}>{date}</Text>
@@ -236,11 +238,26 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
                 onChangeText={setDetails}
               />
               {renderFlag()}
-
               {isInputEmpty && (!subject || !details) ? (
                 <Text style={styles.errorText}>
                   Could not save new notice. Please fill in both text boxes.
                 </Text>
+              ) : null}
+              {error ? (
+                <View>
+                  <Text>
+                    There was an error in creating the log. Please try again.
+                  </Text>
+                  <TouchableOpacity onPress={handleRefresh}>
+                    <Text>Try Again</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+              {createNoticesPending || editNoticesPending ? (
+                <Text>Saving your changes.</Text>
+              ) : null}
+              {isSaved ? (
+                <Text>Your notice has been successfully saved!</Text>
               ) : null}
               <View style={styles.buttonsContainer}>
                 <TouchableOpacity
@@ -257,17 +274,6 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-        ) : null}
-        {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
-        {error ? (
-          <View>
-            <Text>
-              There was an error in creating the log. Please try again.
-            </Text>
-            <TouchableOpacity onPress={handleRefresh}>
-              <Text>Try Again</Text>
-            </TouchableOpacity>
           </View>
         ) : null}
       </ScrollView>

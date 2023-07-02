@@ -1,21 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import envs from "../config/env";
+import Constants from "expo-constants";
 
 export const fetchLogs = createAsyncThunk(
   "logs/fetchLogs",
   async (studentID, { rejectWithValue }) => {
-    //console.log(studentID);
+    console.log(Constants.expoConfig.extra.apiUrl, envs);
     const query = `
   query {
     logs(studentId: "${studentID}") {
+      segment
+      data {
         _id
         details
         createdAt
         updatedAt
         rating
+      }
     }
 }
 `;
+    //console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
