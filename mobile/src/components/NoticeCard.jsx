@@ -24,17 +24,16 @@ const NoticeCard = ({ isRead, details, date, type, noticeID }) => {
   const handleExpandNotice = async (buttonId) => {
     const studentID = await AsyncStorage.getItem("studentID");
     if (!isNoticeRead) {
-      dispatch(
-        markNoticeAsRead({
-          studentID,
-          noticeID,
-        }).then((response) => {
-          if (!response.error) {
-          }
-        })
-      );
+      // dispatch(
+      //   markNoticeAsRead({
+      //     studentID,
+      //     noticeID,
+      //   }).then((response) => {
+      //     if (!response.error) {
+      //     }
+      //   })
+      // );
       setIsNoticeRead(true);
-      dispatch(setIsNewNoticeAdded(true));
     }
     setIsExpanded((prevState) => ({
       ...prevState,

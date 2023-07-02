@@ -258,7 +258,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
         ),
         headerTitle: "",
         tabBarItemStyle: { height: 45, marginTop: 10 },
-        tabBarActiveTintColor: colors.purple,
+        tabBarActiveTintColor: "#02455299",
         tabBarInactiveTintColor: colors.darkGrey,
         tabBarShowLabel: false,
       }}
@@ -273,7 +273,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: colors.lightPurple,
+                        backgroundColor: "#A0B2AF99",
                         width: 45,
                         height: 45,
                         alignItems: "center",
@@ -299,7 +299,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: colors.lightPurple,
+                        backgroundColor: "#A0B2AF99",
                         width: 45,
                         height: 45,
                         alignItems: "center",
@@ -325,7 +325,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: colors.lightPurple,
+                        backgroundColor: "#A0B2AF99",
                         width: 45,
                         height: 45,
                         alignItems: "center",
@@ -351,7 +351,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
                 style={
                   focused
                     ? {
-                        backgroundColor: colors.lightPurple,
+                        backgroundColor: "#A0B2AF99",
                         width: 45,
                         height: 45,
                         alignItems: "center",

@@ -40,7 +40,6 @@ const LogScreen = ({ navigation, route }) => {
       };
     }, [])
   );
-  const colors = ["#F6D9DA", "#C7E9F0", "#E4F4E8", "#F5E5D9", "#F3C4E1"];
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -90,7 +89,9 @@ const LogScreen = ({ navigation, route }) => {
                   <Text style={styles.buttonText}>See All</Text>
                 </TouchableOpacity>
               </View>
-            ) : null}
+            ) : (
+              <Text>There no pictures for today.</Text>
+            )}
             <ScrollView horizontal={true} style={styles.imagesContainer}>
               {pictures.map((picture, idx) =>
                 idx < 10 ? (

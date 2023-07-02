@@ -6,14 +6,14 @@ export const fetchNotices = createAsyncThunk(
   async (adminID, { rejectWithValue }) => {
     const query = `
     query {
-      noticesByadmin(adminId: "${adminID}") {
+      noticesForAdmin(adminId: "${adminID}") {
         _id
         details
         createdAt
         noticeType
       }
     }
-            `;
+      `;
     try {
       const response = await fetch(envs, {
         method: "POST",

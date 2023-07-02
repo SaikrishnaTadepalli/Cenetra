@@ -168,7 +168,7 @@ const NoticesScreen = () => {
       </TouchableOpacity>
     );
   };
-
+  //console.log(notices);
   return (
     <>
       <View style={styles.container}>

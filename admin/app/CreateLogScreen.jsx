@@ -25,7 +25,19 @@ import { IconButton } from "react-native-paper";
 
 const CreateLogScreen = ({ date, studentID, name, logID }) => {
   const { logs } = useSelector((state) => state.log);
-  const log = logs.find((log) => (log ? log._id === logID : null));
+  const findLogById = (id) => {
+    let foundLog = null;
+
+    logs.forEach((segment) => {
+      const log = segment.data && segment.data.find((item) => item._id === id);
+      if (log) {
+        foundLog = log;
+      }
+    });
+
+    return foundLog;
+  };
+  const log = findLogById(logID);
   const parsedLog = log ? JSON.parse(log.details) : null;
   const rating = log ? parseInt(log.rating) : 0;
   const [isEditable, setEditable] = useState(true);

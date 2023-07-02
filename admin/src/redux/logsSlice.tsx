@@ -5,16 +5,20 @@ export const fetchLogs = createAsyncThunk(
   "logs/getLogs",
   async (studentID, { rejectWithValue }) => {
     const query = `
-  query {
-    logs(studentId: "${studentID}") {
-        _id
-        details
-        createdAt
-        updatedAt
-        rating
+    {
+      logs(studentId: "${studentID}") {
+        segment
+        data {
+          _id
+          details
+          createdAt
+          updatedAt
+          rating
+        }
+      }
     }
-}
 `;
+    //console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -104,7 +108,7 @@ export const editLogs = createAsyncThunk(
         rating
     }
   }`;
-    console.log(query);
+    //console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -178,6 +182,7 @@ export const logSlice = createSlice({
         state.isNewLogAdded = false;
       })
       .addCase(fetchLogs.fulfilled, (state, action) => {
+        //console.log(action.payload.data.logs);
         state.logs = action.payload.data.logs;
         state.fetchLogsPending = false;
         state.fetchLogsError = false;

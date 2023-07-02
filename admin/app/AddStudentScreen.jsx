@@ -178,13 +178,13 @@ const AddStudentScreen = () => {
               marginLeft: 100,
             }}
           >
-            {/* {studentInfoState.ID !== "" && isNewProfileAdded ? ( */}
-            <CreateProfileScreen
-              studentID={studentInfoState.ID}
-              studentName={studentInfoState.name}
-              studentNumber={studentInfoState.number}
-            />
-            {/* ) : null} */}
+            {studentInfoState.ID !== "" && isNewProfileAdded ? (
+              <CreateProfileScreen
+                studentID={studentInfoState.ID}
+                studentName={studentInfoState.name}
+                studentNumber={studentInfoState.number}
+              />
+            ) : null}
           </View>
         </>
       )}

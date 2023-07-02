@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import LogScreen from "./LogScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsNewLogAdded, setIsNewLogAdded } from "../src/redux/logsSlice";
+import { SectionList } from "react-native-web";
 
 const LogsScreen = ({
   name,
@@ -29,13 +30,7 @@ const LogsScreen = ({
   const state = useSelector((state) => state.log);
   const { logs, fetchLogsPending } = state;
   const curDate = moment().utc().format("DD MMMM YYYY");
-  //const [date, setDate] = useState("");
-  //const [isOldLogSelected, setIsOldLogSelected] = useState(false);
-  // const [logID, setLogID] = useState("");
-  const isDisabled =
-    logs.length > 0 &&
-    logs[0] &&
-    curDate === moment(logs[0].createdAt).utc().format("DD MMMM YYYY");
+  const [isExpanded, setIsExpanded] = useState([]);
 
   const handleClick = () => {
     setDate(curDate);
@@ -57,6 +52,65 @@ const LogsScreen = ({
     setDate(date);
   };
 
+  const handleButtonPress = (buttonId) => {
+    setIsExpanded((prevState) => ({
+      ...prevState,
+      [buttonId]: !prevState[buttonId],
+    }));
+  };
+
+  const renderSectionHeader = ({ section: { segment } }) => {
+    const style = () => {
+      return !isExpanded[segment]
+        ? { borderBottomColor: "black", borderBottomWidth: 1, marginBottom: 20 }
+        : null;
+    };
+    return (
+      <TouchableOpacity
+        style={[styles.sectionHeader, style()]}
+        onPress={() => handleButtonPress(segment)}
+      >
+        <Text style={styles.sectionHeaderText}>{segment}</Text>
+        <Ionicons
+          name={
+            isExpanded[segment]
+              ? "chevron-up-circle-outline"
+              : "chevron-down-circle-outline"
+          }
+          size={20}
+          color="black"
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const renderItem = ({ item }) => {
+    const date = moment(item.createdAt).utc().format("MMMM YYYY");
+    return (
+      <>
+        {isExpanded[date] ? (
+          <TouchableOpacity
+            style={styles.cardContainer}
+            onPress={() => onClickLog(item._id)}
+          >
+            {item ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.dateText}>
+                  {moment(item.createdAt).utc().format("DD MMMM YYYY")}
+                </Text>
+              </View>
+            ) : null}
+          </TouchableOpacity>
+        ) : null}
+      </>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{name}'s Logs</Text>
@@ -65,27 +119,37 @@ const LogsScreen = ({
           {fetchLogsPending ? (
             <Text>Retrieving data...</Text>
           ) : logs.length > 0 ? (
-            logs.map((log, idx) => (
-              <TouchableOpacity
-                style={styles.cardContainer}
-                key={`date-${idx}`}
-                onPress={() => onClickLog(log._id)}
-              >
-                {log ? (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={styles.dateText}>
-                      {moment(log.createdAt).utc().format("DD MMMM YYYY")}
-                    </Text>
-                  </View>
-                ) : null}
-              </TouchableOpacity>
-            ))
+            <SectionList
+              sections={logs}
+              stickySectionHeadersEnabled={false}
+              keyExtractor={(log) => log._id}
+              ListFooterComponent={<View />}
+              ListFooterComponentStyle={{ height: 20 }}
+              contentContainerStyle={styles.listView}
+              renderItem={renderItem}
+              renderSectionHeader={renderSectionHeader}
+            />
           ) : (
+            // logs.map((log, idx) => (
+            //   <TouchableOpacity
+            //     style={styles.cardContainer}
+            //     key={`date-${idx}`}
+            //     onPress={() => onClickLog(log._id)}
+            //   >
+            //     {log ? (
+            //       <View
+            //         style={{
+            //           flexDirection: "row",
+            //           alignItems: "center",
+            //         }}
+            //       >
+            //         <Text style={styles.dateText}>
+            //           {moment(log.createdAt).utc().format("DD MMMM YYYY")}
+            //         </Text>
+            //       </View>
+            //     ) : null}
+            //   </TouchableOpacity>
+            // ))
             <View>
               <Text>No logs are available.</Text>
             </View>
@@ -102,6 +166,18 @@ const styles = StyleSheet.create({
   container: {
     //backgroundColor: "red",
     width: "100%",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: 320,
+    marginBottom: 10,
+  },
+  sectionHeaderText: {
+    fontFamily: "InterSemiBold",
+    fontSize: 18,
+    marginBottom: 8,
   },
   header: {
     fontSize: 20,

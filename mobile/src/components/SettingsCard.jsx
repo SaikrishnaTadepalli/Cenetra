@@ -13,12 +13,12 @@ const SettingsCard = ({ icon, title, screen, navigation }) => {
       >
         <View style={styles.contentContainer}>
           <View style={{ flexDirection: "row" }}>
-            <MaterialIcons name={icon} color={colors.navyBlue} size={24} />
+            <MaterialIcons name={icon} color={colors.darkGreen} size={24} />
             <Text style={styles.text}>{title}</Text>
           </View>
           <Entypo
             name="chevron-right"
-            color={colors.navyBlue}
+            color={colors.darkGreen}
             size={24}
             style={{ justifyContent: "flex-end" }}
           />
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "InterMedium",
     fontSize: 16,
-    color: colors.primaryText,
+    color: colors.darkGreen,
     marginLeft: 10,
     alignSelf: "center",
   },

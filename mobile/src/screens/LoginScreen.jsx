@@ -11,6 +11,7 @@ import colors from "../constants/Colors";
 import { useDispatch } from "react-redux";
 import { fetchStudent, loginUser, sendSMS } from "../redux/authSlice";
 import { useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 const LoginScreen = ({ navigation }) => {
   const [studentNumber, setStudentNumber] = useState();
   const [error, setError] = useState("");
@@ -39,11 +40,18 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
-  useEffect(() => setIsDisabled(false), []);
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsDisabled(false);
+      return () => {
+        // Clean up any resources if needed
+      };
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcomeeee 2</Text>
+      <Text style={styles.text}>Welcome</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.inputHeader}>Student Number</Text>
         <TextInput
@@ -77,7 +85,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 30,
     fontFamily: "InterMedium",
-    color: colors.darkPurple,
+    color: colors.darkGreen,
     marginBottom: 40,
   },
   inputContainer: {
@@ -87,30 +95,31 @@ const styles = StyleSheet.create({
   },
   inputHeader: {
     alignSelf: "flex-start",
-    color: colors.darkPurple,
-    fontFamily: "InterRegular",
+    color: colors.darkGreen,
+    fontFamily: "InterMedium",
     marginBottom: 5,
+    fontSize: 16,
   },
   input: {
     width: "100%",
-    height: 40,
-    borderColor: colors.lightPurple,
-    borderWidth: 2,
-    borderRadius: 10,
+    height: 50,
+    borderColor: "#A0B2AF",
+    borderWidth: 1,
+    borderRadius: 5,
     paddingHorizontal: 10,
-    fontSize: 15,
+    fontSize: 18,
   },
   buttonContainer: {
     marginTop: 30,
-    backgroundColor: colors.lightPurple,
+    backgroundColor: colors.darkGreen,
     height: 40,
     width: "60%",
-    borderRadius: 10,
+    borderRadius: 100,
     justifyContent: "center",
   },
   buttonText: {
     alignSelf: "center",
-    color: colors.primaryText,
+    color: "white",
     fontFamily: "InterSemiBold",
   },
   errorText: {

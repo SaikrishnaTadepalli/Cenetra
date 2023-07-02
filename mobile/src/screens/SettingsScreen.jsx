@@ -87,7 +87,7 @@ const SettingsScreen = ({ navigation }) => {
               key={icon.icon}
               name={icon.icon}
               size={30}
-              color={colors.navyBlue}
+              color={colors.darkGreen}
             />
           </TouchableOpacity>
         ))}

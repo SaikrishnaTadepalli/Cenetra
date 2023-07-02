@@ -5,11 +5,14 @@ export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
   const query = `
   query {
     logs(studentId: "${studentID}") {
+      segment
+      data {
         _id
         details
         createdAt
         updatedAt
         rating
+      }
     }
 }
 `;
@@ -85,7 +88,7 @@ export const updateLogs = createAsyncThunk(
 
 export const editLogs = createAsyncThunk(
   "logs/editLogs",
-  async ({ logID, details, rating }) => {
+  async ({ logID, details, rating, teacherName }) => {
     // console.log(details);
 
     const stringifiedDetails = JSON.stringify(details)
@@ -93,7 +96,7 @@ export const editLogs = createAsyncThunk(
       .replace(/"/g, '\\"'); // Escape double quotes
 
     const query = `mutation {
-    editLog(logId: "${logID}" details: "${stringifiedDetails}", rating: ${rating}) {
+    editLog(logId: "${logID}" details: "${stringifiedDetails}", rating: ${rating}, editorName: "${teacherName}") {
         _id
         details
         createdAt

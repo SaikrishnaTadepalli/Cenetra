@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   inputHeader: {
     alignSelf: "flex-start",
-    color: colors.darkPurple,
+    color: colors.darkGreen,
     fontWeight: 400,
     marginBottom: 5,
   },

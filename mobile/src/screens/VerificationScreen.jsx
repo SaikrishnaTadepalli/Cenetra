@@ -130,12 +130,12 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 30,
-    color: colors.darkPurple,
+    color: colors.darkGreen,
     fontFamily: "InterMedium",
     marginBottom: 10,
   },
   text: {
-    color: colors.darkPurple,
+    color: colors.darkGreen,
     fontSize: 14,
     fontFamily: "InterLight",
     width: "85%",
@@ -145,10 +145,10 @@ const styles = StyleSheet.create({
   resendCodeText: {
     marginLeft: 180,
     marginTop: 10,
-    color: colors.darkPurple,
+    color: "#99B8BE",
   },
   codeText: {
-    color: colors.darkPurple,
+    color: colors.darkGreen,
     fontSize: 16,
     fontFamily: "InterRegular",
     marginLeft: 10,
@@ -173,17 +173,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   enteredText: {
-    color: colors.darkPurple,
+    color: colors.darkGreen,
     fontSize: 24,
     fontFamily: "InterRegular",
     alignSelf: "center",
   },
   buttonContainer: {
     marginTop: 30,
-    backgroundColor: colors.lightPurple,
+    backgroundColor: colors.darkGreen,
     height: 40,
     width: "75%",
-    borderRadius: 10,
+    borderRadius: 100,
     justifyContent: "center",
   },
   errorText: {
@@ -193,10 +193,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     alignSelf: "center",
-    color: colors.darkPurple,
+    color: "white",
     fontFamily: "InterSemiBold",
   },
   focusCell: {
-    borderColor: colors.darkPurple,
+    borderColor: colors.darkGreen,
   },
 });

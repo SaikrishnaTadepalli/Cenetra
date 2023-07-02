@@ -110,7 +110,7 @@ const NoticeScreen = ({ navigation }) => {
         <Text style={styles.sectionHeaderText}>{date}</Text>
         <Ionicons
           name={
-            isExpanded[formatDate(date)]
+            isExpanded[date]
               ? "chevron-up-circle-outline"
               : "chevron-down-circle-outline"
           }
@@ -141,16 +141,19 @@ const NoticeScreen = ({ navigation }) => {
         />
       ) : (
         !error && (
-          <View style={styles.mainContainer}>
-            <Text style={styles.titleText}>Notice Board</Text>
+          <>
             {notices.length === 0 && <Text>No notices are available.</Text>}
             <SectionList
               sections={notices}
+              style={styles.mainContainer}
               stickySectionHeadersEnabled={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
               keyExtractor={(notice) => notice._id}
+              ListHeaderComponent={
+                <Text style={styles.titleText}>Notice Board</Text>
+              }
               ListFooterComponent={<View />}
               ListFooterComponentStyle={{ height: 20 }}
               renderItem={({ item }) => (
@@ -171,7 +174,7 @@ const NoticeScreen = ({ navigation }) => {
               )}
               renderSectionHeader={renderSectionHeader}
             />
-          </View>
+          </>
         )
       )}
     </>
@@ -186,6 +189,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     width: "100%",
     paddingHorizontal: 20,
+    height: "100%",
   },
   titleText: {
     fontSize: 24,
