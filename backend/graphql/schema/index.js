@@ -18,7 +18,6 @@ type Student {
     firstName: String!
     lastName: String!
     primaryContactNumber: String!
-    profilePic: String!
 }
 
 type Admin {
@@ -76,11 +75,17 @@ type ProfileInfo {
     createdAt: String!
     updatedAt: String!
     approverName: String
+    profilePic: String
 }
 
 type LogGroup {
     segment: String!
     data: [Log!]!
+}
+
+type TeacherNoticeGroup {
+    teacher: Teacher!
+    data: [Notice!]!
 }
 
 union User = Student | Teacher | Admin
@@ -136,7 +141,7 @@ type RootQuery {
 
     noticesForStudent(studentId: ID!): [[Notice!]!]!
     noticesByTeacher(teacherId: ID!): [[Notice!]!]!
-    noticesForAdmin(adminId: ID!): [[[Notice!]!]!]!
+    noticesForAdmin(adminId: ID!): [TeacherNoticeGroup!]!
 
     getS3UploadUrl(teacherId: ID!, studentId: ID!): String!
     getS3ViewUrl(fileName: String!): String!
@@ -154,8 +159,6 @@ type RootQuery {
 }
 
 type RootMutation {
-    test(inp: String!): String!
-
     createTeacher(teacherInput: TeacherInput!): Teacher!
     changeTeacherProfilePic(teacherId: ID!, fileName: String!): Teacher!
     removeTeacherProfilePic(teacherId: ID!): Teacher!

@@ -4,6 +4,7 @@ const ProfileInfoPending = require("../../models/profileInfoPending");
 const ProfileInfoValid = require("../../models/profileInfoValid");
 
 const { transformProfile } = require("./merge");
+const { deleteS3Object, DEFAULT_PROFILE_PIC } = require("../../utils/s3");
 
 const mergeJSON = (obj1, obj2) => {
   const mergedDict = { ...obj1 };
@@ -106,6 +107,7 @@ module.exports = {
         details: args.details,
         approverName: "Add-API",
         edits: [],
+        profilePic: DEFAULT_PROFILE_PIC,
       });
 
       const result = await profileInfo.save();
@@ -169,7 +171,7 @@ module.exports = {
       }
 
       const fetchedValidProfileInfo = await ProfileInfoValid.findOne({
-        student: args.studentId,
+        student: fetchedPendingProfileInfo.student,
       });
 
       if (!fetchedValidProfileInfo) {
@@ -191,6 +193,51 @@ module.exports = {
       const result = await fetchedValidProfileInfo.save();
 
       return transformProfile(result);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  changeStudentProfilePic: async (args) => {
+    try {
+      // Make sure to have uploaded the Image to s3 first
+      const fetchedStudent = await Student.findById(args.studentId);
+
+      if (!fetchedStudent) {
+        throw error("Student does not exist.");
+      }
+
+      fetchedStudent.profilePic = args.fileName;
+
+      const result = await fetchedStudent.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  removeStudentProfilePic: async (args) => {
+    try {
+      const fetchedStudent = await Student.findById(args.studentId);
+
+      if (!fetchedStudent) {
+        throw error("Student does not exist.");
+      }
+
+      // await deleteS3Object(fetchedStudent.profilePic);
+
+      fetchedStudent.profilePic = DEFAULT_PROFILE_PIC;
+
+      const result = await fetchedStudent.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
+      };
     } catch (err) {
       throw err;
     }

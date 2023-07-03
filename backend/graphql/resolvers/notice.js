@@ -53,6 +53,38 @@ module.exports = {
     }
   },
 
+  // noticesForAdmin: async (args) => {
+  //   try {
+  //     const admin = await Admin.findById(args.adminId);
+
+  //     if (!admin) {
+  //       throw new Error("Admin does not exist.");
+  //     }
+
+  //     const teachers = await Teacher.find();
+
+  //     const result = await Promise.all(
+  //       teachers.map(async (teacher) => {
+  //         const teacherId = teacher.id;
+
+  //         const fetchedNotices = await Notice.find({
+  //           teacher: teacherId,
+  //         }).sort({ createdAt: -1 });
+
+  //         const formattedNotices = fetchedNotices.map((notice) =>
+  //           transformNotice(notice, teacherId)
+  //         );
+
+  //         return groupByDate(formattedNotices);
+  //       })
+  //     );
+
+  //     return result;
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // },
+
   noticesForAdmin: async (args) => {
     try {
       const admin = await Admin.findById(args.adminId);
@@ -63,21 +95,29 @@ module.exports = {
 
       const teachers = await Teacher.find();
 
-      const result = await Promise.all(
-        teachers.map(async (teacher) => {
-          const teacherId = teacher.id;
+      const result = [];
 
-          const fetchedNotices = await Notice.find({
-            teacher: teacherId,
-          }).sort({ createdAt: -1 });
+      for (const teacher of teachers) {
+        const teacherId = teacher.id;
 
+        const fetchedNotices = await Notice.find({ teacher: teacherId }).sort({
+          createdAt: -1,
+        });
+
+        if (fetchedNotices.length > 0) {
           const formattedNotices = fetchedNotices.map((notice) =>
             transformNotice(notice, teacherId)
           );
 
-          return groupByDate(formattedNotices);
-        })
-      );
+          result.push({
+            teacher: {
+              ...teacher._doc,
+              _id: teacher.id,
+            },
+            data: formattedNotices,
+          });
+        }
+      }
 
       return result;
     } catch (err) {
