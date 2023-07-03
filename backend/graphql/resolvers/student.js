@@ -1,6 +1,6 @@
 const Student = require("../../models/student");
-const { deleteS3Object, DEFAULT_PROFILE_PIC } = require("../../utils/s3");
 
+const { deleteS3Object, DEFAULT_PROFILE_PIC } = require("../../utils/s3");
 const { sendSMS } = require("../../utils/sms");
 
 const getNewNum = (numDigits) => {
@@ -107,48 +107,48 @@ module.exports = {
     }
   },
 
-  changeStudentProfilePic: async (args) => {
-    try {
-      // Make sure to have uploaded the Image to s3 first
-      const fetchedStudent = await Student.findById(args.studentId);
+  // changeStudentProfilePic: async (args) => {
+  //   try {
+  //     // Make sure to have uploaded the Image to s3 first
+  //     const fetchedStudent = await Student.findById(args.studentId);
 
-      if (!fetchedStudent) {
-        throw error("Student does not exist.");
-      }
+  //     if (!fetchedStudent) {
+  //       throw error("Student does not exist.");
+  //     }
 
-      fetchedStudent.profilePic = args.fileName;
+  //     fetchedStudent.profilePic = args.fileName;
 
-      const result = await fetchedStudent.save();
+  //     const result = await fetchedStudent.save();
 
-      return {
-        ...result._doc,
-        _id: result.id,
-      };
-    } catch (err) {
-      throw err;
-    }
-  },
+  //     return {
+  //       ...result._doc,
+  //       _id: result.id,
+  //     };
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // },
 
-  removeStudentProfilePic: async (args) => {
-    try {
-      const fetchedStudent = await Student.findById(args.studentId);
+  // removeStudentProfilePic: async (args) => {
+  //   try {
+  //     const fetchedStudent = await Student.findById(args.studentId);
 
-      if (!fetchedStudent) {
-        throw error("Student does not exist.");
-      }
+  //     if (!fetchedStudent) {
+  //       throw error("Student does not exist.");
+  //     }
 
-      // await deleteS3Object(fetchedStudent.profilePic);
+  //     // await deleteS3Object(fetchedStudent.profilePic);
 
-      fetchedStudent.profilePic = DEFAULT_PROFILE_PIC;
+  //     fetchedStudent.profilePic = DEFAULT_PROFILE_PIC;
 
-      const result = await fetchedStudent.save();
+  //     const result = await fetchedStudent.save();
 
-      return {
-        ...result._doc,
-        _id: result.id,
-      };
-    } catch (err) {
-      throw err;
-    }
-  },
+  //     return {
+  //       ...result._doc,
+  //       _id: result.id,
+  //     };
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // },
 };
