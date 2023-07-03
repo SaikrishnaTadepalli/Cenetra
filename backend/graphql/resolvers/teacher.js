@@ -1,5 +1,5 @@
 const Teacher = require("../../models/teacher");
-const DEFAULT_PROFILE_PIC = require("../../utils/s3");
+const { DEFAULT_PROFILE_PIC } = require("../../utils/s3");
 
 const getNewNum = (numDigits) => {
   const min = 10 ** (numDigits - 1);
