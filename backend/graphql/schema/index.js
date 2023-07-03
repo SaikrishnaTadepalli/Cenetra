@@ -75,7 +75,7 @@ type ProfileInfo {
     createdAt: String!
     updatedAt: String!
     approverName: String
-    profilePic: String!
+    profilePic: String
 }
 
 type LogGroup {

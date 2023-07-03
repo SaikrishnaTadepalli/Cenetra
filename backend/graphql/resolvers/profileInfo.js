@@ -158,41 +158,40 @@ module.exports = {
   approveProfileInfo: async (args) => {
     try {
       const fetchedAdmin = await Admin.findById(args.adminId);
-      console.log(1);
+
       if (!fetchedAdmin) {
         throw error("Admin does not exist.");
       }
-      console.log(2);
+
       const fetchedPendingProfileInfo =
         await ProfileInfoPending.findByIdAndRemove(args.profileId);
-      console.log(3);
+
       if (!fetchedPendingProfileInfo) {
         throw error("Pending Profile Info does not exist.");
       }
-      console.log(4);
+
       const fetchedValidProfileInfo = await ProfileInfoValid.findOne({
-        student: args.studentId,
+        student: fetchedPendingProfileInfo.student,
       });
-      console.log(5);
+
       if (!fetchedValidProfileInfo) {
-        console.log("Valid Profile Info does not exist.");
         throw error("Valid Profile Info does not exist.");
       }
-      console.log(6);
+
       const currentDate = new Date();
-      console.log(7);
+
       fetchedValidProfileInfo.edits.push({
         edit: fetchedValidProfileInfo.details,
         editedBy: fetchedValidProfileInfo.approverName,
         editedOn: currentDate.toISOString(),
       });
-      console.log(8);
+
       fetchedValidProfileInfo.details = fetchedPendingProfileInfo.details;
       fetchedValidProfileInfo.approverName =
         fetchedAdmin.firstName + " " + fetchedAdmin.lastName;
-      console.log(9);
+
       const result = await fetchedValidProfileInfo.save();
-      console.log(10);
+
       return transformProfile(result);
     } catch (err) {
       throw err;
