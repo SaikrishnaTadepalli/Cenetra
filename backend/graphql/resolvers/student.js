@@ -94,6 +94,7 @@ module.exports = {
         lastName: args.studentInput.lastName,
         primaryContactNumber: args.studentInput.primaryContactNumber,
         profilePic: DEFAULT_PROFILE_PIC,
+        expoPushToken: null,
       });
 
       const studentSaveRes = await newStudent.save();
@@ -101,6 +102,50 @@ module.exports = {
       return {
         ...studentSaveRes._doc,
         _id: studentSaveRes.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  changeExpoPushToken: async (args) => {
+    try {
+      // Implementation
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      student.expoPushToken = args.newExpoPushToken;
+
+      const result = await student.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
+      };
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  removeExpoPushToken: async (args) => {
+    try {
+      // Implementation
+      const student = await Student.findById(args.studentId);
+
+      if (!student) {
+        throw error("Student does not exist.");
+      }
+
+      student.expoPushToken = null;
+
+      const result = await student.save();
+
+      return {
+        ...result._doc,
+        _id: result.id,
       };
     } catch (err) {
       throw err;

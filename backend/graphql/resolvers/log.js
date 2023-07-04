@@ -5,6 +5,7 @@ const Log = require("../../models/log");
 const { sendSMS } = require("../../utils/sms");
 const { transformLog } = require("./merge");
 const { segmentDates } = require("../../utils/date");
+const { sendExpoPushNotification } = require("../../utils/expoNotification");
 
 module.exports = {
   // Queries
@@ -89,6 +90,13 @@ module.exports = {
 
       const message = `A New Log has been Uploded`;
       //await sendSMS(fetchedStudent.primaryContactNumber.toString(), message);
+
+      fetchedStudent.expoPushToken
+        ? await sendExpoPushNotification(pushToken, title, body)
+        : console.log(
+            "Push Tokens don't exist for student: " +
+              fetchedStudent.studentNumber
+          );
 
       return transformLog(result);
     } catch (err) {

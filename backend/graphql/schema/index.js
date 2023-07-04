@@ -18,6 +18,7 @@ type Student {
     firstName: String!
     lastName: String!
     primaryContactNumber: String!
+    expoPushToken: String
 }
 
 type Admin {
@@ -166,6 +167,9 @@ type RootMutation {
     createStudent(studentInput: StudentInput!): Student!
     changeStudentProfilePic(studentId: ID!, fileName: String!): Student!
     removeStudentProfilePic(studentId: ID!): Student!
+    changeExpoPushToken(studentId: ID!, newExpoPushToken: String!): Student!
+    removeExpoPushToken(studentId: ID!): Student!
+
 
     createAdmin(adminInput: AdminInput!): Admin!
     changeAdminProfilePic(adminId: ID!, fileName: String!): Admin!

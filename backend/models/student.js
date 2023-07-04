@@ -23,6 +23,10 @@ const studentSchema = new Schema({
     type: String,
     required: true,
   },
+  expoPushToken: {
+    type: String,
+    required: false,
+  },
 });
 
 module.exports = mongoose.model("Student", studentSchema);
