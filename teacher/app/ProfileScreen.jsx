@@ -18,7 +18,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
-const ProfileScreen = ({ curStudentID }) => {
+const ProfileScreen = ({ curStudentID, imageUrl }) => {
   const {
     studentInfo,
     lastUpdated,
@@ -117,7 +117,7 @@ const ProfileScreen = ({ curStudentID }) => {
             <View style={styles.profileContainer}>
               <View style={styles.imageAndChildInfoContainer}>
                 <Image
-                  source={{ uri: studentInfo.uri }}
+                  source={{ uri: imageUrl }}
                   width={100}
                   height={100}
                   style={styles.image}
@@ -127,9 +127,13 @@ const ProfileScreen = ({ curStudentID }) => {
                   <Text style={styles.studentId}>
                     Student ID: {studentInfo.student_number}
                   </Text>
-                  <Text style={styles.studentId}>
-                    Blood group: {bloodGroup}
-                  </Text>
+                  {studentInfo.information
+                    ? studentInfo.information[4].section.map((item, idx) => (
+                        <Text style={styles.studentId}>
+                          Blood group: {item.name}
+                        </Text>
+                      ))
+                    : null}
                 </View>
               </View>
             </View>

@@ -10,11 +10,13 @@ export const fetchProfile = createAsyncThunk(
           student {
             _id
           }
+          profilePic
           createdAt
           details
         }
       }
             `;
+    // console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -46,6 +48,7 @@ export const fetchProfile = createAsyncThunk(
         lastUpdated: data.data.getLatestProfileInfo.createdAt,
         studentInfo: JSON.parse(cleanedData),
         id: data.data.getLatestProfileInfo.student._id,
+        profilePic: data.data.getLatestProfileInfo.profilePic,
       };
       return result;
     } catch (error) {
@@ -119,7 +122,7 @@ export const approvePendingProfile = createAsyncThunk(
           _id
       }
     }`;
-    console.log(query, envs);
+    // console.log(query, envs);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -170,7 +173,7 @@ export const addNewProfile = createAsyncThunk(
           _id
       }
     }`;
-    console.log(query, envs);
+    // console.log(query, envs);
     try {
       const response = await fetch(envs, {
         method: "POST",

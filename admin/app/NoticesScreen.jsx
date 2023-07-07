@@ -18,6 +18,8 @@ import { fetchNotices, setIsNewNoticeAdded } from "../src/redux/noticeSlice";
 import typeColorMapping from "../api/typeColorMapping";
 import { Image, Svg, SvgUri } from "react-native-svg";
 import EmptyState from "../assets/icons/emptyState.svg";
+import DropDown from "../src/components/DropDown";
+import { fetchTeachers } from "../src/redux/teacherSlice";
 
 const NoticesScreen = () => {
   const dispatch = useDispatch();
@@ -38,6 +40,8 @@ const NoticesScreen = () => {
   const [notices, setNotices] = useState([]);
   const [isExpanded, setIsExpanded] = useState({});
   const [error, setError] = useState("");
+  const [teacherInfo, setTeacherInfo] = useState([]);
+  const [selectedTeachers, setSelectedTeachers] = useState([]);
 
   const handleButtonPress = (buttonId) => {
     setIsExpanded((prevState) => ({
@@ -68,34 +72,40 @@ const NoticesScreen = () => {
         setError("Something went wrong, please try again.");
       } else {
         const newNotices = [];
+        const teachers = [];
         const mainData = response.payload.data.noticesForAdmin;
-        console.log(mainData);
-        // mainData.forEach((notice, idx) => {
-        //   const curDate = notice.length > 0 && formatDate(notice[0].createdAt);
-        //   const data = [];
-        //   if (notice.length === 0) return;
-        //   console.log(notice);
-        //   notice.forEach((item, idx) => {
-        //     console.log(item);
-        //     data.push({
-        //       _id: item._id,
-        //       createdAt: item.createdAt,
-        //       details: item.details,
-        //       type: item.noticeType,
-        //     });
-        //   });
-        //   newNotices.push({
-        //     date: curDate,
-        //     data: data,
-        //   });
-        // });
-        // console.log(newNotices);
-        setNotices(newNotices);
+        // console.log(mainData);
+        mainData.forEach((data, idx) => {
+          // console.log(mainData);
+          teachers.push({
+            key: data.teacher._id,
+            value: data.teacher.firstName + " " + data.teacher.lastName,
+            notices: data.data,
+          });
+          // data.forEach((item, idx) => {
+          //   console.log(item);
+          //   data.push({
+          //     _id: item._id,
+          //     createdAt: item.createdAt,
+          //     details: item.details,
+          //     type: item.noticeType,
+          //   });
+          // });
+          // newNotices.push({
+          //   date: curDate,
+          //   data: data,
+          // });
+        });
+        //  console.log(newNotices);
+        setTeacherInfo(teachers);
+        // setNotices(data);
       }
     });
   };
 
   useEffect(() => {
+    // getTeachers();
+    setSelectedTeachers([]);
     retrieveData();
   }, [createNoticesSuccessful, editNoticesSuccessful]);
 
@@ -105,45 +115,76 @@ const NoticesScreen = () => {
     }
   }, [isLoggedIn]);
 
-  const renderItem = ({ item }) => {
+  const handleCheckboxSelectionForTeachers = (input) => {
+    // console.log(input, selectedTeachers);
+    const idx = selectedTeachers.findIndex((cls) => cls.key === input.key);
+    // console.log(idx);
+    const selected = [...selectedTeachers];
+    if (idx !== -1) {
+      selected.splice(idx, 1);
+      setSelectedTeachers(selected);
+      setStudentID("");
+    } else {
+      selected.push(input);
+      setSelectedTeachers(selected);
+    }
+  };
+
+  const handleSelectAllForTeachers = () => {
+    if (teacherInfo.length === selectedTeachers.length) {
+      // Deselect all options
+      setSelectedTeachers([]);
+    } else {
+      // Select all options
+      setSelectedTeachers(teacherInfo);
+    }
+  };
+
+  const onPressDelete = (idx) => {
+    const updatedItems = [...selectedTeachers];
+    updatedItems.splice(idx, 1);
+    setSelectedTeachers(updatedItems);
+  };
+
+  const renderItem = (item) => {
     const details = JSON.parse(item.details);
     const subject = details.subject;
     const date = formatDate(item.createdAt);
-    const dotColor = typeColorMapping[item.type].dotColor;
+    const dotColor = typeColorMapping[item.noticeType].dotColor;
     return (
       <>
-        {isExpanded[date] ? (
-          <TouchableOpacity
-            style={styles.cardContainer}
-            onPress={() => onClickNotice(item._id)}
-          >
-            {item ? (
-              <>
+        {/* {isExpanded[date] ?  */}
+        <TouchableOpacity
+          style={styles.cardContainer}
+          onPress={() => onClickNotice(item._id)}
+        >
+          {item ? (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
                 <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 10,
-                  }}
+                  style={[styles.dotContainer, { backgroundColor: dotColor }]}
+                />
+                <Text
+                  style={styles.subject}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                 >
-                  <View
-                    style={[styles.dotContainer, { backgroundColor: dotColor }]}
-                  />
-                  <Text
-                    style={styles.subject}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {subject}
-                  </Text>
-                </View>
-                <Text style={styles.date}>
-                  {moment(item.createdAt).utc().format("DD MMMM YYYY, h:mm a")}
+                  {subject}
                 </Text>
-              </>
-            ) : null}
-          </TouchableOpacity>
-        ) : null}
+              </View>
+              <Text style={styles.date}>
+                {moment(item.createdAt).utc().format("DD MMMM YYYY, h:mm a")}
+              </Text>
+            </>
+          ) : null}
+        </TouchableOpacity>
+        {/* : null} */}
       </>
     );
   };
@@ -181,7 +222,6 @@ const NoticesScreen = () => {
         <Text style={styles.subHeaderText}>
           All notices you posted will be shown here.
         </Text>
-        {notices.length === 0 && <Text>No notices are available.</Text>}
         <View style={{ flexDirection: "row" }}>
           <>
             {fetchNoticesPending ? (
@@ -189,26 +229,45 @@ const NoticesScreen = () => {
                 style={{
                   flex: 3,
                   width: "50%",
-                  marginLeft: notices.length > 0 ? "-15%" : 500,
-                  marginTop: "-5%",
-                  flexDirection: "row",
+                  // marginLeft: 100,
+                  // marginLeft: "-15%",
+                  // marginTop: "-5%",
+                  //flexDirection: "row",
                 }}
               >
                 <Text>Retrieving data...</Text>
               </View>
-            ) : notices && notices.length > 0 ? (
-              <>
-                <SectionList
-                  sections={notices}
-                  stickySectionHeadersEnabled={false}
-                  keyExtractor={(notice) => notice._id}
-                  ListFooterComponent={<View />}
-                  ListFooterComponentStyle={{ height: 20 }}
-                  contentContainerStyle={styles.listView}
-                  renderItem={renderItem}
-                  renderSectionHeader={renderSectionHeader}
+            ) : true ? (
+              <View>
+                <DropDown
+                  options={teacherInfo}
+                  selectedOptions={selectedTeachers}
+                  setSelectedOptions={handleCheckboxSelectionForTeachers}
+                  onSelectAll={handleSelectAllForTeachers}
+                  onPressDelete={onPressDelete}
+                  dropdownText="Select class to view"
                 />
-              </>
+                <View style={{ height: "100%" }}>
+                  <ScrollView
+                    contentContainerStyle={styles.listView}
+                    nestedScrollEnabled={true}
+                  >
+                    {selectedTeachers &&
+                      selectedTeachers.map((teacher, idx) => (
+                        <View key={`class-list=${idx}`}>
+                          <Text style={styles.teacherName}>
+                            {teacher.value}
+                          </Text>
+                          {teacher.notices.map((notice, idx) => (
+                            <View key={`notice-id-${idx}`}>
+                              {renderItem(notice)}
+                            </View>
+                          ))}
+                        </View>
+                      ))}
+                  </ScrollView>
+                </View>
+              </View>
             ) : error !== "" ? (
               <View>
                 <Text>{error}</Text>
@@ -266,6 +325,12 @@ const styles = StyleSheet.create({
     // width: "100%",
     marginLeft: 20,
     marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  teacherName: {
+    fontFamily: "InterSemiBold",
+    fontSize: 18,
+    marginVertical: 20,
   },
   headerText: {
     fontSize: 30,
@@ -278,7 +343,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   listView: {
-    width: "50%",
+    // width: "50%",
     paddingBottom: 60,
   },
   dotContainer: {
@@ -344,7 +409,7 @@ const styles = StyleSheet.create({
     borderLeftColor: "#D9D9D980",
     borderLeftWidth: 1,
     marginRight: 50,
-    marginLeft: -60,
+    marginLeft: "-60%",
   },
   emptyStateMessage: {
     color: "#99B8BE",

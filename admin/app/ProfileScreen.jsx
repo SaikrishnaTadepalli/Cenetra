@@ -18,7 +18,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
-const ProfileScreen = ({ curStudentID }) => {
+const ProfileScreen = ({ curStudentID, imageUrl }) => {
   const {
     studentInfo,
     lastUpdated,
@@ -36,11 +36,13 @@ const ProfileScreen = ({ curStudentID }) => {
   const retrieveData = async () => {
     dispatch(fetchProfile(curStudentID))
       .then((response) => {
+        console.log("fetching data");
         // console.log(response);
         if (response.error) {
           setError(response.error);
         } else {
           setError("");
+          console.log(response.payload.data);
         }
       })
       .catch((error) => console.log("Error in Profile Screen screen", error));
@@ -69,9 +71,10 @@ const ProfileScreen = ({ curStudentID }) => {
       setData(d);
       setAllergies(studentInfo.information[2].section);
       setMedications(studentInfo.information[3].section);
-      setBloodGroup(studentInfo.information[4].section[0]);
+      setBloodGroup(studentInfo.information[4].section);
     }
   }, []);
+  //console.log(studentInfo.information[4].section);
   return (
     <>
       {curStudentID === "" && !fetchProfileLoading && (
@@ -114,7 +117,7 @@ const ProfileScreen = ({ curStudentID }) => {
             <View style={styles.profileContainer}>
               <View style={styles.imageAndChildInfoContainer}>
                 <Image
-                  source={{ uri: studentInfo.uri }}
+                  source={{ uri: imageUrl }}
                   width={100}
                   height={100}
                   style={styles.image}
@@ -124,9 +127,13 @@ const ProfileScreen = ({ curStudentID }) => {
                   <Text style={styles.studentId}>
                     Student ID: {studentInfo.student_number}
                   </Text>
-                  <Text style={styles.studentId}>
-                    Blood group: {bloodGroup.name}
-                  </Text>
+                  {studentInfo.information
+                    ? studentInfo.information[4].section.map((item, idx) => (
+                        <Text style={styles.studentId}>
+                          Blood group: {item.name}
+                        </Text>
+                      ))
+                    : null}
                 </View>
               </View>
             </View>

@@ -20,11 +20,13 @@ import {
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
+import { getViewUrl } from "../redux/mediaSlice";
 
 const ProfileScreen = ({ navigation }) => {
   //const [isEditable, setEditable] = useState(false);
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   const {
     fetchProfileLoading,
     fetchProfileError,
@@ -32,24 +34,41 @@ const ProfileScreen = ({ navigation }) => {
     studentInfo,
     lastUpdated,
   } = useSelector((state) => state.studentProfile);
-
+  const { viewUrlLoading } = useSelector((state) => state.media);
   const onPressEdit = () => {
     navigation.navigate("EditProfile", {
       studentData: studentInfo,
+      profilePic: imageUrl,
     });
   };
 
   const retrieveData = async () => {
     const studentID = await AsyncStorage.getItem("studentID");
     dispatch(fetchProfile(studentID))
-      .then((response) => {})
+      .then((response) => {
+        if (response.error) {
+        } else {
+          dispatch(getViewUrl(response.payload.profilePic)).then((response) => {
+            if (response.error) {
+              setError("Error while retrieving image.");
+            } else {
+              setImageUrl(response.payload.data.getS3ViewUrl);
+            }
+          });
+        }
+      })
+
       .catch((error) => console.error("Error in Profile Screen screen", error));
   };
 
   const getPendingProfile = async () => {
     const studentID = await AsyncStorage.getItem("studentID");
     dispatch(fetchPendingProfile(studentID))
-      .then((response) => {})
+      .then((response) => {
+        if (response.error) {
+        } else {
+        }
+      })
       .catch((error) =>
         console.error("Error in fetching pending Profile Screen screen", error)
       );
@@ -84,7 +103,7 @@ const ProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       ) : null}
-      {fetchProfileLoading && !refreshing ? (
+      {(fetchProfileLoading || viewUrlLoading) && !refreshing ? (
         <ActivityIndicator
           size="large"
           color="#0000ff"
@@ -111,12 +130,14 @@ const ProfileScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
               <View style={styles.imageAndChildInfoContainer}>
-                <Image
-                  source={{ uri: studentInfo.uri }}
-                  width={60}
-                  height={60}
-                  style={styles.image}
-                />
+                {imageUrl ? (
+                  <Image
+                    source={{ uri: imageUrl }}
+                    width={60}
+                    height={60}
+                    style={styles.image}
+                  />
+                ) : null}
                 <View style={styles.studentDetailsContainer}>
                   <Text style={styles.studentName}>{studentInfo.name}</Text>
                   <Text style={styles.studentId}>
