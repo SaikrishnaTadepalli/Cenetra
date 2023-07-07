@@ -170,7 +170,6 @@ type RootMutation {
     changeExpoPushToken(studentId: ID!, newExpoPushToken: String!): Student!
     removeExpoPushToken(studentId: ID!): Student!
 
-
     createAdmin(adminInput: AdminInput!): Admin!
     changeAdminProfilePic(adminId: ID!, fileName: String!): Admin!
     removeAdminProfilePic(adminId: ID!): Admin!
@@ -192,6 +191,7 @@ type RootMutation {
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!
     editProfileInfo(studentId: ID!, details: String): ProfileInfo!
     approveProfileInfo(profileId: ID!, adminId: ID!): ProfileInfo!
+    denyProfileInfoEdit(profileId: ID!, adminId: ID!): ProfileInfo!
 
     sendSMSCode(userNumber: String!): VerificationCode!
     sendSMSCodeStudent(studentId: ID!): VerificationCode!
