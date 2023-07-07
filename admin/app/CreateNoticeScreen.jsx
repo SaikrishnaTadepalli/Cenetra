@@ -24,13 +24,22 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.notices);
   const { createNoticesError, createNoticesPending, notices } = state;
-  const notice = notices
-    .flatMap((innerArray) => innerArray)
-    .find((obj) => obj._id === noticeID);
+  const findNoticeById = (id) => {
+    let foundNotice = null;
 
-  const s = localStorage.getItem("students");
-  const s2 = JSON.parse(s);
-  const students = JSON.parse(s2).students;
+    notices.forEach((segment) => {
+      const notice = segment.data.find((item) => item._id === id);
+      if (notice) {
+        foundNotice = notice;
+      }
+    });
+
+    return foundNotice;
+  };
+
+  const notice = findNoticeById(noticeID);
+
+  const students = notice && notice.students;
   const noticeDetails = notice && JSON.parse(notice.details);
   const [subject, setSubject] = useState(
     noticeDetails ? noticeDetails.subject : ""
@@ -82,6 +91,8 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
   };
 
   const onSave = () => {
+    // console.log(selectedType);
+    const adminName = localStorage.getItem("adminName");
     if (subject && details) {
       const newNotice = {
         subject: subject,
@@ -95,6 +106,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
           studentIDs: studentIDs,
           details: newNotice,
           noticeType: selectedType,
+          adminName: adminName,
         })
       )
         .then((response) => {
@@ -185,8 +197,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
         </View>
       ) : null}
       <ScrollView contentContainerStyle={styles.listView}>
-        {createNoticesPending ? <Text>Saving your changes.</Text> : null}
-        {isAddNewNoticeSelected && !createNoticesPending ? (
+        {isAddNewNoticeSelected ? (
           <View style={styles.container}>
             <Text style={styles.headerText}>Create a new notice</Text>
             <Text style={styles.date}>{date}</Text>
@@ -197,6 +208,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
                 setSelectedOptions={handleCheckboxSelection}
                 onSelectAll={handleSelectAll}
                 onPressDelete={onPressDelete}
+                dropdownText="Select from dropdown"
               />
             </View>
             <View>
@@ -219,6 +231,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
                 onChangeText={setDetails}
               />
               {renderFlag()}
+              {createNoticesPending ? <Text>Saving your changes.</Text> : null}
               {isInputEmpty && (!subject || !details) ? (
                 <Text style={styles.errorText}>
                   Could not save new notice. Please fill in both text boxes.

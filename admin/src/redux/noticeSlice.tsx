@@ -5,15 +5,28 @@ export const fetchNotices = createAsyncThunk(
   "notices/fetchNotices",
   async (adminID, { rejectWithValue }) => {
     const query = `
-    query {
+    {
       noticesForAdmin(adminId: "${adminID}") {
-        _id
-        details
-        createdAt
-        noticeType
+        teacher {
+          _id
+          firstName
+          lastName
+        }
+        data {
+          _id
+          details
+          createdAt
+          noticeType
+          students {
+            _id
+            firstName
+            lastName
+          }
+        }
       }
     }
       `;
+    //console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -76,7 +89,7 @@ export const createNotices = createAsyncThunk(
 
 export const editNotices = createAsyncThunk(
   "notices/editNotices",
-  async ({ noticeID, studentIDs, details, noticeType }) => {
+  async ({ noticeID, studentIDs, details, noticeType, adminName }) => {
     // console.log(details);
 
     const stringifiedDetails = JSON.stringify(details)
@@ -85,14 +98,19 @@ export const editNotices = createAsyncThunk(
 
     const query = `mutation {
     editNotice(noticeId: "${noticeID}", studentIds: [${studentIDs}], 
-                details: "${stringifiedDetails}", noticeType: "${noticeType}") {
+                details: "${stringifiedDetails}", noticeType: "${noticeType}", editorName: "${adminName}") {
         _id
-        noticeType
         details
         createdAt
+        noticeType
+        students {
+          _id
+          firstName
+          lastName
+        }
     }
   }`;
-    //console.log(query);
+    // console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -121,7 +139,7 @@ export const editNotices = createAsyncThunk(
 );
 
 export interface NoticeState {
-  notices: string[];
+  notices: object[];
   createNoticesPending: boolean;
   createNoticesError: boolean;
   createNoticesSuccessful: boolean;
@@ -169,7 +187,7 @@ export const noticeSlice = createSlice({
         state.editNoticesSuccessful = false;
       })
       .addCase(fetchNotices.fulfilled, (state, action) => {
-        state.notices = action.payload.data.noticesByadmin;
+        state.notices = action.payload.data.noticesForAdmin;
         state.fetchNoticesPending = false;
         state.fetchNoticesError = false;
         state.createNoticesSuccessful = false;
@@ -208,7 +226,6 @@ export const noticeSlice = createSlice({
       .addCase(editNotices.pending, (state) => {
         state.editNoticesPending = true;
         state.editNoticesError = false;
-        state.isNewNoticeAdded = false;
         state.editNoticesSuccessful = false;
       })
       .addCase(editNotices.rejected, (state) => {
@@ -217,10 +234,9 @@ export const noticeSlice = createSlice({
         state.editNoticesSuccessful = false;
       })
       .addCase(editNotices.fulfilled, (state, action) => {
-        state.notices = [action.payload.data.editNotice, ...state.notices];
+        //state.notices = [action.payload.data.editNotice, ...state.notices];
         state.editNoticesPending = false;
         state.editNoticesError = false;
-        state.isNewNoticeAdded = false;
         state.editNoticesSuccessful = true;
       });
   },
@@ -229,5 +245,8 @@ export const noticeSlice = createSlice({
 export const { setIsNewNoticeAdded } = noticeSlice.actions;
 
 export const getIsNewNoticeAdded = (state) => state.isNewNoticeAdded;
+
+export const getNoticeByID = (state, noticeID) =>
+  state.notices.data.find((notice) => notice._id === noticeID);
 
 export default noticeSlice.reducer;

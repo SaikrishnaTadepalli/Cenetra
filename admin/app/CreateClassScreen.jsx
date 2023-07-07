@@ -101,7 +101,11 @@ const CreateClassScreen = () => {
   const onSave = () => {
     if (areAllFieldsFilled(classState)) {
       dispatch(
-        createClass({ details: classState.details, teacherID: selectedTeacher })
+        createClass({
+          details: classState.details,
+          teacherID: selectedTeacher,
+          className: classState.name,
+        })
       )
         .then((response) => {
           if (response.error) {
@@ -109,7 +113,7 @@ const CreateClassScreen = () => {
               "Something went wrong while creating a class please try again."
             );
           } else {
-            console.log(response);
+            // console.log(response);
             setIsButtonDisabled(true);
             const classID = response.payload.data.createClass._id;
             const studentIDs = selectedStudents.map((student) => student.key);

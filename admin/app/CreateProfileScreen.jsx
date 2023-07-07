@@ -178,7 +178,6 @@ const CreateProfileScreen = ({
                 setAllergies([allergiesInitialState]);
                 setMedications([medicationsInitialState]);
                 setBloodGroup([bloodGroupInitialState]);
-                setStudentID("");
                 setStudentName("");
                 setStudentNumber("");
                 setIsEditable(true);

@@ -6,7 +6,13 @@ import ProfileCard from "../src/components/ProfileCard";
 import { approvePendingProfile } from "../src/redux/studentProfileSlice";
 import { useDispatch } from "react-redux";
 
-const NewInfoScreen = ({ differences, studentName, profileID }) => {
+const NewInfoScreen = ({
+  differences,
+  studentName,
+  profileID,
+  setDifferencesObj,
+  differencesObj,
+}) => {
   const dispatch = useDispatch();
   const [isApproved, setIsApproved] = useState(false);
   const [isDenied, setIsDenied] = useState(false);
@@ -25,6 +31,7 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
         if (!response.error) {
           setIsApproved(true);
           setIsPageShown(false);
+          removeObjectFromApprovals();
           setTimeout(() => {
             setIsApproved(false);
           }, 2000);
@@ -39,6 +46,15 @@ const NewInfoScreen = ({ differences, studentName, profileID }) => {
         }
       })
       .catch((error) => console.log(error));
+  };
+
+  const removeObjectFromApprovals = () => {
+    var updatedDifferencesObj = [...differencesObj];
+    updatedDifferencesObj = updatedDifferencesObj.filter(
+      (obj) => obj.profileID !== profileID
+    );
+    console.log(updatedDifferencesObj);
+    setDifferencesObj(updatedDifferencesObj);
   };
 
   const onCancel = () => {

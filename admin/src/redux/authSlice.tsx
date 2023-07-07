@@ -50,6 +50,7 @@ export const loginUser = createAsyncThunk("auth/login", async (adminID) => {
   query {
     classes {
       _id
+      className
       details
       students {
         _id

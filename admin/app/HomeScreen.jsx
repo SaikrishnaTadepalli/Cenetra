@@ -19,6 +19,7 @@ import {
   getisNewClassAdded,
   setIsNewClassAdded,
 } from "../src/redux/classSlice";
+import { getViewUrl } from "../src/redux/mediaSlice";
 
 const HomeScreen = () => {
   const { loginLoading } = useSelector((state) => state.auth);
@@ -29,11 +30,12 @@ const HomeScreen = () => {
   const classes = c2 && JSON.parse(c2).classes;
   const dispatch = useDispatch();
   const [students, setStudents] = useState([]);
+  const [imageUrl, setImageUrl] = useState("");
   const [isCreateClassSelected, setIsCreateClassSelected] = useState(false);
   //console.log(classes);
   const classInfo = classes.map((item) => ({
     key: item._id,
-    value: item.details,
+    value: item.className,
     students: item.students,
   }));
   const [selectedClasses, setSelectedClasses] = useState([]);
@@ -73,6 +75,7 @@ const HomeScreen = () => {
   const onPressDelete = (idx) => {
     const updatedItems = [...selectedClasses];
     updatedItems.splice(idx, 1);
+    setStudentID("");
     setSelectedClasses(updatedItems);
   };
 
@@ -96,6 +99,16 @@ const HomeScreen = () => {
             // console.log("-----response-------");
             setError("500");
           }
+        } else {
+          // console.log(response.payload.profilePic);
+          dispatch(getViewUrl(response.payload.profilePic)).then((response) => {
+            if (response.error) {
+              setError("Error while retrieving image.");
+            } else {
+              // console.log(response);
+              setImageUrl(response.payload.data.getS3ViewUrl);
+            }
+          });
         }
       })
       .catch((error) => console.log("Error in Profile Screen screen", error));
@@ -191,7 +204,7 @@ const HomeScreen = () => {
                   </Text>
                 </View>
               ) : studentID ? (
-                <ProfileScreen curStudentID={studentID} />
+                <ProfileScreen curStudentID={studentID} imageUrl={imageUrl} />
               ) : null}
             </View>
           </View>
