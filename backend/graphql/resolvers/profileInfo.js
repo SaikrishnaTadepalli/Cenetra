@@ -198,6 +198,27 @@ module.exports = {
     }
   },
 
+  denyProfileInfoEdit: async (args) => {
+    try {
+      const fetchedAdmin = await Admin.findById(args.adminId);
+
+      if (!fetchedAdmin) {
+        throw error("Admin does not exist.");
+      }
+
+      const fetchedPendingProfileInfo =
+        await ProfileInfoPending.findByIdAndRemove(args.profileId);
+
+      if (!fetchedPendingProfileInfo) {
+        throw error("Pending Profile Info does not exist.");
+      }
+
+      return transformProfile(fetchedPendingProfileInfo);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   changeStudentProfilePic: async (args) => {
     try {
       // Make sure to have uploaded the Image to s3 first

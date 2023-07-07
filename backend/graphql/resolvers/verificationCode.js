@@ -197,7 +197,7 @@ module.exports = {
 
       // Send the SMS verification code to the user's device
       const message = `Your verification code is: ${code}`;
-      await sendSMS(admin.phoneNumber, message);
+      // await sendSMS(admin.phoneNumber, message);
 
       return transformVerificationCode(result);
     } catch (err) {
