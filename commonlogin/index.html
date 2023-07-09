@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Page</title>
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Opensans", sans-serif;
+        background-color: white;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      .buttons-container {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .login-container {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-self: center;
+      }
+
+      .welcome-text {
+        font-size: 64px;
+        font-weight: bold;
+        color: #23342c;
+        margin-bottom: 40px;
+        align-self: center;
+        margin-left: 100px;
+      }
+
+      .login-button-container {
+        display: flex;
+        justify-content: center;
+        width: 150px;
+        height: 45px;
+        background-color: #23342c;
+        border-radius: 100px;
+        margin-right: 20px;
+        margin-bottom: 30px;
+      }
+
+      .login-button-text {
+        align-self: center;
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      .image-container {
+        width: 100%;
+        height: 100%;
+        justify-content: flex-end;
+      }
+    </style>
+    <script>
+      function redirectToTeacherWebsite() {
+        window.location.href = "http://3.82.211.55/"; // Redirect to website 1
+      }
+
+      function redirectToAdminWebsite() {
+        window.location.href = "http://18.205.188.42/"; // Redirect to website 2
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="login-container">
+        <h1 class="welcome-text">Welcome to Cenetra</h1>
+        <div class="buttons-container">
+          <button
+            class="login-button-container"
+            onclick="redirectToTeacherWebsite()"
+          >
+            <span class="login-button-text">Teacher</span>
+          </button>
+          <button
+            class="login-button-container"
+            onclick="redirectToAdminWebsite()"
+          >
+            <span class="login-button-text">Admin</span>
+          </button>
+        </div>
+      </div>
+      <div class="image-container">
+        <img
+          src="SchoolLogo.png"
+          style="width: 100%; height: 100%; background-color: #f8edeb"
+        />
+      </div>
+    </div>
+  </body>
+</html>

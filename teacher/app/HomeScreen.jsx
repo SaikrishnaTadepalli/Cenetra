@@ -40,12 +40,12 @@ const HomeScreen = () => {
             setError("500");
           }
         } else {
-          console.log(response.payload.profilePic);
+          //  console.log(response.payload.profilePic);
           dispatch(getViewUrl(response.payload.profilePic)).then((response) => {
             if (response.error) {
               setError("Error while retrieving image.");
             } else {
-              console.log(response);
+              // console.log(response);
               setImageUrl(response.payload.data.getS3ViewUrl);
             }
           });

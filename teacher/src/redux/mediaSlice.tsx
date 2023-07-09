@@ -72,7 +72,7 @@ export const getViewUrl = createAsyncThunk(
       const query = `query {
       getS3ViewUrl(fileName: "${fileName}") 
     }`;
-      console.log(query);
+      //  console.log(query);
       const response = await fetch(envs, {
         method: "POST",
         headers: {

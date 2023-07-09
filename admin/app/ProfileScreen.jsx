@@ -36,16 +36,22 @@ const ProfileScreen = ({ curStudentID, imageUrl }) => {
   const retrieveData = async () => {
     dispatch(fetchProfile(curStudentID))
       .then((response) => {
-        console.log("fetching data");
+        // console.log("fetching data");
         // console.log(response);
         if (response.error) {
           setError(response.error);
         } else {
           setError("");
-          console.log(response.payload.data);
+          // console.log(response.payload.data);
         }
       })
-      .catch((error) => console.log("Error in Profile Screen screen", error));
+      .catch((error) => {
+        console.error(error);
+        setError("Something went wrong please try again");
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+      });
   };
 
   const renderText = (infoType, info) => {

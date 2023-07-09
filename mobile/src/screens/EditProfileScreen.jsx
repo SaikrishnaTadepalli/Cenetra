@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "InterRegular",
     width: "70%",
-    flex: "wrap",
+    flexWrap: "wrap",
   },
   healthInfoContainer: {
     flexDirection: "row",

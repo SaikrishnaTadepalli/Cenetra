@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import envs from "../config/env";
+import envs from "../../config";
 import Constants from "expo-constants";
 
-const apiUrl2 = Constants.expoConfig.extra.apiUrl2;
-const apiUrl = Constants.expoConfig.extra.apiUrl;
+const apiUrl2 = Constants.expoConfig.extra.BACKEND_URI;
+const apiUrl = Constants.expoConfig.extra.BACKEND_URI2;
 
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (studentNum, { rejectWithValue }) => {
-    //console.log("!!!!!", envs);
+    // console.log("!!!!!", Constants.manifest.extra.BACKEND_URI, BACKEND_URI);
     const query = `query{
     studentByStudentNumber(studentNumber: "${studentNum}") {
         _id
@@ -80,7 +80,7 @@ export const verifyLogin = createAsyncThunk(
   "auth/verify",
   async ({ studentID, code }, { rejectWithValue }) => {
     //console.log(studentID, code);
-    console.log("verifyCode", envs, process.env.BACKEND_URI);
+    // console.log("verifyCode", envs, process.env.BACKEND_URI);
     const query = `query {
       verifyCode(userId: "${studentID}" code: "${code}") 
   }`;
@@ -125,7 +125,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  isLoggedIn: true,
+  isLoggedIn: false,
   curStudentDetails: "",
   loginLoading: false,
   loginError: false,

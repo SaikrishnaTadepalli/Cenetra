@@ -128,7 +128,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
         })
         .catch((error) => {
           setTimeout(() => setError(""));
-          console.log(error);
+          console.error(error);
         });
     } else {
       setIsInputEmpty(true);

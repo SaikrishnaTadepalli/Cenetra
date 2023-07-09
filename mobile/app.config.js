@@ -3,19 +3,17 @@ module.exports = {
     name: "Cenetra",
     slug: "cenetra",
     description: "Mobile first daycare application",
-    version: "1.0.3",
+    version: "1.1.1",
     orientation: "portrait",
     icon: "./assets/images/AppIcon.png",
     userInterfaceStyle: "light",
     extra: {
-      apiUrl: process.env.BACKEND_URI,
-      //apiUrl2: "http://18.206.57.12:8080/graphql",
       eas: {
         projectId: "7cb0273a-ca8a-494b-8af6-0fffb36709bf",
       },
     },
     splash: {
-      image: "./assets/images/SplashScreen.png",
+      image: "./assets/images/LogoSplashScreen.png",
       resizeMode: "contain",
       backgroundColor: "#EAECFF",
     },
@@ -26,7 +24,7 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.cenetra.cenetra",
-      buildNumber: "4",
+      buildNumber: "12",
     },
     android: {
       adaptiveIcon: {

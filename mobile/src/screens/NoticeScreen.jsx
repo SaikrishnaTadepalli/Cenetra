@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { Ionicons } from "@expo/vector-icons";
-import envs from "../config/env";
+import envs from "../../config";
 
 import NoticeCard from "../components/NoticeCard";
 import colors from "../constants/Colors";

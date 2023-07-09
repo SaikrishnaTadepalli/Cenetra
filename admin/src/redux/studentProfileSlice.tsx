@@ -160,6 +160,54 @@ export const approvePendingProfile = createAsyncThunk(
   }
 );
 
+export const denyPendingProfile = createAsyncThunk(
+  "studentProfile/denyPendingProfile",
+  async ({ adminID, profileID }, { rejectWithValue }) => {
+    //console.log(profileID, adminID);
+    const query = `
+    mutation {
+      denyProfileInfoEdit(adminId:"${adminID}", profileId:"${profileID}") {
+          _id
+      }
+    }`;
+    // console.log(query, envs);
+    try {
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      //console.log(response);
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          throw new Error(
+            "Response status 500: Error while denying pending student profile for admin"
+          );
+          //return "500";
+        } else if (response.status === 400) {
+          console.error(
+            "Response status 400 while denying pending student profile for admin"
+          );
+          throw new Error(
+            "Response status 400 while denying pending student profile for admin"
+          );
+        }
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        "Catch: Error while denying pending student profile for admin",
+        error
+      );
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const addNewProfile = createAsyncThunk(
   "studentProfile/addNewProfile",
   async ({ studentID, details }, { rejectWithValue }) => {
@@ -224,6 +272,9 @@ export interface ProfileState {
   approvePendingProfileLoading: boolean;
   approvePendingProfileError: boolean;
   approvePendingProfileSuccessful: boolean;
+  denyPendingProfileLoading: boolean;
+  denyPendingProfileError: boolean;
+  denyPendingProfileSuccessful: boolean;
   addNewProfileLoading: boolean;
   addNewProfileError: boolean;
   addNewProfileSuccessful: boolean;
@@ -243,6 +294,9 @@ const initialState: ProfileState = {
   approvePendingProfileLoading: null,
   approvePendingProfileError: false,
   approvePendingProfileSuccessful: false,
+  denyPendingProfileLoading: null,
+  denyPendingProfileError: false,
+  denyPendingProfileSuccessful: false,
   addNewProfileLoading: false,
   addNewProfileError: false,
   addNewProfileSuccessful: false,
@@ -313,9 +367,24 @@ export const studentProfileSlice = createSlice({
         state.approvePendingProfileSuccessful = false;
       })
       .addCase(approvePendingProfile.fulfilled, (state, action) => {
-        state.addNewProfileLoading = false;
-        state.addNewProfileError = false;
-        state.addNewProfileSuccessful = true;
+        state.approvePendingProfileLoading = false;
+        state.approvePendingProfileError = false;
+        state.approvePendingProfileSuccessful = true;
+      })
+      .addCase(denyPendingProfile.pending, (state) => {
+        state.denyPendingProfileLoading = true;
+        state.denyPendingProfileError = false;
+        state.denyPendingProfileSuccessful = false;
+      })
+      .addCase(denyPendingProfile.rejected, (state) => {
+        state.denyPendingProfileLoading = null;
+        state.denyPendingProfileError = true;
+        state.denyPendingProfileSuccessful = false;
+      })
+      .addCase(denyPendingProfile.fulfilled, (state) => {
+        state.denyPendingProfileLoading = false;
+        state.denyPendingProfileError = false;
+        state.denyPendingProfileSuccessful = true;
       })
       .addCase(addNewProfile.pending, (state) => {
         state.addNewProfileLoading = true;

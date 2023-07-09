@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import envs from "../config/env";
+import envs from "../../config";
 
 export const getMediaByDate = createAsyncThunk(
   "media/getMediaByDate",

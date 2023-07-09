@@ -69,12 +69,12 @@ const AddStudentScreen = () => {
       //console.log(studentState);
       dispatch(createStudent(studentState))
         .then((response) => {
-          console.log(response);
+          //response;
           if (response.error) {
             setError(response.payload.message);
             setTimeout(() => setError(""), 2000);
           } else {
-            console.log(response);
+            //console.log(response);
             if (!createStudentPending) {
               setIsSaved(true);
               setIsButtonDisabled(true);

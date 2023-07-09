@@ -4,6 +4,7 @@ import envs from "../../config/env";
 export const getTeacherID = createAsyncThunk(
   "auth/getTeacherID",
   async (teacherNum, { rejectWithValue }) => {
+    //console.log(process.env.BACKEND_URI);
     const query = `query{
     teacherByTeacherNumber(teacherNumber: "${teacherNum}") {
         _id
@@ -91,6 +92,7 @@ export const sendSMS = createAsyncThunk(
           code
       }
   }`;
+    console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",

@@ -38,7 +38,7 @@ const LoginScreen = () => {
           const adminID = responseData._id;
           const adminName =
             responseData.firstName + " " + responseData.lastName;
-          console.log(adminID);
+          // console.log(adminID);
           localStorage.setItem("adminID", adminID);
           localStorage.setItem("adminName", adminName);
           setIsDisabled(true);

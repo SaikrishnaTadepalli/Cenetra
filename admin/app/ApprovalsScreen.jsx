@@ -25,6 +25,7 @@ const ApprovalsScreen = () => {
     fetchPendingProfileLoading,
     fetchProfileLoading,
     approvePendingProfileSuccessful,
+    denyPendingProfileSuccessful,
   } = useSelector((state) => state.studentProfile);
   const { isLoggedIn } = useSelector((state) => state.auth);
   const [error, setError] = useState("");
@@ -228,7 +229,7 @@ const ApprovalsScreen = () => {
 
   useEffect(() => {
     retrieveData();
-  }, [approvePendingProfileSuccessful]);
+  }, [approvePendingProfileSuccessful, denyPendingProfileSuccessful]);
 
   const getInfo = (updatedStudentData, oldStudentData, d) => {
     //console.log(updatedStudentData, oldStudentData);
@@ -289,7 +290,7 @@ const ApprovalsScreen = () => {
       </>
     );
   };
-  console.log(differencesObj);
+  // console.log(differencesObj);
   return (
     <>
       <View style={styles.container}>

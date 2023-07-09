@@ -21,7 +21,6 @@ import { fetchStudentID } from "../redux/authSlice";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllMedia } from "../redux/mediaSlice";
-import { BACKEND_URI } from "../../utils/config";
 import moment from "moment-timezone";
 import { Ionicons } from "@expo/vector-icons";
 

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import envs from "../config/env";
+import envs from "../../config";
 
 export const fetchProfile = createAsyncThunk(
   "studentProfile/fetchProfile",
@@ -35,9 +35,11 @@ export const fetchProfile = createAsyncThunk(
 
       const details = data.data.getLatestProfileInfo.details;
       const cleanedData = details.replace(/\\/g, "");
+      const parsedDetails = JSON.parse(cleanedData);
+      //console.log(parsedDetails);
       const result = {
         lastUpdated: data.data.getLatestProfileInfo.createdAt,
-        studentInfo: JSON.parse(cleanedData),
+        studentInfo: parsedDetails,
         profilePic: data.data.getLatestProfileInfo.profilePic,
       };
       return result;

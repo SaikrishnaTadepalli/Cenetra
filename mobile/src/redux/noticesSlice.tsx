@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import envs from "../config/env";
+import envs from "../../config";
 
 export const fetchNotices = createAsyncThunk(
   "notices/fetchNotices",
   async (studentID, { rejectWithValue }) => {
-    //console.log(studentID);
+    console.log(envs, process.env);
     const query = `
             query {
                 noticesForStudent(studentId:"${studentID}") {
