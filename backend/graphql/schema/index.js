@@ -78,6 +78,14 @@ type ProfileInfo {
     profilePic: String
 }
 
+type LogTemplate {
+    _id: ID!
+    name: String!
+    template: String!
+    createdAt: String!
+    updatedAt: String!
+}
+
 type LogGroup {
     segment: String!
     data: [Log!]!
@@ -156,6 +164,9 @@ type RootQuery {
     getAllMatchedPendingProfileInfos: [[ProfileInfo]!]!
 
     verifyCode(userId: ID!, code: String!): Boolean!
+
+    getAllLogTemplates: [LogTemplate!]!
+    getLogTemplate(logTemplateId: ID!): LogTemplate!
 }
 
 type RootMutation {
@@ -194,6 +205,10 @@ type RootMutation {
     sendSMSCodeStudent(studentId: ID!): VerificationCode!
     sendSMSCodeTeacher(teacherId: ID!): VerificationCode!
     sendSMSCodeAdmin(adminId: ID!): VerificationCode!
+
+    createLogTemplate(name: String!, template: String!): LogTemplate!
+    editLogTemplate(logTemplateId: ID!, name: String!, template: String!): LogTemplate!
+    deleteLogTemplate(logTemplateId: ID!): LogTemplate!
 }
 
 schema {
