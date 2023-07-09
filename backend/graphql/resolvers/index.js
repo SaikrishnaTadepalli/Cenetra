@@ -7,6 +7,7 @@ const noticeResolver = require("./notice");
 const mediaResolver = require("./media");
 const profileInfoResolver = require("./profileInfo");
 const verificationCodeResolver = require("./verificationCode");
+const logTemplateResolver = require("./logTemplate");
 
 const rootResolver = {
   ...classResolver,
@@ -18,6 +19,7 @@ const rootResolver = {
   ...mediaResolver,
   ...profileInfoResolver,
   ...verificationCodeResolver,
+  ...logTemplateResolver,
 };
 
 module.exports = rootResolver;
