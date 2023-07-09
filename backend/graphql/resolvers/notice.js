@@ -161,7 +161,7 @@ module.exports = {
 
       const message = `A New Notice has been Uploded!`;
       fetchedStudents.map(async (fetchedStudent) => {
-        //await sendSMS(fetchedStudent.primaryContactNumber, message);
+        await sendSMS(fetchedStudent.primaryContactNumber, message);
       });
 
       return transformNotice(result, args.teacherId);

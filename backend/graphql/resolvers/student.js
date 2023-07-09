@@ -1,7 +1,6 @@
 const Student = require("../../models/student");
 
 const { deleteS3Object, DEFAULT_PROFILE_PIC } = require("../../utils/s3");
-const { sendSMS } = require("../../utils/sms");
 
 const getNewNum = (numDigits) => {
   const min = 10 ** (numDigits - 1);

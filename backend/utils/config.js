@@ -23,6 +23,8 @@ const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_NUMBER = process.env.TWILIO_NUMBER;
 
+const SHOULD_SEND_SMS = process.env.SHOULD_SEND_SMS === "true";
+
 module.exports = {
   MONGODB_URI,
   PORT,
@@ -37,4 +39,5 @@ module.exports = {
   TWILIO_ACCOUNT_SID,
   TWILIO_AUTH_TOKEN,
   TWILIO_NUMBER,
+  SHOULD_SEND_SMS,
 };
