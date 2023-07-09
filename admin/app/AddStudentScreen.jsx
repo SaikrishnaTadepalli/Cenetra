@@ -69,7 +69,7 @@ const AddStudentScreen = () => {
       //console.log(studentState);
       dispatch(createStudent(studentState))
         .then((response) => {
-          response;
+          //response;
           if (response.error) {
             setError(response.payload.message);
             setTimeout(() => setError(""), 2000);
