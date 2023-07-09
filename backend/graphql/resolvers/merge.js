@@ -95,6 +95,15 @@ const transformVerificationCode = (verificationCode) => {
   return rtn;
 };
 
+const transformLogTemplate = (profileInfo) => {
+  return {
+    ...profileInfo._doc,
+    _id: profileInfo.id,
+    createdAt: dateToString(profileInfo._doc.createdAt),
+    updatedAt: dateToString(profileInfo._doc.updatedAt),
+  };
+};
+
 const teacher = async (teacherId) => {
   try {
     const fetchedTeacher = await Teacher.findById(teacherId);
@@ -149,3 +158,4 @@ exports.transformNotice = transformNotice;
 exports.transformMedia = transformMedia;
 exports.transformProfile = transformProfile;
 exports.transformVerificationCode = transformVerificationCode;
+exports.transformLogTemplate = transformLogTemplate;
