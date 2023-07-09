@@ -16,6 +16,7 @@ export const fetchLogs = createAsyncThunk("logs/getLogs", async (studentID) => {
     }
 }
 `;
+  console.log(query, envs);
   try {
     const response = await fetch(envs, {
       method: "POST",

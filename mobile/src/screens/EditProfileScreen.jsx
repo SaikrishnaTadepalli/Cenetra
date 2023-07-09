@@ -70,7 +70,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   const onSave = async () => {
     const updatedInfo = {
       name: studentData.name,
-      uri: studentData.uri,
+      uri: route.params.profilePic,
       student_number: studentData.student_number,
       information: [
         { sectionHeader: "PRIMARY CONTACTS", section: primaryContacts },
@@ -140,7 +140,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       <View style={styles.profileContainer}>
         <View style={styles.imageAndChildInfoContainer}>
           <Image
-            source={{ uri: studentData.uri }}
+            source={{ uri: route.params.profilePic }}
             width={60}
             height={60}
             style={styles.image}

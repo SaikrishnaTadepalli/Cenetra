@@ -12,6 +12,7 @@ export const fetchProfile = createAsyncThunk(
           }
           createdAt
           details
+          profilePic
         }
       }
             `;
@@ -49,6 +50,7 @@ export const fetchProfile = createAsyncThunk(
         lastUpdated: data.data.getLatestProfileInfo.createdAt,
         studentInfo: JSON.parse(cleanedData),
         id: data.data.getLatestProfileInfo.student._id,
+        profilePic: data.data.getLatestProfileInfo.profilePic,
       };
       return result;
     } catch (error) {

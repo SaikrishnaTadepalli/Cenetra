@@ -65,10 +65,44 @@ export const uplaodMedia = createAsyncThunk(
   }
 );
 
+export const getViewUrl = createAsyncThunk(
+  "media/viewUrl",
+  async (fileName, { rejectWithValue }) => {
+    try {
+      const query = `query {
+      getS3ViewUrl(fileName: "${fileName}") 
+    }`;
+      console.log(query);
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          console.error("viewURL error while fetching student profile pic");
+          throw new Error("Network error");
+        } else if (response.status === 400) {
+          console.error("viewURL error while fetching student profile pic");
+          throw new Error("Invalid fileName");
+        }
+      }
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      console.error("viewUrl error in getviewurl for admin", error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export interface MediaState {
-  uploadUrl: string;
-  uploadUrlLoading: boolean;
-  uploadUrlError: boolean;
+  viewUrl: string;
+  viewUrlLoading: boolean;
+  viewUrlError: boolean;
   // SMSLoading: boolean;
   // SMSError: boolean;
   // verificationLoading: boolean;
@@ -76,9 +110,9 @@ export interface MediaState {
 }
 
 const initialState: MediaState = {
-  uploadUrl: "",
-  uploadUrlLoading: false,
-  uploadUrlError: false,
+  viewUrl: "",
+  viewUrlLoading: false,
+  viewUrlError: false,
   // SMSLoading: false,
   // SMSError: false,
   // verificationLoading: false,
@@ -91,18 +125,18 @@ export const mediaSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getUploadUrl.pending, (state) => {
-        state.uploadUrlLoading = true;
-        state.uploadUrlError = false;
+      .addCase(getViewUrl.pending, (state) => {
+        state.viewUrlLoading = true;
+        state.viewUrlError = false;
       })
-      .addCase(getUploadUrl.rejected, (state) => {
-        state.uploadUrlLoading = null;
-        state.uploadUrlError = true;
+      .addCase(getViewUrl.rejected, (state) => {
+        state.viewUrlLoading = null;
+        state.viewUrlError = true;
       })
-      .addCase(getUploadUrl.fulfilled, (state, action) => {
-        state.uploadUrl = action.payload.data.getS3UploadUrl;
-        state.uploadUrlLoading = false;
-        state.uploadUrlError = false;
+      .addCase(getViewUrl.fulfilled, (state, action) => {
+        state.viewUrl = action.payload.data.getS3viewUrl;
+        state.viewUrlLoading = false;
+        state.viewUrlError = false;
       });
   },
 });

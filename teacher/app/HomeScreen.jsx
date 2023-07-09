@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import colors from "../src/constants/Colors";
 import ProfileScreen from "./ProfileScreen";
 import { fetchProfile } from "../src/redux/studentProfileSlice";
+import { getViewUrl } from "../src/redux/mediaSlice";
 
 const HomeScreen = () => {
   const { loginLoading } = useSelector((state) => state.auth);
@@ -20,6 +21,7 @@ const HomeScreen = () => {
   const s2 = JSON.parse(s);
   const [error, setError] = useState("");
   const students = s2 && JSON.parse(s2).students;
+  const [imageUrl, setImageUrl] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -37,6 +39,16 @@ const HomeScreen = () => {
             // console.log("-----response-------");
             setError("500");
           }
+        } else {
+          console.log(response.payload.profilePic);
+          dispatch(getViewUrl(response.payload.profilePic)).then((response) => {
+            if (response.error) {
+              setError("Error while retrieving image.");
+            } else {
+              console.log(response);
+              setImageUrl(response.payload.data.getS3ViewUrl);
+            }
+          });
         }
       })
       .catch((error) => console.error("Error in Profile Screen screen", error));
@@ -106,7 +118,7 @@ const HomeScreen = () => {
                   </Text>
                 </View>
               ) : (
-                <ProfileScreen curStudentID={studentID} />
+                <ProfileScreen curStudentID={studentID} imageUrl={imageUrl} />
               )}
             </View>
           </View>

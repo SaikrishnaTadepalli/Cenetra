@@ -85,7 +85,9 @@ const LogsScreen = ({
   };
 
   const renderItem = ({ item }) => {
-    const date = moment(item.createdAt).utc().format("MMMM YYYY");
+    const itemDate = moment(item.createdAt).utc().format("MMMM YYYY");
+    const curMonth = moment().format("MMMM YYYY");
+    const date = curMonth === itemDate ? "This Month" : itemDate;
     return (
       <>
         {isExpanded[date] ? (

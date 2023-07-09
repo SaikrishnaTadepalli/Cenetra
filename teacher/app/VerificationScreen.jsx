@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
     color: "#23342C",
     fontSize: 16,
     fontFamily: "InterRegular",
+    width: "96%",
     textAlign: "right",
-    // paddingLeft: 220,
   },
   boxContainer: {
     flexDirection: "row",

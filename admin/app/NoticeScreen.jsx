@@ -3,15 +3,24 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { setIsNewNoticeAdded } from "../src/redux/noticeSlice";
+import { getNoticeByID, setIsNewNoticeAdded } from "../src/redux/noticeSlice";
 
 const NoticeScreen = ({ noticeID, setNoticeID, setIsOldNoticeSelected }) => {
   const { notices } = useSelector((state) => state.notices);
   const dispatch = useDispatch();
+  const findNoticeById = (id) => {
+    let foundNotice = null;
 
-  const notice = notices
-    .flatMap((innerArray) => innerArray)
-    .find((obj) => obj._id === noticeID);
+    notices.forEach((segment) => {
+      const notice = segment.data.find((item) => item._id === id);
+      if (notice) {
+        foundNotice = notice;
+      }
+    });
+
+    return foundNotice;
+  };
+  const notice = notices && findNoticeById(noticeID);
 
   const details = notice ? JSON.parse(notice.details) : "";
 

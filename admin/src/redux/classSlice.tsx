@@ -10,7 +10,7 @@ export const addStudentsToClass = createAsyncThunk(
       }
     }
   `;
-    console.log(query);
+    // console.log(query);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -89,6 +89,7 @@ export const fetchClasses = createAsyncThunk("class/fetchClasses", async () => {
     query {
       classes {
         _id
+        className
         details
         students {
           _id

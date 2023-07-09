@@ -112,10 +112,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   answerText: {
-    marginTop: 10,
     fontSize: 15,
     fontFamily: "InterRegular",
-    marginLeft: 20,
   },
   checkBoxContainer: {
     marginLeft: 20,

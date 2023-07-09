@@ -9,6 +9,7 @@ export const fetchProfile = createAsyncThunk(
         getLatestProfileInfo(studentId:"${studentID}") {
           createdAt
           details
+          profilePic
         }
       }
             `;
@@ -37,6 +38,7 @@ export const fetchProfile = createAsyncThunk(
       const result = {
         lastUpdated: data.data.getLatestProfileInfo.createdAt,
         studentInfo: JSON.parse(cleanedData),
+        profilePic: data.data.getLatestProfileInfo.profilePic,
       };
       return result;
     } catch (error) {

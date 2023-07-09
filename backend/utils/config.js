@@ -3,9 +3,9 @@ require("dotenv").config();
 const PORT = process.env.PORT;
 
 const MONGODB_URI =
-  process.env.NODE_ENV === "test"
-    ? process.env.TEST_MONGODB_URI
-    : process.env.MONGODB_URI;
+  process.env.NODE_ENV === "DEV"
+    ? process.env.MONGODB_URI_DEV
+    : process.env.MOBGODB_URI_PROD;
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRY = parseInt(process.env.JWT_EXPIRY);

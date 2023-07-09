@@ -51,8 +51,8 @@ const ApprovalsScreen = () => {
     if (student1.name !== student2.name) {
       console.log("Name difference:", student1.name, "vs", student2.name);
     }
-    console.log(student1.information && student1.information);
-    console.log(student2.information);
+    // console.log(student1.information && student1.information);
+    // console.log(student2.information);
     if (student1.information && student2.information) {
       for (let i = 0; i < 5; i++) {
         const info1 = student1.information[i];
@@ -289,7 +289,7 @@ const ApprovalsScreen = () => {
       </>
     );
   };
-  //console.log(differencesObj);
+  console.log(differencesObj);
   return (
     <>
       <View style={styles.container}>
@@ -352,6 +352,8 @@ const ApprovalsScreen = () => {
                     differences={dataDifferences}
                     studentName={studentName}
                     profileID={profileID}
+                    differencesObj={differencesObj}
+                    setDifferencesObj={setDifferencesObj}
                   />
                 ) : null}
               </View>
