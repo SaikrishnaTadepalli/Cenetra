@@ -1,11 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import envs from "../config/env";
-import Constants from "expo-constants";
+import envs from "../../config";
 
 export const fetchLogs = createAsyncThunk(
   "logs/fetchLogs",
   async (studentID, { rejectWithValue }) => {
-    console.log(Constants.expoConfig.extra.apiUrl, envs);
     const query = `
   query {
     logs(studentId: "${studentID}") {
@@ -20,7 +18,7 @@ export const fetchLogs = createAsyncThunk(
     }
 }
 `;
-    //console.log(query);
+    console.log(envs);
     try {
       const response = await fetch(envs, {
         method: "POST",

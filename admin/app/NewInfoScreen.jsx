@@ -3,7 +3,10 @@ import React, { useState } from "react";
 
 import colors from "../src/constants/Colors";
 import ProfileCard from "../src/components/ProfileCard";
-import { approvePendingProfile } from "../src/redux/studentProfileSlice";
+import {
+  approvePendingProfile,
+  denyPendingProfile,
+} from "../src/redux/studentProfileSlice";
 import { useDispatch } from "react-redux";
 
 const NewInfoScreen = ({
@@ -18,6 +21,7 @@ const NewInfoScreen = ({
   const [isDenied, setIsDenied] = useState(false);
   const [error, setError] = useState("");
   const [isPageShown, setIsPageShown] = useState(true);
+
   const onSave = () => {
     const adminID = localStorage.getItem("adminID");
 
@@ -31,7 +35,6 @@ const NewInfoScreen = ({
         if (!response.error) {
           setIsApproved(true);
           setIsPageShown(false);
-          removeObjectFromApprovals();
           setTimeout(() => {
             setIsApproved(false);
           }, 2000);
@@ -45,24 +48,42 @@ const NewInfoScreen = ({
           }, 2000);
         }
       })
-      .catch((error) => console.log(error));
-  };
-
-  const removeObjectFromApprovals = () => {
-    var updatedDifferencesObj = [...differencesObj];
-    updatedDifferencesObj = updatedDifferencesObj.filter(
-      (obj) => obj.profileID !== profileID
-    );
-    console.log(updatedDifferencesObj);
-    setDifferencesObj(updatedDifferencesObj);
+      .catch((error) => console.error(error));
   };
 
   const onCancel = () => {
-    setIsDenied(true);
-    setIsPageShown(false);
-    setTimeout(() => {
-      setIsDenied(false);
-    }, 2000);
+    const adminID = localStorage.getItem("adminID");
+
+    dispatch(
+      denyPendingProfile({
+        adminID: adminID,
+        profileID: profileID,
+      })
+    )
+      .then((response) => {
+        if (!response.error) {
+          setIsDenied(true);
+          setIsPageShown(false);
+          setTimeout(() => {
+            setIsDenied(false);
+          }, 2000);
+        } else {
+          setIsPageShown(false);
+          setError(
+            "There was an error while approving the change. Please try again."
+          );
+          setTimeout(() => {
+            setError("");
+          }, 2000);
+        }
+      })
+      .catch((error) => {
+        setError("Something went wrong please try again");
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+        console.error(error);
+      });
   };
 
   const printSectionHeader = (sectionHeader) => {

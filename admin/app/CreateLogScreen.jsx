@@ -124,7 +124,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
         })
         .catch((error) => {
           setTimeout(() => setError(""));
-          console.log(error);
+          console.error(error);
         });
     } else {
       setIsInputEmpty(true);

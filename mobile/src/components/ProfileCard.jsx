@@ -8,7 +8,7 @@ import {
 import React from "react";
 import colors from "../constants/Colors";
 
-const ProfileCard = ({ sectionHeader, data, title }) => {
+const ProfileCard = ({ sectionHeader, data }) => {
   const renderText = (infoType, info) => {
     info.trim();
     return (
@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
   infoInputText: {
     fontSize: 16,
     fontFamily: "InterRegular",
-    width: "70%",
-    flex: "wrap",
+    width: "77%",
+    flexWrap: "wrap",
   },
   healthInfoContainer: {
     flexDirection: "row",

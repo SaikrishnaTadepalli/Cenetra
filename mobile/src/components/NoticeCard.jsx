@@ -68,7 +68,8 @@ const NoticeCard = ({ isRead, details, date, type, noticeID }) => {
       <TouchableOpacity
         style={[
           styles.cardContainer,
-          { borderColor: isNoticeRead ? "#A0B2AF" : "#699BF7" },
+          { borderColor: "#A0B2AF" },
+          // { borderColor: isNoticeRead ? "#A0B2AF" : "#699BF7" },
         ]}
         onPress={() => handleExpandNotice(date)}
       >

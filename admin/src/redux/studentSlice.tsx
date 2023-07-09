@@ -12,7 +12,7 @@ export const createStudent = createAsyncThunk(
       }
     }
   `;
-    console.log(query, studentInput);
+    //console.log(query, studentInput);
     try {
       const response = await fetch(envs, {
         method: "POST",

@@ -111,7 +111,7 @@ const HomeScreen = () => {
           });
         }
       })
-      .catch((error) => console.log("Error in Profile Screen screen", error));
+      .catch((error) => console.error("Error in Profile Screen screen", error));
   };
 
   // useEffect(() => {

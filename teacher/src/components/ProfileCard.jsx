@@ -47,14 +47,7 @@ const ProfileCard = ({ sectionHeader, data, title }) => {
               {renderText("Relationship:", item.relationship)}
               {renderText("Phone Number:", item.phoneNumber)}
               {renderText("Email:", item.email)}
-              <View style={styles.infoLineContainer}>
-                <Text style={[styles.infoTypeText, { width: "48%" }]}>
-                  Home address:
-                </Text>
-                <Text style={styles.infoInputText}>
-                  123, Salt Park , Bridgerton Ave sometown, Canada{" "}
-                </Text>
-              </View>
+              {renderText("Address:", item.address)}
             </View>
           ))}
         </View>

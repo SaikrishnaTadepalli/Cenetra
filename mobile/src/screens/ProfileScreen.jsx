@@ -89,7 +89,7 @@ const ProfileScreen = ({ navigation }) => {
     getPendingProfile();
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
-  //console.log(isEditDisabled);
+  //console.log(studentInfo);
   return (
     <>
       {fetchProfileError ? (
