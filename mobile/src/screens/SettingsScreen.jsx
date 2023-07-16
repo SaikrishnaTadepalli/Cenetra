@@ -15,16 +15,22 @@ import { logout } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import FeedbackScreen from "./FeedbackScreen";
 
 const SettingsScreen = ({ navigation }) => {
   const phoneNumber = "+91 76206 33298";
   const email = "yhiigroup@gmail.com";
   const latitude = 15.361291547403729;
   const longitude = 75.15513588749864;
-  const maps = `http://maps.apple.com/?ll=${latitude},${longitude}`;
+  const maps = `maps://app?daddr=${latitude},${longitude}&dirflg=d&t=m`;
+  const fullAddress = "YHI International Group's Discovery hub";
+  const url = Platform.select({
+    ios: maps,
+    android: `geo:0,0?q=${fullAddress}`,
+  });
   const icons = [
     { icon: "call-outline", url: `tel:${phoneNumber}` },
-    { icon: "ios-location-outline", url: maps },
+    { icon: "ios-location-outline", url: url },
     { icon: "mail-outline", url: `mailto:${email}` },
   ];
   const dispatch = useDispatch();
@@ -37,18 +43,12 @@ const SettingsScreen = ({ navigation }) => {
     },
     {
       id: "2",
-      icon: "feedback",
-      text: "Leave feedback!",
-      screen: "Feedback",
-    },
-    {
-      id: "3",
       icon: "chat-bubble",
       text: "Notification Settings",
       screen: "NotificationSettings",
     },
     {
-      id: "4",
+      id: "3",
       icon: "privacy-tip",
       text: "Privacy",
       screen: "Privacy",
@@ -76,6 +76,7 @@ const SettingsScreen = ({ navigation }) => {
           navigation={navigation}
         />
       ))}
+      <FeedbackScreen />
       <View style={{ flexDirection: "row" }}>
         {icons.map((icon, idx) => (
           <TouchableOpacity
@@ -92,6 +93,7 @@ const SettingsScreen = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
+
       <TouchableOpacity onPress={() => dispatch(logout({ name: "auth" }))}>
         <Text style={styles.logOutText}>Log Out</Text>
       </TouchableOpacity>

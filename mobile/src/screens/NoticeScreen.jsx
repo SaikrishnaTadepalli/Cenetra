@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import envs from "../../config";
 
 import NoticeCard from "../components/NoticeCard";
+import EmptyState from "../components/EmptyState";
 import colors from "../constants/Colors";
 import * as noticesData from "../../data/notices.json";
 import { fetchNotices } from "../redux/noticesSlice";
@@ -61,6 +62,12 @@ const NoticeScreen = ({ navigation }) => {
             data: data,
           });
         });
+        if (newNotices.length > 0) {
+          const segment = newNotices[0].date;
+          const defaultIsExpanded = {};
+          defaultIsExpanded[segment] = true;
+          setIsExpanded(defaultIsExpanded);
+        }
         setNotices(newNotices);
       })
       .catch((error) => console.log("Error in notices screen", error));
@@ -142,10 +149,9 @@ const NoticeScreen = ({ navigation }) => {
       ) : (
         !error && (
           <>
-            {notices.length === 0 && <Text>No notices are available.</Text>}
             <SectionList
               sections={notices}
-              style={styles.mainContainer}
+              contentContainerStyle={styles.mainContainer}
               stickySectionHeadersEnabled={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -155,7 +161,12 @@ const NoticeScreen = ({ navigation }) => {
                 <Text style={styles.titleText}>Notice Board</Text>
               }
               ListFooterComponent={<View />}
-              ListFooterComponentStyle={{ height: 20 }}
+              ListEmptyComponent={
+                <View style={{ flexGrow: 1, justifyContent: "center" }}>
+                  <EmptyState emptyStateText="No notices are available." />
+                </View>
+              }
+              ListFooterComponentStyle={{ paddingBottom: 40 }}
               renderItem={({ item }) => (
                 <>
                   {isExpanded[formatDate(item.createdAt)] ? (
@@ -189,7 +200,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     width: "100%",
     paddingHorizontal: 20,
-    height: "100%",
+    flexGrow: 1,
   },
   titleText: {
     fontSize: 24,

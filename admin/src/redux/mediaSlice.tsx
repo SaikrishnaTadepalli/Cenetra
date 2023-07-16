@@ -8,7 +8,7 @@ export const getUploadUrl = createAsyncThunk(
     //const {query, teacherID} = props;
     try {
       const query = `query {
-        getS3UploadUrl(teacherId: "${teacherID}", studentId: "${studentID}")
+        getS3UploadUrl(teacherId: "64a243d04a9e4e89d93dfe4b", studentId: "${studentID}")
       }`;
       const response = await fetch(envs, {
         method: "POST",
@@ -17,6 +17,7 @@ export const getUploadUrl = createAsyncThunk(
         },
         body: JSON.stringify({ query }),
       });
+      console.log(query);
       if (response.status !== 200) {
         if (response.status === 500) {
           console.error("uploadUrlError while getting s3 upload url");
@@ -35,10 +36,10 @@ export const getUploadUrl = createAsyncThunk(
 
 export const uplaodMedia = createAsyncThunk(
   "media/uploadMedia",
-  async ({ teacherID, studentID, fileName }, { rejectWithValue }) => {
+  async ({ adminID, studentID, fileName }, { rejectWithValue }) => {
     try {
       const query = `mutation {
-        registerMedia(teacherId: "${teacherID}", studentId: "${studentID}" fileName: "${fileName}") {
+        registerMedia(teacherId: "64a243d04a9e4e89d93dfe4b", studentId: "${studentID}" fileName: "${fileName}") {
           fileName
         }
     }`;

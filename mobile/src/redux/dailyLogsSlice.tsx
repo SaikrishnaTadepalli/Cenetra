@@ -18,7 +18,7 @@ export const fetchLogs = createAsyncThunk(
     }
 }
 `;
-    console.log(envs);
+    //console.log(envs);
     try {
       const response = await fetch(envs, {
         method: "POST",

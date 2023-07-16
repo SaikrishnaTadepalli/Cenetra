@@ -21,6 +21,9 @@
         "appleId": "vipasha2002@gmail.com",
         "ascAppId": "6450723983",
         "appleTeamId": "2FURF9A33X"
+      },
+      "android": {
+        "serviceAccountKeyPath": "/Users/vipasha/Cenetra-android"
       }
     }
   }
