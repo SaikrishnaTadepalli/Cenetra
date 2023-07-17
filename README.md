@@ -11,6 +11,20 @@ Cenetra is a mobile-first application designed to facilitate communication betwe
 
 To access the app, both parents and teachers must go through a verification process. They need to enter a unique code provided to them, which will be sent to their verified phone number. This ensures secure access to the app.
 
+## Screenshots
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/97078cf2-7e4c-47ff-9e47-c54542bf6d19" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/1638649d-fd39-46dc-8483-4091ab8641b4" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/df69262a-e76a-4606-914e-04492337ef4e" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/0891d25e-f3a2-4b6f-a421-2a0fa0ea14b0" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/fa4a2f47-7a5a-4bc7-ac04-1350b60defb7" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/6b894927-292f-4786-9835-eda80839695f" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/428cc6a1-a04e-4298-b253-0ad6f884a0e3" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/cf70092b-aa83-47a4-b1ac-cae6607f4196" width="20%">
+<img src="https://github.com/SaikrishnaTadepalli/Cenetra/assets/66628544/1d33dad4-0d51-4e61-8387-4c5fe07ad9b7" width="20%">
+
+## App Demo
+https://youtu.be/cAcdjRRDfCk
+
 ## Parent Features
 
 ### Daily Logs
