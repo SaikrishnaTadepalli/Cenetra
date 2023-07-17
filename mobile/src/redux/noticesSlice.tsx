@@ -4,7 +4,7 @@ import envs from "../../config";
 export const fetchNotices = createAsyncThunk(
   "notices/fetchNotices",
   async (studentID, { rejectWithValue }) => {
-    console.log(envs, process.env);
+    // console.log(envs, process.env);
     const query = `
             query {
                 noticesForStudent(studentId:"${studentID}") {

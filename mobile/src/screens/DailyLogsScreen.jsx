@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   SectionList,
   FlatList,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -23,6 +24,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllMedia } from "../redux/mediaSlice";
 import moment from "moment-timezone";
 import { Ionicons } from "@expo/vector-icons";
+import EmptyState from "../components/EmptyState";
 
 const DailyLogsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -30,14 +32,23 @@ const DailyLogsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { logs, loading, error } = useSelector((state) => state.dailyLogs);
   const { allPictures } = useSelector((state) => state.media);
-  const [isExpanded, setIsExpanded] = useState([]);
+  const [isExpanded, setIsExpanded] = useState({});
   const curMonth = moment().utc().format("MMMM YYYY");
 
   const retrieveData = async () => {
     const studentID = await AsyncStorage.getItem("studentID");
     // console.log(studentID);
     dispatch(fetchLogs(studentID))
-      .then((response) => {})
+      .then((response) => {
+        if (!response.error) {
+          if (response.payload.data.logs.length > 0) {
+            const segment = response.payload.data.logs[0].segment;
+            const defaultIsExpanded = {};
+            defaultIsExpanded[segment] = true;
+            setIsExpanded(defaultIsExpanded);
+          }
+        }
+      })
       .catch((error) => console.error("Error in Daily logs screen", error));
     dispatch(getAllMedia(studentID))
       .then((response) => {})
@@ -96,10 +107,7 @@ const DailyLogsScreen = ({ navigation }) => {
     return (
       <>
         {isExpanded[date] ? (
-          <TouchableOpacity
-            style={styles.cardContainer}
-            onPress={() => onClickLog(item._id)}
-          >
+          <>
             {item ? (
               <View style={styles.logsContainer}>
                 <DailyLogsCard
@@ -111,7 +119,7 @@ const DailyLogsScreen = ({ navigation }) => {
                 />
               </View>
             ) : null}
-          </TouchableOpacity>
+          </>
         ) : null}
       </>
     );
@@ -147,19 +155,23 @@ const DailyLogsScreen = ({ navigation }) => {
         !error && (
           <SectionList
             sections={logs}
-            style={styles.mainContainer}
+            contentContainerStyle={styles.mainContainer}
             stickySectionHeadersEnabled={false}
             keyExtractor={(log) => log._id}
             ListFooterComponent={<View />}
-            ListFooterComponentStyle={{ height: 20 }}
-            contentContainerStyle={styles.listView}
+            ListFooterComponentStyle={{ paddingBottom: 40 }}
             renderItem={renderItem}
             renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={
+              <View style={{ flexGrow: 1, justifyContent: "center" }}>
+                <EmptyState emptyStateText="No logs are available." />
+              </View>
+            }
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             ListHeaderComponent={
-              <View>
+              <>
                 <Text style={styles.titleText}>Daily Logs</Text>
                 {allPictures.length > 0 && (
                   <TouchableOpacity
@@ -180,7 +192,18 @@ const DailyLogsScreen = ({ navigation }) => {
                   horizontal
                   style={styles.imagesContainer}
                 />
-              </View>
+                {allPictures.length > 0 ? (
+                  <View style={styles.horizontalDivider} />
+                ) : (
+                  logs.length > 0 && (
+                    <View style={styles.emptyContainer}>
+                      <Text style={styles.emptyStateText}>
+                        There are no pictures.
+                      </Text>
+                    </View>
+                  )
+                )}
+              </>
             }
           />
         )
@@ -194,11 +217,10 @@ export default DailyLogsScreen;
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.white,
-    paddingBottom: 32,
+    // paddingBottom: 32,
     width: "100%",
     paddingHorizontal: 20,
-    height: "100%",
-    //backgroundColor: "red",
+    flexGrow: 1,
   },
   indicator: {
     alignSelf: "center",
@@ -219,9 +241,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 10,
   },
-  listView: {
-    paddingBottom: 30,
-  },
   titleText: {
     fontSize: 24,
     textAlign: "left",
@@ -239,13 +258,12 @@ const styles = StyleSheet.create({
   },
   imagesContainer: {
     width: "100%",
-    marginBottom: 40,
+    marginBottom: 20,
   },
   imageContainer: {
     marginRight: 10,
   },
   logsContainer: {
-    flex: 1,
     alignItems: "center",
     marginBottom: 12,
   },
@@ -263,5 +281,24 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: 16,
     fontFamily: "InterMedium",
+  },
+  horizontalDivider: {
+    borderLeftColor: "#D9D9D980",
+    borderWidth: 0.3,
+    width: "100%",
+    marginBottom: 20,
+  },
+  emptyContainer: {
+    borderWidth: 0.5,
+    borderColor: "#5E5E5E",
+    borderRadius: 5,
+    justifyContent: "center",
+    marginBottom: 20,
+    padding: 10,
+  },
+  emptyStateText: {
+    color: "#99B8BE",
+    textAlign: "center",
+    fontSize: 16,
   },
 });

@@ -21,11 +21,13 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { getViewUrl } from "../redux/mediaSlice";
+import EmptyState from "../components/EmptyState";
 
 const ProfileScreen = ({ navigation }) => {
   //const [isEditable, setEditable] = useState(false);
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const {
     fetchProfileLoading,
@@ -47,12 +49,18 @@ const ProfileScreen = ({ navigation }) => {
     dispatch(fetchProfile(studentID))
       .then((response) => {
         if (response.error) {
+          if (response.payload === "500") {
+            setError("500");
+          } else {
+            setError("Something went wrong please try again.");
+          }
         } else {
           dispatch(getViewUrl(response.payload.profilePic)).then((response) => {
             if (response.error) {
               setError("Error while retrieving image.");
             } else {
               setImageUrl(response.payload.data.getS3ViewUrl);
+              console.log(response.payload.data.getS3ViewUrl);
             }
           });
         }
@@ -92,7 +100,7 @@ const ProfileScreen = ({ navigation }) => {
   //console.log(studentInfo);
   return (
     <>
-      {fetchProfileError ? (
+      {error !== "" && error !== "500" ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>Error while retrieving data</Text>
           <TouchableOpacity
@@ -101,6 +109,10 @@ const ProfileScreen = ({ navigation }) => {
           >
             <Text style={styles.reloadButtonText}>Reload Data</Text>
           </TouchableOpacity>
+        </View>
+      ) : error === "500" ? (
+        <View style={{ height: "100%", justifyContent: "center" }}>
+          <EmptyState emptyStateText="No profile exists for this student" />
         </View>
       ) : null}
       {(fetchProfileLoading || viewUrlLoading) && !refreshing ? (
@@ -119,7 +131,7 @@ const ProfileScreen = ({ navigation }) => {
             }
           >
             <View style={styles.profileContainer}>
-              <TouchableOpacity onPress={onPressEdit} disabled={isEditDisabled}>
+              {/* <TouchableOpacity onPress={onPressEdit} disabled={isEditDisabled}>
                 <Text
                   style={[
                     styles.buttonText,
@@ -128,7 +140,7 @@ const ProfileScreen = ({ navigation }) => {
                 >
                   Edit
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <View style={styles.imageAndChildInfoContainer}>
                 {imageUrl ? (
                   <Image
@@ -146,9 +158,9 @@ const ProfileScreen = ({ navigation }) => {
                 </View>
               </View>
             </View>
-            {isEditDisabled ? (
+            {/* {isEditDisabled ? (
               <Text>Your changes have been sent for approval</Text>
-            ) : null}
+            ) : null} */}
             <View style={styles.profileContainer}>
               {studentInfo.information
                 ? studentInfo.information.map((item, idx) => (
