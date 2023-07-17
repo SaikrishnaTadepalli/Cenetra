@@ -4,6 +4,9 @@
 
 Cenetra is a mobile-first application designed to facilitate communication between preschools, parents, and teachers. It enables preschools to update parents about their child's daily activities and milestones, and allows teachers to send important notices and updates. The parent platform is a mobile app, while the teacher platform is a website.
 
+## App Demo
+[![Watch the video](https://img.youtube.com/vi/cAcdjRRDfCk/default.jpg)](https://youtu.be/cAcdjRRDfCk)
+
 ## Getting Started
 
 To access the app, both parents and teachers must go through a verification process. They need to enter a unique code provided to them, which will be sent to their verified phone number. This ensures secure access to the app.
