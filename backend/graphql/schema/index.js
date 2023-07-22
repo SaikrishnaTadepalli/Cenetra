@@ -186,7 +186,7 @@ type RootMutation {
     deleteClass(classId: ID!): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
     addStudentsToClass(classId: ID!, studentIds: [ID!]!): Class!
-    removeStudentFromClass(classId: ID!, studentID: ID!): Class!
+    removeStudentFromClass(classId: ID!, studentId: ID!): Class!
     removeStudentsFromClass(classId: ID!, studentIds: [ID!]!): Class!
     changeClassTeacher(classId: ID!, teacherId: ID!): Class!
     
@@ -202,7 +202,7 @@ type RootMutation {
     
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!
     editProfileInfo(studentId: ID!, details: String): ProfileInfo!
-    adminEditProfileInfo(studentId: ID, details: String!): ProfileInfo!
+    adminEditProfileInfo(adminId: ID!, studentId: ID, details: String!): ProfileInfo!
     approveProfileInfo(profileId: ID!, adminId: ID!): ProfileInfo!
     denyProfileInfoEdit(profileId: ID!, adminId: ID!): ProfileInfo!
 
