@@ -183,8 +183,12 @@ type RootMutation {
     removeAdminProfilePic(adminId: ID!): Admin!
 
     createClass(teacherId: ID!, details: String, className: String!): Class!
+    deleteClass(classId: ID!): Class!
     addStudentToClass(classId: ID!, studentId: ID!): Class!
     addStudentsToClass(classId: ID!, studentIds: [ID!]!): Class!
+    removeStudentFromClass(classId: ID!, studentId: ID!): Class!
+    removeStudentsFromClass(classId: ID!, studentIds: [ID!]!): Class!
+    changeClassTeacher(classId: ID!, teacherId: ID!): Class!
     
     createLog(teacherId: ID!, studentId: ID!, details: String!, rating: Int!): Log!
     editLog(logId: ID!, details: String!, rating: Int!, editorName: String!): Log!
@@ -198,6 +202,7 @@ type RootMutation {
     
     addProfileInfo(studentId: ID!, details: String): ProfileInfo!
     editProfileInfo(studentId: ID!, details: String): ProfileInfo!
+    adminEditProfileInfo(adminId: ID!, studentId: ID, details: String!): ProfileInfo!
     approveProfileInfo(profileId: ID!, adminId: ID!): ProfileInfo!
     denyProfileInfoEdit(profileId: ID!, adminId: ID!): ProfileInfo!
 
