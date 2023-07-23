@@ -22,58 +22,57 @@ const MultipleChoiceQuestion = ({
   };
   return (
     <>
-      <PaperProvider theme={theme}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          //backgroundColor: "blue",
+          paddingVertical: 30,
+        }}
+      >
+        <Text style={[styles.question, { width: disabled ? "60%" : "60%" }]}>
+          {question}
+        </Text>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            width: "100%",
-            // backgroundColor: "blue",
+            //flexDirection: "row",
+            width: !disabled ? "40%" : "40%",
+            flexWrap: "wrap",
+            // paddingVertical: 10,
+            // backgroundColor: "pink",
           }}
         >
-          <Text style={[styles.question, { width: disabled ? "70%" : "30%" }]}>
-            {question}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              width: !disabled ? "60%" : "30%",
-              flexWrap: "wrap",
-            }}
-          >
-            {answers.map((choice, idx) => (
-              <RadioButton.Group
-                onValueChange={() => setSelectedValue(choice)}
-                value={selectedValue}
-                key={`multiple-choice-${idx}`}
+          {answers.map((choice, idx) => (
+            <RadioButton.Group
+              onValueChange={() => setSelectedValue(choice)}
+              value={selectedValue}
+              key={`multiple-choice-${idx}`}
+            >
+              <TouchableOpacity
+                onPress={() => setSelectedValue(choice)}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+                disabled={disabled}
               >
-                <TouchableOpacity
-                  onPress={() => setSelectedValue(choice)}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  disabled={disabled}
-                >
-                  {!disabled && (
-                    <RadioButton.Item
-                      value={choice}
-                      status={
-                        choice === selectedValue ? "checked" : "unchecked"
-                      }
-                    />
-                  )}
-                  {disabled && selectedValue === choice ? (
-                    <Text style={styles.answer}>{choice}</Text>
-                  ) : (
-                    !disabled && <Text style={styles.answer}>{choice}</Text>
-                  )}
-                </TouchableOpacity>
-              </RadioButton.Group>
-            ))}
-          </View>
+                {!disabled && (
+                  <RadioButton.Item
+                    value={choice}
+                    status={choice === selectedValue ? "checked" : "unchecked"}
+                  />
+                )}
+                {disabled && selectedValue === choice ? (
+                  <Text style={styles.answer}>{choice}</Text>
+                ) : (
+                  !disabled && <Text style={styles.answer}>{choice}</Text>
+                )}
+              </TouchableOpacity>
+            </RadioButton.Group>
+          ))}
         </View>
-      </PaperProvider>
+      </View>
     </>
   );
 };
@@ -91,6 +90,6 @@ const styles = StyleSheet.create({
   answer: {
     fontSize: 15,
     fontFamily: "InterRegular",
-    marginLeft: 20,
+    //marginLeft: -15,
   },
 });

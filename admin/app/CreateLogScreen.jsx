@@ -202,12 +202,23 @@ const CreateLogScreen = ({
     // ...more questions
   ]);
 
+  const areAllCheckboxFieldsFilled = () => {
+    return checkBoxQuestionState.every(
+      (question) => question.answer.length > 0
+    );
+  };
+
+  // Function to check if all answer properties are filled
+  const areAllFieldsFilled = (state) => {
+    return state.every((question) => question.answer !== "");
+  };
+
   const handleDispatch = (action) => {
     // console.log(action);
     if (
-      radioQuestionState &&
-      checkBoxQuestionState &&
-      openEndedQuestionState &&
+      // areAllCheckboxFieldsFilled() &&
+      // areAllFieldsFilled(radioQuestionState) &&
+      // areAllFieldsFilled(openEndedQuestionState) &&
       filledStars
     ) {
       dispatch(action)
@@ -235,9 +246,8 @@ const CreateLogScreen = ({
           console.error(error);
         });
     } else {
-      setIsInputEmpty(true);
-      setIsCancelled(false);
-      setIsSaved(false);
+      setError("Please fill in the ratings field.");
+      setTimeout(() => setError(""), 2000);
     }
   };
 
@@ -449,7 +459,7 @@ const CreateLogScreen = ({
                   </Text>
                 ) : null}
                 {updateLogsPending ? <Text>Saving your changes.</Text> : null}
-                {error !== "" && <Text>{error}</Text>}
+                {error !== "" && <Text style={{ color: "red" }}>{error}</Text>}
                 <View style={styles.buttonsContainer}>
                   <TouchableOpacity
                     style={styles.saveButtonContainer}

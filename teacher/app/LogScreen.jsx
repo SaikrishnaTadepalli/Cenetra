@@ -19,7 +19,9 @@ const LogScreen = ({
   setLogID,
   studentID,
 }) => {
-  const { logs } = useSelector((state) => state.log);
+  const { logs, editLogsSuccessful, updateLogsSuccessful } = useSelector(
+    (state) => state.log
+  );
   const findLogById = (id) => {
     let foundLog = null;
 
@@ -69,10 +71,8 @@ const LogScreen = ({
   };
   //console.log("Log scren", logID);
   useEffect(() => {
-    if (!log) {
-      retrieveData();
-    }
-  });
+    retrieveData();
+  }, [editLogsSuccessful, updateLogsSuccessful]);
 
   return (
     <View style={styles.container}>
@@ -127,48 +127,64 @@ const LogScreen = ({
       </View>
       {parsedLog &&
         parsedLog.radioButtonQuestions.map((radioButtonQuestion, index) => (
-          <View
-            key={`radio-button-question-${index}`}
-            style={{
-              marginBottom: 20,
-              width: "100%",
-              // backgroundColor: "red",
-            }}
-          >
-            <MultipleChoiceQuestion
-              question={radioButtonQuestion.question}
-              answers={radioButtonQuestion.options}
-              selectedValue={radioButtonQuestion.answer}
-              disabled={true}
-            />
+          <View key={`radio-button-question-${index}`}>
+            <>
+              {radioButtonQuestion.answer && (
+                <View
+                  style={{
+                    marginBottom: 20,
+                    width: "100%",
+                    // backgroundColor: "red",
+                  }}
+                >
+                  <MultipleChoiceQuestion
+                    question={radioButtonQuestion.question}
+                    answers={radioButtonQuestion.options}
+                    selectedValue={radioButtonQuestion.answer}
+                    disabled={true}
+                  />
+                </View>
+              )}
+            </>
           </View>
         ))}
       {parsedLog &&
         parsedLog.checkBoxQuestions.map((checkBoxQuestion, index) => (
           <View key={`multi-select-question-${index}`}>
-            <MultiSelectQuestion
-              disabled={true}
-              question={checkBoxQuestion.question}
-              answers={checkBoxQuestion.answer}
-              checkedItems={checkBoxQuestion.options}
-            />
+            {checkBoxQuestion.answer.length > 0 && (
+              <MultiSelectQuestion
+                disabled={true}
+                question={checkBoxQuestion.question}
+                answers={checkBoxQuestion.answer}
+                checkedItems={checkBoxQuestion.options}
+              />
+            )}
           </View>
         ))}
       {parsedLog &&
         parsedLog.openEndedQuestions.map((openEndedQuestion, index) => (
-          <View
-            key={`open-ended-question-${index}`}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 20,
-              marginTop: 30,
-            }}
-          >
-            <Text style={styles.question}>{openEndedQuestion.question}</Text>
-            <View style={styles.openEndedAnswerContainer}>
-              <Text style={styles.answer}>{openEndedQuestion.answer}</Text>
-            </View>
+          <View key={`open-ended-question-${index}`}>
+            <>
+              {openEndedQuestion.answer && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 20,
+                    marginTop: 30,
+                  }}
+                >
+                  <Text style={styles.question}>
+                    {openEndedQuestion.question}
+                  </Text>
+                  <View style={styles.openEndedAnswerContainer}>
+                    <Text style={styles.answer}>
+                      {openEndedQuestion.answer}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </>
           </View>
         ))}
     </View>
