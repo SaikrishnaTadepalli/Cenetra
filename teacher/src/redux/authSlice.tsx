@@ -4,7 +4,7 @@ import envs from "../../config/env";
 export const getTeacherID = createAsyncThunk(
   "auth/getTeacherID",
   async (teacherNum, { rejectWithValue }) => {
-    //console.log(process.env.BACKEND_URI);
+    console.log(process.env.BACKEND_URI, envs);
     const query = `query{
     teacherByTeacherNumber(teacherNumber: "${teacherNum}") {
         _id
@@ -14,9 +14,9 @@ export const getTeacherID = createAsyncThunk(
         phoneNumber
     }
   }`;
-    //console.log(query, envs);
+    console.log(query, envs);
     try {
-      const response = await fetch(envs, {
+      const response = await fetch("https://saikrishnat.com/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

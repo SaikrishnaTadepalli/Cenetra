@@ -15,10 +15,10 @@ const DragAndDrop = ({ studentID }) => {
   });
   const onUpload = () => {
     setIsUploading(true);
-    const teacherID = localStorage.getItem("teacherID");
+    const adminID = localStorage.getItem("adminID");
 
     acceptedFiles.forEach(async (file, idx) => {
-      dispatch(getUploadUrl({ teacherID, studentID }))
+      dispatch(getUploadUrl({ adminID, studentID }))
         .then(async (response) => {
           // console.log(response.payload.data);
           const data = JSON.parse(response.payload.data.getS3UploadUrl);
@@ -35,7 +35,7 @@ const DragAndDrop = ({ studentID }) => {
             .then((response) => {
               // console.log(response);
               if (response.status === 200) {
-                dispatch(uplaodMedia({ teacherID, studentID, fileName }))
+                dispatch(uplaodMedia({ adminID, studentID, fileName }))
                   .then((response) => {
                     if (!response.error) {
                       if (idx === acceptedFiles.length - 1) {

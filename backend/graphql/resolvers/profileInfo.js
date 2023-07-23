@@ -155,6 +155,48 @@ module.exports = {
     }
   },
 
+  adminEditProfileInfo: async (args) => {
+    try {
+      const fetchedAdmin = await Admin.findById(args.adminId);
+
+      if (!fetchedAdmin) {
+        throw error("Admin does not exist.");
+      }
+
+      const fetchedStudent = await Student.findOne({ _id: args.studentId });
+
+      if (!fetchedStudent) {
+        throw new Error("Student does not exist.");
+      }
+
+      const fetchedValidProfileInfo = await ProfileInfoValid.findOne({
+        student: args.studentId,
+      });
+
+      if (!fetchedValidProfileInfo) {
+        throw error("Valid Profile Info does not exist.");
+      }
+
+      const currentDate = new Date();
+
+      fetchedValidProfileInfo.edits.push({
+        edit: fetchedValidProfileInfo.details,
+        editedBy: fetchedValidProfileInfo.approverName,
+        editedOn: currentDate.toISOString(),
+      });
+
+      fetchedValidProfileInfo.details = args.details;
+      fetchedValidProfileInfo.approverName =
+        fetchedAdmin.firstName + " " + fetchedAdmin.lastName;
+
+      const result = await fetchedValidProfileInfo.save();
+
+      return transformProfile(result);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   approveProfileInfo: async (args) => {
     try {
       const fetchedAdmin = await Admin.findById(args.adminId);

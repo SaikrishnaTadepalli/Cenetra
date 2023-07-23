@@ -50,10 +50,18 @@ const {
   TWILIO_AUTH_TOKEN,
   TWILIO_ACCOUNT_SID,
   TWILIO_NUMBER,
+  SHOULD_SEND_SMS,
 } = require("./config");
 const twilio = require("twilio");
 
 const sendSMS = async (phoneNumber, message) => {
+  if (!SHOULD_SEND_SMS) {
+    console.log("SHOULD_SEND_SMS is false.");
+    console.log("Sending to: ", phoneNumber);
+    console.log("Message: ", message);
+    return;
+  }
+
   try {
     const accountSid = TWILIO_ACCOUNT_SID;
     const authToken = TWILIO_AUTH_TOKEN;

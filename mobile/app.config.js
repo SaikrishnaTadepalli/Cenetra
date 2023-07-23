@@ -3,9 +3,9 @@ module.exports = {
     name: "Cenetra",
     slug: "cenetra",
     description: "Mobile first daycare application",
-    version: "1.1.1",
+    version: "1.0.3",
     orientation: "portrait",
-    icon: "./assets/images/AppIcon.png",
+    icon: "./assets/images/SchoolAppIcon2.png",
     userInterfaceStyle: "light",
     extra: {
       eas: {
@@ -15,7 +15,7 @@ module.exports = {
     splash: {
       image: "./assets/images/LogoSplashScreen.png",
       resizeMode: "contain",
-      backgroundColor: "#EAECFF",
+      backgroundColor: "#23342C",
     },
     updates: {
       fallbackToCacheTimeout: 0,
@@ -24,34 +24,23 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.cenetra.cenetra",
-      buildNumber: "12",
+      buildNumber: "16",
     },
     android: {
-      adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#FFFFFF",
+      package: "com.cenetra.cenetra",
+      versionCode: 4,
+      splash: {
+        image: "./assets/images/LogoSplashScreen.png",
+        resizeMode: "contain",
+        backgroundColor: "#23342C",
       },
+      // adaptiveIcon: {
+      //   foregroundImage: "./assets/adaptive-icon.png",
+      //   backgroundColor: "#FFFFFF",
+      // },
     },
     web: {
       favicon: "./assets/favicon.png",
     },
   },
 };
-
-// app.config.js
-
-// import { ConfigContext } from "@expo/config";
-
-// export default ({ config }) => {
-//   return {
-//     ...config,
-//     // Add or modify the necessary fields for iOS release
-//     ios: {
-//       // iOS-specific configuration options
-//       bundleIdentifier: "com.cenetra.cenetra",
-//       buildNumber: "1.0.0",
-//       // Add any other iOS-specific configuration options you require
-//     },
-//     // Add any extra fields you need
-//   };
-// };

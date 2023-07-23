@@ -90,7 +90,11 @@ const LogScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <Text>There no pictures for today.</Text>
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyStateText}>
+                  There are no pictures for today.
+                </Text>
+              </View>
             )}
             <ScrollView horizontal={true} style={styles.imagesContainer}>
               {pictures.map((picture, idx) =>
@@ -195,5 +199,18 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: 16,
     fontFamily: "InterMedium",
+  },
+  emptyContainer: {
+    borderWidth: 0.5,
+    borderColor: "#5E5E5E",
+    borderRadius: 5,
+    justifyContent: "center",
+    marginBottom: 20,
+    padding: 10,
+  },
+  emptyStateText: {
+    color: "#99B8BE",
+    textAlign: "center",
+    fontSize: 16,
   },
 });

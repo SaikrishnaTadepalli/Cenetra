@@ -23,9 +23,7 @@ export const fetchProfile = createAsyncThunk(
       });
       if (response.status !== 200) {
         if (response.status === 500) {
-          throw new Error(
-            "Response status 500: Error while fetching student profile"
-          );
+          throw new Error("500");
         } else if (response.status === 400) {
           console.error("Response status 400 while fetching student profile");
           throw new Error("Response status 400 while fetching student profile");

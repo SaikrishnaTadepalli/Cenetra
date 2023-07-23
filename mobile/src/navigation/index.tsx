@@ -3,7 +3,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
-import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import {
   Ionicons,
@@ -174,19 +181,18 @@ const RootNavigator = () => {
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    marginLeft: 18,
+                    marginLeft: -30,
                   }}
                 >
-                  <MaterialIcons name="library-books" size={24} color="black" />
-                  <Text
-                    style={{
-                      fontFamily: "InterMedium",
-                      fontSize: 18,
-                      marginLeft: 16,
-                    }}
-                  >
-                    Cenetra
-                  </Text>
+                  <Image
+                    source={require("../../assets/images/SchoolAppIcon.png")}
+                    style={{ height: 30, width: 30 }}
+                  />
+                  <Image
+                    source={require("../../assets/images/AppHeader.png")}
+                    style={{ height: 50, width: "70%" }}
+                    resizeMode="contain"
+                  />
                 </View>
               ),
               headerTitle: "",
@@ -242,9 +248,22 @@ const BottomTabNavigator = ({ navigation, route }) => {
               flexDirection: "row",
               alignItems: "center",
               marginLeft: 18,
+              marginTop: 10,
             }}
           >
-            <MaterialIcons name="library-books" size={24} color="black" />
+            <Image
+              source={require("../../assets/images/SchoolAppIcon.png")}
+              style={{ height: 30, width: 30 }}
+            />
+            <Image
+              source={require("../../assets/images/AppHeader.png")}
+              style={{
+                height: 100,
+                width: Platform.OS === "ios" ? "100%" : "60%",
+              }}
+              resizeMode="contain"
+            />
+            {/* <MaterialIcons name="library-books" size={24} color="black" />
             <Text
               style={{
                 fontFamily: "InterMedium",
@@ -253,7 +272,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
               }}
             >
               Cenetra
-            </Text>
+            </Text> */}
           </View>
         ),
         headerTitle: "",
