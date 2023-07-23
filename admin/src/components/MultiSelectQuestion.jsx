@@ -40,13 +40,24 @@ const MultiSelectQuestion = ({
     ...DefaultTheme,
     roundness: 100, // Change this value to modify the size
   };
-  //console.log(answers);
+  // console.log(
+  //   checkedItems.length > 0 && checkedItems[0].key[0],
+  //   answers[0].key[0],
+  //   answers[0].key.charAt(0)
+  // );
+
+  const getInputValue = (input, item) => {
+    return input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key;
+  };
   return (
     <>
       <Provider theme={theme}>
         <Text style={styles.questionText}>{question}</Text>
         {!disabled && (
-          <View style={styles.checkBoxContainer}>
+          <TouchableOpacity
+            style={styles.checkBoxContainer}
+            onPress={onSelectAll}
+          >
             <Checkbox
               status={
                 checkedItems.length === answers.length ? "checked" : "unchecked"
@@ -68,17 +79,34 @@ const MultiSelectQuestion = ({
                 },
               ]}
             />
-          </View>
+          </TouchableOpacity>
         )}
         <ScrollView contentContainerStyle={{ height: "100" }}>
           {answers.map((input, idx) => (
-            <View style={styles.checkBoxContainer} key={`multi-select-${idx}`}>
+            <TouchableOpacity
+              style={styles.checkBoxContainer}
+              key={`multi-select-${idx}`}
+              onPress={() => {
+                setCheckedItems(input);
+              }}
+            >
               {!disabled && (
                 <Checkbox
                   status={
                     checkedItems.findIndex(
+                      // input.key
+
+                      // (item) =>
+
+                      // console.log(
+                      //   typeof item.key,
+                      //   typeof input.key,
+                      //   item.key === input.key
+                      // )
+                      // )
                       (item) =>
-                        (isDropdown && item.key === input.key) ||
+                        (isDropdown &&
+                          item.key === getInputValue(input, item)) ||
                         (!isDropdown && item === input)
                     ) !== -1
                       ? "checked"
@@ -95,7 +123,7 @@ const MultiSelectQuestion = ({
               <Text style={styles.answerText}>
                 {isDropdown ? input.value : input}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </Provider>

@@ -148,10 +148,10 @@ const VerificationScreen = () => {
       </View>
       <View style={styles.imageContainer}>
         <Image
-          source={require("../assets/images/loginIllustration.png")}
+          source={require("../assets/images/SchoolLogo.png")}
           style={{
-            width: "100%",
-            height: "85%",
+            width: "40%",
+            height: "40%",
           }}
         />
       </View>
@@ -239,9 +239,10 @@ const styles = StyleSheet.create({
     color: "#99B8BE",
   },
   imageContainer: {
-    backgroundColor: "#F8EDEB",
+    backgroundColor: "#23342C",
     width: "60%",
     height: "100%",
-    justifyContent: "flex-end",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

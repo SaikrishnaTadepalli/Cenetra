@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   SectionList,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import moment from "moment-timezone";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -15,7 +15,11 @@ import CreateLogScreen from "./CreateLogScreen";
 import { useRouter } from "expo-router";
 import LogScreen from "./LogScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { getIsNewLogAdded, setIsNewLogAdded } from "../src/redux/logsSlice";
+import {
+  fetchLogs,
+  getIsNewLogAdded,
+  setIsNewLogAdded,
+} from "../src/redux/logsSlice";
 
 const DailyLogsScreen = ({
   name,
@@ -67,6 +71,11 @@ const DailyLogsScreen = ({
       [buttonId]: !prevState[buttonId],
     }));
   };
+  const retrieveData = () => {
+    dispatch(fetchLogs(studentID))
+      .then(() => {})
+      .catch((error) => console.error(error));
+  };
 
   const renderSectionHeader = ({ section: { segment } }) => {
     const style = () => {
@@ -92,6 +101,9 @@ const DailyLogsScreen = ({
       </TouchableOpacity>
     );
   };
+  useEffect(() => {
+    retrieveData();
+  }, []);
   const renderItem = ({ item }) => {
     const itemDate = moment(item.createdAt).utc().format("MMMM YYYY");
     const date = itemDate === curMonth ? "This Month" : itemDate;

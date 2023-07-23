@@ -12,8 +12,6 @@ const OpenEndedQuestion = ({ question, answer, handleInputChange }) => {
           style={styles.inputContainer}
           multiline
           editable={true}
-          numberOfLines={6}
-          maxLength={200}
           key={question}
           value={answer}
           onChangeText={handleInputChange}

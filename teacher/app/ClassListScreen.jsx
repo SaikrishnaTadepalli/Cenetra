@@ -135,13 +135,18 @@ const ClassListScreen = () => {
                   curDate={curDate}
                   name={name}
                   setLogID={setLogID}
+                  setIsStudentNameSelected={setIsStudentNameSelected}
+                  studentID={studentID}
                 />
               ) : (
                 <CreateLogScreen
                   date={curDate}
                   studentID={studentID}
                   name={name}
+                  setIsStudentNameSelected={setIsStudentNameSelected}
+                  setIsOldLogSelected={setIsOldLogSelected}
                   logID={logID}
+                  setLogID={setLogID}
                 />
               )}
             </View>

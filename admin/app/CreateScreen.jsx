@@ -15,7 +15,6 @@ const CreateScreen = () => {
   const [activeButton, setActiveButton] = useState(buttonOptions[0]);
 
   const handleButtonOptions = (idx) => {
-    // console.log(selected, "handle press");
     if (idx === 0) {
       dispatch(setIsNewClassAdded(true));
     } else if (idx === 1) {
@@ -25,7 +24,6 @@ const CreateScreen = () => {
     }
     setActiveButton(buttonOptions[idx]);
   };
-
   return (
     <>
       <View style={styles.container}>

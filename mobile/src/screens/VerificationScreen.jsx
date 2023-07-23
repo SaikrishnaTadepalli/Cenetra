@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     marginRight: 10,
-    borderColor: colors.lightPurple,
+    borderColor: "#A0B2AF",
     textAlign: "center",
     textAlignVertical: "center",
     alignContent: "center",

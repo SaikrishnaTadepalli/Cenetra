@@ -34,7 +34,7 @@ const DailyLogsScreen = () => {
 
   const classInfo = classes.map((item) => ({
     key: item._id,
-    value: item.details,
+    value: item.className,
     students: item.students,
   }));
   const [selectedClasses, setSelectedClasses] = useState([]);
@@ -184,6 +184,7 @@ const DailyLogsScreen = () => {
                 <LogScreen
                   logID={logID}
                   setIsOldLogSelected={setIsOldLogSelected}
+                  setIsStudentNameSelected={setIsStudentNameSelected}
                   setDate={setDate}
                   curDate={curDate}
                   name={name}
@@ -195,6 +196,8 @@ const DailyLogsScreen = () => {
                   studentID={studentID}
                   name={name}
                   logID={logID}
+                  setIsStudentNameSelected={setIsStudentNameSelected}
+                  setIsOldLogSelected={setIsOldLogSelected}
                 />
               )}
             </View>

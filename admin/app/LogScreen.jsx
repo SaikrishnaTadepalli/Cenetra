@@ -18,6 +18,7 @@ import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 const LogScreen = ({
   logID,
   setIsOldLogSelected,
+  setIsStudentNameSelected,
   setDate,
   curDate,
   name,
@@ -62,9 +63,17 @@ const LogScreen = ({
   };
   // console.log("Log scren", parsedLog);
 
+  const onPressBack = () => {
+    setIsStudentNameSelected(true);
+    setIsOldLogSelected(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logHeaderContainer}>
+        <TouchableOpacity onPress={onPressBack}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={styles.headerText}>{name}'s Logs</Text>
           {date === curDate && (

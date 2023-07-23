@@ -21,7 +21,7 @@ const DropDown = ({
   const onPress = () => {
     setIsOptionsShown(!isOptionsShown);
   };
-  //console.log(selectedOptions);
+  // console.log(selectedOptions[0].key, options);
   return (
     <View style={{ flexDirection: "column" }}>
       <TouchableOpacity style={styles.boxContainer} onPress={onPress}>

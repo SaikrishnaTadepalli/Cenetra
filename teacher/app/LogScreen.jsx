@@ -1,21 +1,23 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 import colors from "../src/constants/Colors";
-import { setIsNewLogAdded } from "../src/redux/logsSlice";
+import { fetchLogs, setIsNewLogAdded } from "../src/redux/logsSlice";
 import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 
 const LogScreen = ({
   logID,
   setIsOldLogSelected,
+  setIsStudentNameSelected,
   setDate,
   curDate,
   name,
   setLogID,
+  studentID,
 }) => {
   const { logs } = useSelector((state) => state.log);
   const findLogById = (id) => {
@@ -55,12 +57,30 @@ const LogScreen = ({
     dispatch(setIsNewLogAdded(true));
     setLogID(logID);
   };
+
+  const onPressBack = () => {
+    setIsStudentNameSelected(true);
+    setIsOldLogSelected(false);
+  };
+  const retrieveData = () => {
+    dispatch(fetchLogs(studentID))
+      .then(() => {})
+      .catch((error) => console.error(error));
+  };
   //console.log("Log scren", logID);
+  useEffect(() => {
+    if (!log) {
+      retrieveData();
+    }
+  });
 
   return (
     <View style={styles.container}>
       <View style={styles.logHeaderContainer}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity onPress={onPressBack}>
+            <Ionicons name="arrow-back" size={24} color="black" />
+          </TouchableOpacity>
           <Text style={styles.headerText}>{name}'s Logs</Text>
           {date === curDate && (
             <Text style={styles.subHeaderText}>Today's Logs</Text>

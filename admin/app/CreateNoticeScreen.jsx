@@ -19,7 +19,7 @@ import {
 import typeColorMapping from "../api/typeColorMapping";
 import Dropdown from "../src/components/DropDown";
 
-const CreateNoticeScreen = ({ date, noticeID }) => {
+const CreateNoticeScreen = ({ date, noticeID, setIsOldNoticeSelected }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const state = useSelector((state) => state.notices);
@@ -56,10 +56,12 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
   const [selectedType, setSelectedType] = useState(
     notice ? notice.noticeType : types[0]
   );
-  const studentInfo = students.map((student) => ({
-    key: `"${student._id}"`,
-    value: student.firstName + " " + student.lastName,
-  }));
+  const studentInfo =
+    students &&
+    students.map((student) => ({
+      key: `"${student._id}"`,
+      value: student.firstName + " " + student.lastName,
+    }));
   const [selectedStudents, setSelectedStudents] = useState(studentInfo);
 
   const handleCheckboxSelection = (input) => {
@@ -123,6 +125,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
               setEditable(true);
               setSubject("");
               setDetails("");
+              setIsOldNoticeSelected(true);
             }, 2000);
           }
         })
@@ -139,6 +142,7 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
     setIsCancelled(true);
     setEditable(false);
     dispatch(setIsNewNoticeAdded(false));
+    setIsOldNoticeSelected(true);
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
@@ -196,8 +200,8 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
           </TouchableOpacity>
         </View>
       ) : null}
-      <ScrollView contentContainerStyle={styles.listView}>
-        {isAddNewNoticeSelected ? (
+      {isAddNewNoticeSelected ? (
+        <ScrollView contentContainerStyle={styles.listView}>
           <View style={styles.container}>
             <Text style={styles.headerText}>Create a new notice</Text>
             <Text style={styles.date}>{date}</Text>
@@ -253,8 +257,8 @@ const CreateNoticeScreen = ({ date, noticeID }) => {
               </View>
             </View>
           </View>
-        ) : null}
-      </ScrollView>
+        </ScrollView>
+      ) : null}
     </>
   );
 };

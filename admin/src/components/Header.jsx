@@ -12,12 +12,11 @@ import { setIsNewStudentAdded } from "../redux/studentSlice";
 
 const Header = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const pages = ["Home", "Daily Logs", "Notices", "Approvals", "Create"];
+  const pages = ["Home", "Daily Logs", "Notices", "Create"];
   const screens = [
     "HomeScreen",
     "DailyLogsScreen",
     "NoticesScreen",
-    "ApprovalsScreen",
     "CreateScreen",
   ];
 
@@ -27,6 +26,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const handleClick = (idx, button) => {
+    if (idx === 3) dispatch(setIsNewClassAdded(true));
     router.push(`/${screens[idx]}`);
     setActiveButton(button);
   };

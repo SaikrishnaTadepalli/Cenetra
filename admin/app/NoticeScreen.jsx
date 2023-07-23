@@ -54,7 +54,13 @@ const NoticeScreen = ({ noticeID, setNoticeID, setIsOldNoticeSelected }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Text style={styles.date}>
           {notice
             ? moment(notice.createdAt).utc().format("MMMM D, YYYY")

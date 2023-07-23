@@ -12,16 +12,17 @@ import {
   createClass,
   createTeacher,
   fetchClasses,
+  removeStudentsFromClass,
   setIsNewClassAdded,
 } from "../src/redux/classSlice";
 import DropDown from "../src/components/DropDown";
 import { SelectList } from "react-native-dropdown-select-list";
-import { fetchTeachers } from "../src/redux/teacherSlice";
+import { changeTeacher, fetchTeachers } from "../src/redux/teacherSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { fetchStudents } from "../src/redux/studentSlice";
 import { setClasses } from "../src/redux/authSlice";
 
-const CreateClassScreen = () => {
+const CreateClassScreen = ({ classInfo }) => {
   const dispatch = useDispatch();
   const {
     isNewClassAdded,
@@ -29,35 +30,41 @@ const CreateClassScreen = () => {
     createClassPending,
     fetchClassesPending,
   } = useSelector((state) => state.class);
+
   const [error, setError] = useState("");
-  const [classState, setClassState] = useState({
-    name: "",
-    details: "",
-  });
+  const initialState = {
+    name: classInfo ? classInfo.value : "",
+    details: classInfo ? classInfo.details : "",
+  };
+  const [classState, setClassState] = useState(initialState);
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState(classInfo ? classInfo.students : []);
   const [teachers, setTeachers] = useState([]);
-  const [selectedStudents, setSelectedStudents] = useState([]);
-  const [selectedTeacher, setSelectedTeacher] = useState("");
-
+  const [selectedStudents, setSelectedStudents] = useState(
+    classInfo ? classInfo.students : []
+  );
+  const placeholderText = classInfo
+    ? classInfo.teacher.value
+    : "Select from dropdown";
+  const [selectedTeacher, setSelectedTeacher] = useState(
+    classInfo && classInfo.teacher ? classInfo.teacher.value : ""
+  );
   const renderText = (infoType, key, state, setState) => {
     return (
       <View style={styles.infoLineContainer}>
-        {infoType !== "" ? (
-          <Text style={styles.infoTypeText}>{infoType}</Text>
-        ) : null}
+        <Text style={styles.infoTypeText}>{infoType}</Text>
         <TextInput
           editable={true}
           style={styles.infoInputText}
-          value={classState.info}
+          value={state[key] || ""}
           onChangeText={(value) => handleChange(key, value, state, setState)}
         />
       </View>
     );
   };
-
   const handleCheckboxSelectionForStudents = (input) => {
     const idx = selectedStudents.indexOf(input);
     const selected = [...selectedStudents];
@@ -98,78 +105,131 @@ const CreateClassScreen = () => {
     return Object.values(state).every((value) => value !== "");
   };
 
+  const handleDispatch = (action, classID) => {
+    dispatch(action)
+      .then((response) => {
+        if (response.error) {
+          setError(
+            "Something went wrong while creating a class please try again."
+          );
+        } else {
+          // console.log(response);
+          setIsButtonDisabled(true);
+          const classID = classID || response.payload.data.createClass._id;
+          const studentIDs = selectedStudents.map((student) => student.key);
+          dispatch(
+            addStudentsToClass({ classID, studentIDs: studentIDs })
+          ).then((response) => {
+            if (response.error) {
+              setError(
+                "Something went wrong while adding a student to a class please try again."
+              );
+              setIsButtonDisabled(false);
+              return;
+            } else {
+              dispatch(fetchClasses())
+                .then((response) => {
+                  if (response.error) {
+                    console.error(
+                      "error while fetching classes after creating a new class"
+                    );
+                    setError("Something went wrong please try again.");
+                    setIsButtonDisabled(false);
+                    return;
+                  } else {
+                    localStorage.removeItem("classes");
+                    const classes = response.payload.data.classes;
+                    dispatch(setClasses(classes));
+                    const stringifiedDetails = JSON.stringify({ classes })
+                      .replace(/\\/g, "\\\\") // Escape backslashes
+                      .replace(/"/g, '\\"');
+                    localStorage.setItem("classes", `"${stringifiedDetails}"`);
+                    setIsButtonDisabled(true);
+                    setIsSaved(true);
+                    setIsCancelled(false);
+                    setTimeout(() => {
+                      setIsSaved(false);
+                    }, 2000);
+                  }
+                })
+                .catch((error) => {
+                  console.error("Catch: error while fetching classes", error);
+                  setError("Something went wrong please try again.");
+                });
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "Catch: Error while creating class in home screen",
+          error
+        );
+        setError("Error while creating a class");
+      });
+  };
+  const haveSameElements = (arr1, arr2) => {
+    if (arr1.length !== arr2.length) {
+      return false; // If the arrays have different lengths, they are not the same
+    }
+
+    return arr1.every((item) => arr2.includes(item));
+  };
   const onSave = () => {
+    var newAction = "";
     if (areAllFieldsFilled(classState)) {
-      dispatch(
-        createClass({
+      if (classInfo) {
+        if (classInfo.teacher.key !== selectedTeacher) {
+          setIsButtonDisabled(true);
+          dispatch(
+            changeTeacher({
+              teacherID: classInfo.teacher.key,
+              classID: classInfo.key,
+            })
+          ).then((response) => {
+            if (response.error) {
+              setError(
+                "Something went wrong while changing the teacher. Please try again."
+              );
+              setTimeout(() => setError(""), 2000);
+            }
+          });
+        }
+        if (
+          !haveSameElements(classInfo.students, selectedStudents) &&
+          classInfo.students.length > 0
+        ) {
+          setIsButtonDisabled(true);
+          const studentIDs = classInfo.students.map(
+            (student) => `"${student.key}"`
+          );
+          // dispatch(
+          //   removeStudentsFromClass({
+          //     classID: classInfo.key,
+          //     studentIDs: studentIDs,
+          //   })
+          // ).then((response) => {
+          //   if (response.error) {
+          //     setError(
+          //       "Something went wrong while removing a student from a class please try again."
+          //     );
+          //     setIsButtonDisabled(false);
+          //     return;
+          //   }
+          // });
+          newAction = removeStudentsFromClass({
+            classID: classInfo.key,
+            studentIDs: studentIDs,
+          });
+        }
+      } else {
+        newAction = createClass({
           details: classState.details,
           teacherID: selectedTeacher,
           className: classState.name,
-        })
-      )
-        .then((response) => {
-          if (response.error) {
-            setError(
-              "Something went wrong while creating a class please try again."
-            );
-          } else {
-            // console.log(response);
-            setIsButtonDisabled(true);
-            const classID = response.payload.data.createClass._id;
-            const studentIDs = selectedStudents.map((student) => student.key);
-            dispatch(
-              addStudentsToClass({ classID, studentIDs: studentIDs })
-            ).then((response) => {
-              if (response.error) {
-                setError(
-                  "Something went wrong while adding a student to a class please try again."
-                );
-                setIsButtonDisabled(false);
-                return;
-              } else {
-                dispatch(fetchClasses())
-                  .then((response) => {
-                    if (response.error) {
-                      console.error(
-                        "error while fetching classes after creating a new class"
-                      );
-                      setError("Something went wrong please try again.");
-                      setIsButtonDisabled(false);
-                      return;
-                    } else {
-                      localStorage.removeItem("classes");
-                      const classes = response.payload.data.classes;
-                      dispatch(setClasses(classes));
-                      const stringifiedDetails = JSON.stringify({ classes })
-                        .replace(/\\/g, "\\\\") // Escape backslashes
-                        .replace(/"/g, '\\"');
-                      localStorage.setItem(
-                        "classes",
-                        `"${stringifiedDetails}"`
-                      );
-                      setIsButtonDisabled(true);
-                      setIsSaved(true);
-                      setIsCancelled(false);
-                      setTimeout(() => {
-                        setIsSaved(false);
-                      }, 2000);
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Catch: error while fetching classes", error);
-                    setError("Something went wrong please try again.");
-                  });
-              }
-            });
-          }
-        })
-        .catch((error) => {
-          console.error(
-            "Catch: Error while creating class in home screen",
-            error
-          );
-          setError("Error while creating a class");
         });
+      }
+      handleDispatch(newAction, classInfo.key);
     } else {
       setError("Please fill in all the fields.");
       setTimeout(() => setError(""), 2000);
@@ -178,7 +238,12 @@ const CreateClassScreen = () => {
 
   const onCancel = () => {
     setIsCancelled(true);
-    dispatch(setIsNewClassAdded(false));
+    setClassState(initialState);
+    setSelectedStudents([]);
+    setSelectedTeacher("");
+    setIsButtonDisabled(false);
+    setError("");
+    classInfo && dispatch(setIsNewClassAdded(false));
     setTimeout(() => {
       setIsCancelled(false);
     }, 2000);
@@ -214,13 +279,19 @@ const CreateClassScreen = () => {
   };
 
   useEffect(() => retrieveData(), []);
+
   return (
-    <View style={{ paddingLeft: 40, marginTop: 30 }}>
+    <View
+      style={{
+        paddingLeft: 40,
+        marginTop: 30,
+      }}
+    >
       {isNewClassAdded && (
         <>
           <Text style={styles.subHeaderText}>Class details</Text>
-          {renderText("Name of class", "name", classState, setClassState)}
-          {renderText("Details of class", "details", classState, setClassState)}
+          {renderText("Name", "name", classState, setClassState)}
+          {renderText("Details", "details", classState, setClassState)}
           <View style={styles.infoLineContainer}>
             <Text style={styles.infoTypeText}>Add students</Text>
             <DropDown
@@ -240,7 +311,7 @@ const CreateClassScreen = () => {
               data={teachers}
               save="key"
               boxStyles={styles.boxContainer}
-              placeholder="Select from dropdown"
+              placeholder={placeholderText}
               inputStyles={styles.selectedOptionsContainer}
               dropdownStyles={styles.dropdownContainer}
               dropdownTextStyles={styles.dropdownItem}
@@ -250,7 +321,7 @@ const CreateClassScreen = () => {
               closeicon={
                 <Ionicons name={"caret-up-sharp"} size={16} color="#719792" />
               }
-              searchPlaceholder="Search for teacher"
+              search={false}
             />
           </View>
           {isSaved ? (
@@ -303,7 +374,7 @@ const styles = StyleSheet.create({
   infoTypeText: {
     fontSize: 16,
     fontFamily: "InterMedium",
-    width: "12%",
+    width: "15%",
     // marginRight: 40,
   },
   infoInputText: {

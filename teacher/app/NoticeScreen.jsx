@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import typeColorMapping from "../api/typeColorMapping";
-import { setIsNewNoticeAdded } from "../src/redux/noticeSlice";
+import { fetchNotices, setIsNewNoticeAdded } from "../src/redux/noticeSlice";
 
 const NoticeScreen = ({ noticeID, setNoticeID, setIsOldNoticeSelected }) => {
   const { notices } = useSelector((state) => state.notices);
@@ -44,6 +44,7 @@ const NoticeScreen = ({ noticeID, setNoticeID, setIsOldNoticeSelected }) => {
       </View>
     );
   };
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

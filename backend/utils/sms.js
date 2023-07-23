@@ -67,13 +67,13 @@ const sendSMS = async (phoneNumber, message) => {
     const authToken = TWILIO_AUTH_TOKEN;
     const client = twilio(accountSid, authToken);
 
-    const sentMessage = await client.messages.create({
-      body: message,
-      from: TWILIO_NUMBER,
-      to: phoneNumber,
-    });
+    // const sentMessage = await client.messages.create({
+    //   body: message,
+    //   from: TWILIO_NUMBER,
+    //   to: phoneNumber,
+    // });
 
-    console.log("SMS sent:", sentMessage.sid);
+    // console.log("SMS sent:", sentMessage.sid);
   } catch (err) {
     throw err;
   }

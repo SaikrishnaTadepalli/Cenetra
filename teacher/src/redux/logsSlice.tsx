@@ -195,7 +195,6 @@ export const logSlice = createSlice({
         state.updateLogsSuccessful = false;
       })
       .addCase(updateLogs.fulfilled, (state, action) => {
-        state.logs = [action.payload.data.createLog, ...state.logs];
         state.updateLogsPending = false;
         state.updateLogsError = false;
         state.isNewLogAdded = false;
@@ -213,7 +212,6 @@ export const logSlice = createSlice({
         // state.editogsSuccessful = false;
       })
       .addCase(editLogs.fulfilled, (state, action) => {
-        state.logs = [action.payload.data.editLog, ...state.logs];
         state.editLogsPending = false;
         state.editLogsError = false;
         state.isNewLogAdded = false;

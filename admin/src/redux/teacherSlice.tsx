@@ -8,6 +8,7 @@ export const createTeacher = createAsyncThunk(
     mutation CreateTeacher($teacherInput: TeacherInput!) {
       createTeacher(teacherInput: $teacherInput) {
         _id
+        teacherNumber
       }
     }
   `;
@@ -57,8 +58,11 @@ export const fetchTeachers = createAsyncThunk(
     query {
       teachers {
         _id
-          firstName
-          lastName
+        firstName
+        lastName
+        teacherNumber
+        email
+        phoneNumber
       }
     }
   `;
@@ -90,10 +94,53 @@ export const fetchTeachers = createAsyncThunk(
   }
 );
 
+export const changeTeacher = createAsyncThunk(
+  "teacher/changeTeacher",
+  async ({ teacherID, classID }, { rejectWithValue }) => {
+    //const {query, adminID} = props;
+    const query = `
+    mutation {
+      changeClassTeacher(teacherId: "${teacherID}", classId: "${classID}") {
+        _id
+      }
+    }
+  `;
+    console.log(query);
+    try {
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          console.error("Error while changing teachers for Admin");
+          throw new Error("Network error");
+        } else if (response.status === 400) {
+          console.error("Wrong details");
+          throw new Error(
+            "Error while changing teachers for Admin, invalid request"
+          );
+        }
+      }
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      console.error("Catch: Error while changing teachers for Admin", error);
+      rejectWithValue(error);
+    }
+  }
+);
+
 export interface TeacherState {
   logs: string[];
   createTeacherPending: boolean;
   createTeacherError: boolean;
+  changeTeacherPending: boolean;
+  changeTeacherError: boolean;
   teacherID: string;
   fetchTeachersError: boolean;
   fetchTeachersPending: boolean;
@@ -103,6 +150,8 @@ export interface TeacherState {
 const initialState: TeacherState = {
   createTeacherPending: null,
   createTeacherError: false,
+  changeTeacherPending: null,
+  changeTeacherError: false,
   fetchTeachersError: false,
   fetchTeachersPending: null,
   logs: [],
@@ -145,6 +194,21 @@ export const teacherSlice = createSlice({
       .addCase(fetchTeachers.fulfilled, (state) => {
         state.fetchTeachersPending = false;
         state.fetchTeachersError = false;
+        //state.fetchTeachersSuccessful = true;
+      })
+      .addCase(changeTeacher.pending, (state) => {
+        state.changeTeacherPending = true;
+        state.changeTeacherError = false;
+        // state.updateLogsSuccessful = false;
+      })
+      .addCase(changeTeacher.rejected, (state) => {
+        state.changeTeacherPending = null;
+        state.changeTeacherError = true;
+        // state.editogsSuccessful = false;
+      })
+      .addCase(changeTeacher.fulfilled, (state) => {
+        state.changeTeacherPending = false;
+        state.changeTeacherError = false;
         //state.fetchTeachersSuccessful = true;
       });
   },
