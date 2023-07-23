@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import envs from "../../config/env";
+import moment from "moment-timezone";
 
 export const fetchProfile = createAsyncThunk(
   "studentProfile/fetchProfile",
@@ -221,7 +222,7 @@ export const addNewProfile = createAsyncThunk(
           _id
       }
     }`;
-    // console.log(query, envs);
+    console.log(query, envs);
     try {
       const response = await fetch(envs, {
         method: "POST",
@@ -259,6 +260,57 @@ export const addNewProfile = createAsyncThunk(
   }
 );
 
+export const editProfile = createAsyncThunk(
+  "studentProfile/editProfile",
+  async ({ studentID, details, adminID }, { rejectWithValue }) => {
+    //console.log(profileID, adminID);
+    const stringifiedDetails = JSON.stringify(details)
+      .replace(/\\/g, "\\\\") // Escape backslashes
+      .replace(/"/g, '\\"'); // Escape double quotes
+    const query = `
+    mutation {
+      adminEditProfileInfo(studentId:"${studentID}", details:"${stringifiedDetails}", adminId: "${adminID}") {
+          _id
+      }
+    }`;
+    // console.log(query, envs);
+    try {
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+      //console.log(response);
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          throw new Error(
+            "Response status 500: Error while editing student profile for admin"
+          );
+          //return "500";
+        } else if (response.status === 400) {
+          console.error(
+            "Response status 400 while editing student profile for admin"
+          );
+          throw new Error(
+            "Response status 400 while editing student profile for admin"
+          );
+        }
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        "Catch: Error while adding new  student profile for admin",
+        error
+      );
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export interface ProfileState {
   studentInfo: object;
   studentID: string;
@@ -278,6 +330,9 @@ export interface ProfileState {
   addNewProfileLoading: boolean;
   addNewProfileError: boolean;
   addNewProfileSuccessful: boolean;
+  editProfileLoading: boolean;
+  editProfileError: boolean;
+  editProfileSuccessful: boolean;
   isNewProfileAdded: boolean;
 }
 
@@ -300,6 +355,9 @@ const initialState: ProfileState = {
   addNewProfileLoading: false,
   addNewProfileError: false,
   addNewProfileSuccessful: false,
+  editProfileLoading: false,
+  editProfileError: false,
+  editProfileSuccessful: false,
   isNewProfileAdded: false,
 };
 
@@ -327,15 +385,9 @@ export const studentProfileSlice = createSlice({
         // console.log(action.payload.studentInfo);
         state.studentInfo = action.payload.studentInfo;
         state.studentID = action.payload.id;
-        const date = new Date(action.payload.lastUpdated);
-        state.lastUpdated = date.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "short",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
+        state.lastUpdated = moment(action.payload.lastUpdated).format(
+          "DD MMMM YYYY, h:mm a"
+        );
         state.fetchProfileLoading = false;
         state.fetchProfileError = false;
         state.approvePendingProfileSuccessful = false;
@@ -400,6 +452,21 @@ export const studentProfileSlice = createSlice({
         state.addNewProfileLoading = false;
         state.addNewProfileError = false;
         state.addNewProfileSuccessful = true;
+      })
+      .addCase(editProfile.pending, (state) => {
+        state.editProfileLoading = true;
+        state.editProfileError = false;
+        state.editProfileSuccessful = false;
+      })
+      .addCase(editProfile.rejected, (state) => {
+        state.editProfileLoading = null;
+        state.editProfileError = true;
+        state.editProfileSuccessful = false;
+      })
+      .addCase(editProfile.fulfilled, (state, action) => {
+        state.editProfileLoading = false;
+        state.editProfileError = false;
+        state.editProfileSuccessful = true;
       });
   },
 });

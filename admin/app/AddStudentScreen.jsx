@@ -31,6 +31,7 @@ const AddStudentScreen = () => {
   const [error, setError] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [isAddProfileDisabled, setIsAddProfileDisabled] = useState(false);
+  const [studentNumber, setStudentNumber] = useState("");
   const [studentInfoState, setStudentInfoState] = useState({
     name: "",
     ID: "",
@@ -84,6 +85,9 @@ const AddStudentScreen = () => {
                 ID: response.payload.data.createStudent._id,
                 number: response.payload.data.createStudent.studentNumber,
               });
+              setStudentNumber(
+                response.payload.data.createStudent.studentNumber
+              );
               setTimeout(() => {
                 setIsSaved(false);
                 setIsButtonDisabled(false);
@@ -108,7 +112,8 @@ const AddStudentScreen = () => {
   };
   const onCancel = () => {
     setIsCancelled(true);
-    dispatch(setIsNewStudentAdded(false));
+    setStudentState(initialState);
+    //dispatch(setIsNewStudentAdded(false));
     //dispatch(setIsNewClassAdded(false));
     setTimeout(() => {
       setIsCancelled(false);
@@ -121,6 +126,7 @@ const AddStudentScreen = () => {
       setTimeout(() => setError(""), 3000);
     } else {
       dispatch(setIsNewProfileAdded(true));
+      setStudentNumber("");
     }
   };
   return (
@@ -178,13 +184,21 @@ const AddStudentScreen = () => {
               marginLeft: 100,
             }}
           >
-            {studentInfoState.ID !== "" && isNewProfileAdded ? (
-              <CreateProfileScreen
-                studentID={studentInfoState.ID}
-                studentName={studentInfoState.name}
-                studentNumber={studentInfoState.number}
-              />
-            ) : null}
+            <>
+              {studentInfoState.ID !== "" && isNewProfileAdded ? (
+                <CreateProfileScreen
+                  studentID={studentInfoState.ID}
+                  studentName={studentInfoState.name}
+                  studentNumber={studentInfoState.number}
+                  isEdit={false}
+                />
+              ) : null}
+              {studentNumber && (
+                <Text style={styles.studentNumberText}>
+                  The student number is: {studentNumber}
+                </Text>
+              )}
+            </>
           </View>
         </>
       )}
@@ -300,5 +314,9 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: "#024552",
     fontWeight: 600,
+  },
+  studentNumberText: {
+    fontSize: 18,
+    fontFamily: "InterMedium",
   },
 });

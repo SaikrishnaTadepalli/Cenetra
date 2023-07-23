@@ -26,6 +26,7 @@ const AddTeacherScreen = () => {
   const [error, setError] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [isEditable, setIsEditable] = useState(true);
+  const [teacherNumber, setTeacherNumber] = useState("");
 
   const areAllFieldsFilled = () => {
     return Object.values(teacherState).every((value) => value !== "");
@@ -40,7 +41,7 @@ const AddTeacherScreen = () => {
         <TextInput
           editable={isEditable}
           style={styles.infoInputText}
-          value={!isEditable ? "" : teacherState.key}
+          value={!isEditable ? "" : teacherState[key]}
           onChangeText={(value) => handleChange(key, value)}
         />
       </View>
@@ -67,6 +68,7 @@ const AddTeacherScreen = () => {
             setIsSaved(true);
             setIsButtonDisabled(true);
             setIsEditable(false);
+            setTeacherNumber(response.payload.data.createTeacher.teacherNumber);
             setTimeout(() => {
               setIsSaved(false);
               setIsButtonDisabled(false);
@@ -90,43 +92,61 @@ const AddTeacherScreen = () => {
   };
   const onCancel = () => {
     setIsCancelled(true);
-    dispatch(setIsNewTeacherAdded(false));
+    setTeacherState(initialState);
+    // dispatch(setIsNewTeacherAdded(false));
     setTimeout(() => {
       setIsCancelled(false);
     }, 2000);
   };
 
   return (
-    <View style={{ paddingLeft: 40, marginTop: 30 }}>
-      {isNewTeacherAdded && (
-        <>
-          <Text style={styles.subHeaderText}>Teacher details</Text>
-          {renderText("Teacher first name", "firstName")}
-          {renderText("Teacher last name", "lastName")}
-          {renderText("Phone number", "phoneNumber")}
-          {renderText("Email", "email")}
-          {isSaved ? <Text>Teacher has been added successfully!</Text> : null}
-          {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
-          {createTeacherPending && <Text>Adding new teacher.</Text>}
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity
-              style={[
-                styles.saveButtonContainer,
-                { opacity: isButtonDisabled ? 0.5 : 1 },
-              ]}
-              onPress={onSave}
-            >
-              <Text style={styles.saveButtonText}>Create</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButtonContainer}
-              onPress={onCancel}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
+    <View style={{ paddingLeft: 40, marginTop: 30, flexDirection: "row" }}>
+      <>
+        {isNewTeacherAdded && (
+          <View style={{ width: "50%" }}>
+            <Text style={styles.subHeaderText}>Teacher details</Text>
+            {renderText("First name", "firstName")}
+            {renderText("Last name", "lastName")}
+            {renderText("Phone number", "phoneNumber")}
+            {renderText("Email", "email")}
+            {isSaved ? <Text>Teacher has been added successfully!</Text> : null}
+            {error !== "" ? (
+              <Text style={styles.errorText}>{error}</Text>
+            ) : null}
+            {createTeacherPending && <Text>Adding new teacher.</Text>}
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.saveButtonContainer,
+                  { opacity: isButtonDisabled ? 0.5 : 1 },
+                ]}
+                onPress={onSave}
+              >
+                <Text style={styles.saveButtonText}>Create</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButtonContainer}
+                onPress={onCancel}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </>
-      )}
+        )}
+        {teacherNumber && (
+          <View
+            style={{
+              width: "30%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.teacherNumberText}>
+              The teacher number is: {teacherNumber}
+            </Text>
+          </View>
+        )}
+      </>
     </View>
   );
 };
@@ -148,14 +168,14 @@ const styles = StyleSheet.create({
   infoTypeText: {
     fontSize: 16,
     fontFamily: "InterMedium",
-    width: "12%",
+    width: "20%",
     // marginRight: 40,
   },
   infoInputText: {
     backgroundColor: "#FFF",
     borderRadius: 5,
     height: 40,
-    width: 230,
+    width: 200,
     paddingVertical: 10,
     borderColor: "rgba(217, 217, 217, 0.50)",
     borderBottomColor: "#D9D9D9",
@@ -270,5 +290,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 15,
     fontFamily: "InterRegular",
+  },
+  teacherNumberText: {
+    fontSize: 18,
+    fontFamily: "InterMedium",
   },
 });

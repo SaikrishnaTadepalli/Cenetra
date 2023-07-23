@@ -214,7 +214,6 @@ export const noticeSlice = createSlice({
         state.editNoticesSuccessful = false;
       })
       .addCase(editNotices.fulfilled, (state, action) => {
-        state.notices = [action.payload.data.editNotice, ...state.notices];
         state.editNoticesPending = false;
         state.editNoticesError = false;
         state.editNoticesSuccessful = true;

@@ -222,22 +222,24 @@ const NoticesScreen = () => {
         <Text style={styles.subHeaderText}>
           All notices you posted will be shown here.
         </Text>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", height: "100%" }}>
           <>
             {fetchNoticesPending ? (
               <View
-                style={{
-                  flex: 3,
-                  width: "50%",
-                  // marginLeft: 100,
-                  // marginLeft: "-15%",
-                  // marginTop: "-5%",
-                  //flexDirection: "row",
-                }}
+                style={
+                  {
+                    //flex: 3,
+                    // width: "50%",
+                    // marginLeft: 100,
+                    // marginLeft: "-15%",
+                    // marginTop: "-5%",
+                    //flexDirection: "row"
+                  }
+                }
               >
                 <Text>Retrieving data...</Text>
               </View>
-            ) : true ? (
+            ) : error === "" ? (
               <View>
                 <DropDown
                   options={teacherInfo}
@@ -268,18 +270,20 @@ const NoticesScreen = () => {
                   </ScrollView>
                 </View>
               </View>
-            ) : error !== "" ? (
+            ) : (
               <View>
                 <Text>{error}</Text>
               </View>
-            ) : null}
+            )}
             <View
               style={{
-                flex: 3,
+                // flex: 3,
                 width: "50%",
-                marginLeft: notices.length > 0 ? "-15%" : 500,
+                marginLeft: fetchNoticesPending ? "20%" : "8%",
+                height: "100%",
                 marginTop: "-5%",
                 flexDirection: "row",
+                //backgroundColor: "pink",
               }}
             >
               <View style={styles.verticalDivider} />
@@ -290,20 +294,27 @@ const NoticesScreen = () => {
                     setNoticeID={setNoticeID}
                     setIsOldNoticeSelected={setIsOldNoticeSelected}
                   />
-                ) : isNewNoticeAdded ? (
-                  <CreateNoticeScreen date={date} noticeID={noticeID} />
+                ) : true ? (
+                  <CreateNoticeScreen
+                    date={date}
+                    noticeID={noticeID}
+                    setIsOldNoticeSelected={setIsOldNoticeSelected}
+                  />
                 ) : (
-                  notices &&
-                  notices.length > 0 && (
+                  notices && (
                     <View
                       style={{
-                        flex: 1,
+                        // flex: 1,
+                        width: "100%",
+                        height: "100%",
                         alignSelf: "center",
                         alignItems: "center",
+                        justifyContent: "center",
+                        alignContent: "center",
                       }}
                     >
                       <Text style={styles.emptyStateMessage}>
-                        Select a notice to view.
+                        Select a class to view a notice.
                       </Text>
                     </View>
                   )
@@ -326,6 +337,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 20,
     paddingHorizontal: 10,
+    height: "100%",
   },
   teacherName: {
     fontFamily: "InterSemiBold",
@@ -405,11 +417,11 @@ const styles = StyleSheet.create({
     color: colors.darkGrey,
   },
   verticalDivider: {
-    height: "150%",
+    height: "100%",
     borderLeftColor: "#D9D9D980",
     borderLeftWidth: 1,
     marginRight: 50,
-    marginLeft: "-60%",
+    //marginLeft: "-60%",
   },
   emptyStateMessage: {
     color: "#99B8BE",

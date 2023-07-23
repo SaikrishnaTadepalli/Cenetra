@@ -23,7 +23,14 @@ import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 import OpenEndedQuestion from "../src/components/OpenEndedQuestion";
 import { IconButton } from "react-native-paper";
 
-const CreateLogScreen = ({ date, studentID, name, logID }) => {
+const CreateLogScreen = ({
+  date,
+  studentID,
+  name,
+  logID,
+  setIsStudentNameSelected,
+  setIsOldLogSelected,
+}) => {
   const { logs } = useSelector((state) => state.log);
   const findLogById = (id) => {
     let foundLog = null;
@@ -61,37 +68,136 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
     {
       question: "Which activities did the children engage in today?",
       answer: parsedLog ? parsedLog.checkBoxQuestions[0].answer : [],
-      options: ["Outdoor play", "Art and crafts", "Storytime"],
+      options: [
+        "Outdoor play",
+        "Art and crafts",
+        "Storytime",
+        "Music movement",
+        "Sensor play",
+        "Free play",
+        "Group games",
+      ],
     },
     {
-      question: "Did any children require special attention or support today? ",
+      question: "Which areas did the child need assistance with today?",
       answer: parsedLog ? parsedLog.checkBoxQuestions[1].answer : [],
-      options: ["Self-care", "Snack time", "Sharing toys"],
+      options: [
+        "Self-care (e.g., toileting, handwashing)",
+        "Snack time",
+        "Putting on coats and shoes",
+        "Sharing toys",
+        "Cleaning up after play",
+      ],
     },
     {
-      question:
-        "Which areas of development did you observe in the children today?",
+      question: "Which positive behaviors did the child exhibit today?",
       answer: parsedLog ? parsedLog.checkBoxQuestions[2].answer : [],
-      options: ["Sharing", "Listening attentively", "Problem-solving"],
+      options: [
+        "Sharing",
+        "Taking turns",
+        "Helping others",
+        "Listening attentively",
+        "Following instructions",
+        "Problem-solving",
+      ],
+    },
+    {
+      question: "Which materials were used during learning activities?",
+      answer: parsedLog ? parsedLog.checkBoxQuestions[3].answer : [],
+      options: [
+        "Manipulatives (e.g., blocks, puzzles)",
+        "Writing tools (e.g., crayons, markers)",
+        "Books and reading materials",
+        "Math manipulatives",
+        "Science experiment materials",
+      ],
+    },
+    {
+      question: "Which behavior management strategies were implemented today?",
+      answer: parsedLog ? parsedLog.checkBoxQuestions[4].answer : [],
+      options: [
+        "Positive reinforcement",
+        "Time-outs",
+        "Redirection",
+        "Verbal reminders",
+        "Visual cues",
+      ],
     },
     // ...more questions
   ]);
   const [radioQuestionState, setRadioQuestionState] = useState([
     {
-      question:
-        "How would you rate the overall behavior of the children today?",
+      question: "How would you rate the overall behavior of the child today?",
       answer: parsedLog ? parsedLog.radioButtonQuestions[0].answer : "",
       options: ["Excellent", "Good", "Fair", "Poor"],
     },
     {
-      question: "Did the children actively participate in group activities?",
+      question: "Did the child actively participate in group activities?",
       answer: parsedLog ? parsedLog.radioButtonQuestions[1].answer : "",
-      options: ["Yes", "No"],
+      options: ["Yes", "No", "Sometimes"],
     },
     {
-      question: "How well did the children follow instructions today?",
+      question: "How well did the child follow instructions today?",
       answer: parsedLog ? parsedLog.radioButtonQuestions[2].answer : "",
       options: ["Very well", "Well", "Not so well", "Poorly"],
+    },
+    {
+      question: "Did the child show kindness and respect towards others?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[3].answer : "",
+      options: ["Yes, always", "Most of the time", "Occasionally", "Rarely"],
+    },
+    {
+      question:
+        "Were there any discipline issues that needed addressing today?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[4].answer : "",
+      options: [
+        "No issues",
+        "Minor issues",
+        "Some moderate issues",
+        "Significant issues",
+      ],
+    },
+    {
+      question: "How engaged was the child during learning activities?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[5].answer : "",
+      options: [
+        "Highly engaged",
+        "Moderately engaged",
+        "Somewhat engaged",
+        "Not Engaged",
+      ],
+    },
+    {
+      question: "Did the child demonstrate good listening skills?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[6].answer : "",
+      options: [
+        "Yes, always",
+        "Most of the time",
+        "Mostly well, with occasional lapses",
+        "Occasionally",
+        "Rarely",
+      ],
+    },
+    {
+      question:
+        "Were there any notable achievements or milestones reached by the child today?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[7].answer : "",
+      options: ["Yes, several", "Yes, a few", "None"],
+    },
+    {
+      question: "How well did the child cooperate with others during playtime?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[8].answer : "",
+      options: ["Very well", "Well", "Not so well", "Poorly"],
+    },
+    {
+      question: "How well did the child transition between activities today?",
+      answer: parsedLog ? parsedLog.radioButtonQuestions[9].answer : "",
+      options: [
+        "Smoothly",
+        "Somewhat smoothly",
+        "With some difficulty",
+        "Chaotically",
+      ],
     },
     // ...more questions
   ]);
@@ -115,10 +221,12 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
             setIsInputEmpty(false);
             setIsSaved(true);
             setIsCancelled(false);
+
             setFilledStars(0);
             setTimeout(() => {
               setIsSaved(false);
               setEditable(true);
+              setIsOldLogSelected(true);
             }, 2000);
           }
         })
@@ -132,6 +240,7 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
       setIsSaved(false);
     }
   };
+
   const onSave = () => {
     // console.log(inputs);
     const adminID = localStorage.getItem("adminID");
@@ -165,6 +274,11 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
     setIsCancelled(true);
     setEditable(false);
     dispatch(setIsNewLogAdded(false));
+    if (logID) {
+      setIsOldLogSelected(true);
+    } else {
+      setIsStudentNameSelected(true);
+    }
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
@@ -283,9 +397,9 @@ const CreateLogScreen = ({ date, studentID, name, logID }) => {
                   <View style={{ flexDirection: "row" }}>{renderStars()}</View>
                 </View>
               </View>
-              <View style={styles.dragAndDropContainer}>
+              {/* <View style={styles.dragAndDropContainer}>
                 <DragAndDrop studentID={studentID} />
-              </View>
+              </View> */}
               <View style={styles.listView}>
                 <View style={{ marginBottom: 20 }}>
                   {radioQuestionState.map((question, idx) => (

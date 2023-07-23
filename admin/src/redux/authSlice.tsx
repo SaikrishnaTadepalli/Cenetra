@@ -56,6 +56,7 @@ export const loginUser = createAsyncThunk("auth/login", async (adminID) => {
         _id
         firstName
         lastName
+        studentNumber
       }
     }
   }

@@ -19,7 +19,12 @@ import {
 import typeColorMapping from "../api/typeColorMapping";
 import Dropdown from "../src/components/DropDown";
 
-const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
+const CreateNoticeScreen = ({
+  date,
+  noticeID,
+  setNoticeID,
+  setIsOldNoticeSelected,
+}) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const state = useSelector((state) => state.notices);
@@ -98,9 +103,9 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
             setEditable(false);
             setIsInputEmpty(false);
             setIsSaved(true);
-            setNoticeID("");
+            dispatch(setIsNewNoticeAdded(false));
             setTimeout(() => {
-              dispatch(setIsNewNoticeAdded(false));
+              noticeID !== "" && setIsOldNoticeSelected(true);
               setIsSaved(false);
               setEditable(true);
               setSubject("");
@@ -157,7 +162,7 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
     setIsCancelled(true);
     setEditable(false);
     dispatch(setIsNewNoticeAdded(false));
-    noticeID !== "" && setNoticeID("");
+    noticeID !== "" && setIsOldNoticeSelected(true);
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
@@ -204,6 +209,15 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
 
   return (
     <>
+      {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
+      {error ? (
+        <View>
+          <Text>There was an error in creating the log. Please try again.</Text>
+          <TouchableOpacity onPress={handleRefresh}>
+            <Text>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
       <ScrollView contentContainerStyle={styles.listView}>
         {isAddNewNoticeSelected ? (
           <View style={styles.container}>
@@ -243,22 +257,11 @@ const CreateNoticeScreen = ({ date, noticeID, setNoticeID }) => {
                   Could not save new notice. Please fill in both text boxes.
                 </Text>
               ) : null}
-              {error ? (
-                <View>
-                  <Text>
-                    There was an error in creating the log. Please try again.
-                  </Text>
-                  <TouchableOpacity onPress={handleRefresh}>
-                    <Text>Try Again</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : null}
+
               {createNoticesPending || editNoticesPending ? (
                 <Text>Saving your changes.</Text>
               ) : null}
-              {isSaved ? (
-                <Text>Your notice has been successfully saved!</Text>
-              ) : null}
+
               <View style={styles.buttonsContainer}>
                 <TouchableOpacity
                   style={styles.saveButtonContainer}

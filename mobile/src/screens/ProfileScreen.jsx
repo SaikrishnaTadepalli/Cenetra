@@ -60,7 +60,6 @@ const ProfileScreen = ({ navigation }) => {
               setError("Error while retrieving image.");
             } else {
               setImageUrl(response.payload.data.getS3ViewUrl);
-              console.log(response.payload.data.getS3ViewUrl);
             }
           });
         }
@@ -151,7 +150,7 @@ const ProfileScreen = ({ navigation }) => {
                   />
                 ) : null}
                 <View style={styles.studentDetailsContainer}>
-                  <Text style={styles.studentName}>{studentInfo.name}</Text>
+                  <Text style={styles.studentName}>Jaden Smith</Text>
                   <Text style={styles.studentId}>
                     Student ID: {studentInfo.student_number}
                   </Text>

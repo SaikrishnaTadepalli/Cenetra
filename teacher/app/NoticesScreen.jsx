@@ -50,6 +50,7 @@ const NoticesScreen = () => {
     setDate(curDate);
     setIsOldNoticeSelected(false);
     dispatch(setIsNewNoticeAdded(true));
+    setNoticeID("");
   };
 
   const onClickNotice = (id) => {
@@ -243,11 +244,12 @@ const NoticesScreen = () => {
                     setNoticeID={setNoticeID}
                     setIsOldNoticeSelected={setIsOldNoticeSelected}
                   />
-                ) : isNewNoticeAdded ? (
+                ) : true ? (
                   <CreateNoticeScreen
                     date={date}
                     noticeID={noticeID}
                     setNoticeID={setNoticeID}
+                    setIsOldNoticeSelected={setIsOldNoticeSelected}
                   />
                 ) : (
                   notices &&

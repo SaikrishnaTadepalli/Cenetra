@@ -219,7 +219,6 @@ export const logSlice = createSlice({
         // state.editogsSuccessful = false;
       })
       .addCase(editLogs.fulfilled, (state, action) => {
-        state.logs = [action.payload.data.editLog, ...state.logs];
         state.editLogsPending = false;
         state.editLogsError = false;
         state.isNewLogAdded = false;

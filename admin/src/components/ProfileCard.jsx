@@ -40,7 +40,7 @@ const ProfileCard = ({ sectionHeader, data, isApproval }) => {
               style={!isApproval ? styles.cardContainer : null}
             >
               {!isApproval ? (
-                <Text style={styles.headerText}>{item.title} information</Text>
+                <Text style={styles.headerText}>{item.title}</Text>
               ) : null}
               {renderText("Name:", item.name)}
               {renderText("Relationship:", item.relationship)}

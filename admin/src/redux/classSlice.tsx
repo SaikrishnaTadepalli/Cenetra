@@ -47,6 +47,52 @@ export const addStudentsToClass = createAsyncThunk(
   }
 );
 
+export const removeStudentsFromClass = createAsyncThunk(
+  "class/removeStudentsFromClass",
+  async ({ classID, studentIDs }, { rejectWithValue }) => {
+    const query = `mutation {
+      removeStudentsFromClass(classId: "${classID}", studentIds: [${studentIDs}]) {
+        _id
+      }
+    }
+  `;
+    console.log(query);
+    try {
+      const response = await fetch(envs, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (response.status !== 200) {
+        if (response.status === 500) {
+          // console.log(response);
+          console.error(
+            "Error while removing student to class",
+            response.statusText
+          );
+          throw new Error("Network error");
+        } else if (response.status === 400) {
+          console.error(
+            "Error while removing student to class, invalid input",
+            response.statusText
+          );
+          throw new Error(
+            "Invalid or wrong student Info while removing student to class for admin"
+          );
+        }
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Catch: while adding student to class", error);
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const createClass = createAsyncThunk(
   "class/createClass",
   async ({ teacherID, className, details }, { rejectWithValue }) => {
@@ -95,6 +141,12 @@ export const fetchClasses = createAsyncThunk("class/fetchClasses", async () => {
           _id
           firstName
           lastName
+          studentNumber
+        }
+        teacher {
+          _id
+          firstName
+          lastName
         }
       }
     }
@@ -133,6 +185,8 @@ export interface ClassState {
   createClassSuccessful: boolean;
   addStudentsToClassPending: boolean;
   addStudentsToClassError: boolean;
+  removeStudentsFromClassPending: boolean;
+  removeStudentsFromClassError: boolean;
   teacherID: string;
   fetchClassesError: boolean;
   fetchClassesPending: boolean;
@@ -145,6 +199,8 @@ const initialState: ClassState = {
   createClassSuccessful: false,
   addStudentsToClassPending: null,
   addStudentsToClassError: false,
+  removeStudentsFromClassPending: null,
+  removeStudentsFromClassError: false,
   fetchClassesError: false,
   fetchClassesPending: null,
   logs: [],
@@ -204,6 +260,18 @@ export const classSlice = createSlice({
         state.fetchClassesPending = false;
         state.fetchClassesError = false;
         //state.fetchClassesSuccessful = true;
+      })
+      .addCase(removeStudentsFromClass.pending, (state) => {
+        state.removeStudentsFromClassPending = true;
+        state.removeStudentsFromClassError = false;
+      })
+      .addCase(removeStudentsFromClass.rejected, (state) => {
+        state.removeStudentsFromClassPending = null;
+        state.removeStudentsFromClassError = true;
+      })
+      .addCase(removeStudentsFromClass.fulfilled, (state, action) => {
+        state.removeStudentsFromClassPending = false;
+        state.removeStudentsFromClassError = false;
       });
   },
 });

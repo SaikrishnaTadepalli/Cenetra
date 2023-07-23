@@ -7,14 +7,19 @@ import { getUploadUrl, uplaodMedia } from "../redux/mediaSlice";
 const DragAndDrop = ({ studentID }) => {
   const dispatch = useDispatch();
   const [isUploading, setIsUploading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [uploadFiles, setUploadFiles] = useState([]);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/png": [".png", ".jpg", ".jpeg"],
     },
   });
+
   const onUpload = () => {
     setIsUploading(true);
+    setIsDisabled(true);
+    setIsSuccess(false);
     const teacherID = localStorage.getItem("teacherID");
 
     acceptedFiles.forEach(async (file, idx) => {
@@ -41,7 +46,8 @@ const DragAndDrop = ({ studentID }) => {
                       if (idx === acceptedFiles.length - 1) {
                         setIsSuccess(true);
                         setIsUploading(false);
-                        setTimeout(() => setIsSuccess(false), 2000);
+                        setUploadFiles([]);
+                        setIsDisabled(false);
                       }
                     }
                   })
@@ -85,7 +91,14 @@ const DragAndDrop = ({ studentID }) => {
       </View>
       {isUploading ? <Text>Uploading images....</Text> : null}
       {isSuccess ? <Text>Successfully uploaded images!</Text> : null}
-      <TouchableOpacity onPress={onUpload} style={styles.uploadButtonContainer}>
+      <TouchableOpacity
+        onPress={onUpload}
+        style={[
+          styles.uploadButtonContainer,
+          { opacity: isDisabled ? 0.5 : 1 },
+        ]}
+        disabled={isDisabled}
+      >
         <Text style={styles.uploadButtonText}>Upload</Text>
       </TouchableOpacity>
       <View>{files}</View>

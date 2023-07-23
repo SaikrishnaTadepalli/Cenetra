@@ -25,8 +25,10 @@ const CreateProfileScreen = ({
   setStudentID,
   setStudentName,
   setStudentNumber,
+  isEdit,
+  imageUrl,
 }) => {
-  const { addNewProfileLoading, addNewProfileError } = useSelector(
+  const { addNewProfileLoading, addNewProfileError, studentInfo } = useSelector(
     (state) => state.studentProfile
   );
   const [picture, setPicture] = useState("");
@@ -100,27 +102,38 @@ const CreateProfileScreen = ({
     return allFieldsFilled;
   };
 
-  const [primaryContacts, setPrimaryContacts] = useState([
-    primaryContact1InitialState,
-    primaryContact2InitialState,
-  ]);
-  const [emergencyContacts, setEmergencyContacts] = useState([
-    emergencyContact1InitialState,
-    emergencyContact2InitialState,
-  ]);
+  const copyOfObject = () => {};
 
-  const [allergies, setAllergies] = useState([allergiesInitialState]);
+  const [primaryContacts, setPrimaryContacts] = useState(
+    isEdit
+      ? studentInfo.information[0].section.slice()
+      : [primaryContact1InitialState]
+  );
+  console.log(primaryContacts);
+  const [emergencyContacts, setEmergencyContacts] = useState(
+    isEdit
+      ? studentInfo.information[1].section
+      : [emergencyContact1InitialState]
+  );
 
-  const [medications, setMedications] = useState([medicationsInitialState]);
+  const [allergies, setAllergies] = useState(
+    isEdit ? studentInfo.information[2].section : [allergiesInitialState]
+  );
 
-  const [bloodGroup, setBloodGroup] = useState([bloodGroupInitialState]);
+  const [medications, setMedications] = useState(
+    isEdit ? studentInfo.information[3].section : [medicationsInitialState]
+  );
+
+  const [bloodGroup, setBloodGroup] = useState(
+    isEdit ? studentInfo.information[4].section : [bloodGroupInitialState]
+  );
 
   const renderText = (infoType, state, setState, idx, property) => {
     return (
       <View style={styles.infoLineContainer}>
-        {infoType !== "" ? (
-          <Text style={styles.infoTypeText}>{infoType}</Text>
-        ) : null}
+        <Text style={styles.infoTypeText}>{infoType}</Text>
+        <Text style={styles.infoTypeText}>{infoType}</Text>) : null}
+        <Text style={styles.infoTypeText}>{infoType}</Text>) : null}
         <TextInput
           editable={isEditable}
           style={styles.infoInputText}
@@ -134,8 +147,60 @@ const CreateProfileScreen = ({
   };
 
   const dispatch = useDispatch();
+  console.log(studentID);
+  const handleDispatch = (action) => {
+    dispatch(action)
+      .then((response) => {
+        if (response.error) {
+          setError("Something went wrong please try again.");
+          setTimeout(() => setError(""), 2000);
+        } else {
+          if (!addNewProfileLoading) {
+            setIsSaved(true);
+            setIsButtonDisabled(true);
+            setIsEditable(false);
+            setTimeout(() => {
+              setIsSaved(false);
+              setIsButtonDisabled(false);
+              dispatch(setIsNewProfileAdded(false));
+              setPrimaryContacts([
+                primaryContact1InitialState,
+                primaryContact2InitialState,
+              ]);
+              setEmergencyContacts([
+                emergencyContact1InitialState,
+                emergencyContact2InitialState,
+              ]);
+              setAllergies([allergiesInitialState]);
+              setMedications([medicationsInitialState]);
+              setBloodGroup([bloodGroupInitialState]);
+              setStudentName("");
+              setStudentNumber("");
+              setIsEditable(true);
+            }, 2000);
+          }
+        }
+      })
+      .catch((error) => {
+        setError("Something went wrong please try again");
+        console.error("Catch: Error while creating student profile", error);
+      });
+  };
+  // else {
+  //   setError("Please fill in all the fields.");
+  //   setTimeout(() => setError(""), 2000);
+  // }
 
   const onSave = () => {
+    console.log(
+      primaryContacts,
+      emergencyContacts,
+      allergies,
+      medications,
+      bloodGroup
+    );
+    var action = "";
+    const adminID = localStorage.getItem("adminID");
     const updatedInfo = {
       name: studentName,
       // uri: studentData.uri,
@@ -153,51 +218,22 @@ const CreateProfileScreen = ({
       areAllFieldsFilled(emergencyContacts) &&
       areAllFieldsFilled(bloodGroup)
     ) {
-      dispatch(addNewProfile({ studentID: studentID, details: updatedInfo }))
-        .then((response) => {
-          if (response.error) {
-            setError(response.payload.message);
-            setTimeout(() => setError(""), 2000);
-          } else {
-            if (!addNewProfileLoading) {
-              setIsSaved(true);
-              setIsButtonDisabled(true);
-              setIsEditable(false);
-              setTimeout(() => {
-                setIsSaved(false);
-                setIsButtonDisabled(false);
-                dispatch(setIsNewProfileAdded(false));
-                setPrimaryContacts([
-                  primaryContact1InitialState,
-                  primaryContact2InitialState,
-                ]);
-                setEmergencyContacts([
-                  emergencyContact1InitialState,
-                  emergencyContact2InitialState,
-                ]);
-                setAllergies([allergiesInitialState]);
-                setMedications([medicationsInitialState]);
-                setBloodGroup([bloodGroupInitialState]);
-                setStudentName("");
-                setStudentNumber("");
-                setIsEditable(true);
-              }, 2000);
-            }
-          }
-        })
-        .catch((error) => {
-          setError("Something went wrong please try again");
-          console.error("Catch: Error while creating student profile", error);
+      if (!isEdit) {
+        action = addNewProfile({ studentID: studentID, details: updatedInfo });
+      } else {
+        action = editProfile({
+          studentID: studentID,
+          details: updatedInfo,
+          adminID: adminID,
         });
+      }
+      handleDispatch(action);
     } else {
       setError("Please fill in all fields");
       setTimeout(() => setError(""), 2000);
     }
-    // else {
-    //   setError("Please fill in all the fields.");
-    //   setTimeout(() => setError(""), 2000);
-    // }
   };
+
   const onCancel = () => {
     setIsCancelled(true);
     dispatch(setIsNewProfileAdded(false));
@@ -212,6 +248,24 @@ const CreateProfileScreen = ({
       return { item: "", severity: "" };
     } else if (type === "MEDICATIONS") {
       return { name: "", dosage: "", frequency: "" };
+    } else if (type === "PRIMARY CONTACTS") {
+      return {
+        title: "Primary Contact 2 information",
+        name: "",
+        relationship: "",
+        phoneNumber: "",
+        email: "",
+        address: "",
+      };
+    } else if (type === "EMERGENCY CONTACTS") {
+      return {
+        title: "Emergency Contact 2 information",
+        name: "",
+        relationship: "",
+        phoneNumber: "",
+        email: "",
+        address: "",
+      };
     }
   };
 
@@ -238,7 +292,7 @@ const CreateProfileScreen = ({
       return updatedInputs;
     });
   };
-
+  console.log(error);
   return (
     <ScrollView
       style={styles.container}
@@ -246,14 +300,14 @@ const CreateProfileScreen = ({
     >
       <View style={styles.profileContainer}>
         <View style={styles.imageAndChildInfoContainer}>
-          {/* <Image
-            // source={{ uri: studentData.uri }}
+          <Image
+            source={{ uri: imageUrl }}
             width={60}
             height={60}
             style={styles.image}
-          /> */}
+          />
           <View style={styles.studentDetailsContainer}>
-            <Text style={styles.studentName}>Name {studentName}</Text>
+            <Text style={styles.studentName}>Name: {studentName}</Text>
             <Text style={styles.studentId}>Student ID: {studentNumber}</Text>
           </View>
         </View>
@@ -261,6 +315,21 @@ const CreateProfileScreen = ({
       <View style={styles.profileContainer}>
         <View>
           <View style={styles.infoContainer}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeaderText}>
+                Primary Contact information
+              </Text>
+              {primaryContacts.length < 2 && (
+                <TouchableOpacity
+                  onPress={() =>
+                    addItem(setPrimaryContacts, "PRIMARY CONTACTS")
+                  }
+                  style={styles.addButtonContainer}
+                >
+                  <Ionicons size={20} color={"#024552"} name="add-sharp" />
+                </TouchableOpacity>
+              )}
+            </View>
             {primaryContacts.map((item, idx) => (
               <View key={`profile-info${idx}`}>
                 <Text style={styles.headerText}>{item.title}</Text>
@@ -299,6 +368,14 @@ const CreateProfileScreen = ({
                   idx,
                   "address"
                 )}
+                {idx === 1 && (
+                  <TouchableOpacity
+                    onPress={() => deleteItem(setPrimaryContacts, idx)}
+                    style={styles.deleteButtonContainer}
+                  >
+                    <Text style={styles.deleteText}>Delete</Text>
+                  </TouchableOpacity>
+                )}
                 <View style={styles.divider} />
               </View>
             ))}
@@ -306,6 +383,21 @@ const CreateProfileScreen = ({
         </View>
         <View>
           <View style={styles.infoContainer}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeaderText}>
+                Emergency Contact information
+              </Text>
+              {emergencyContacts.length < 2 && (
+                <TouchableOpacity
+                  onPress={() =>
+                    addItem(setEmergencyContacts, "EMERGENCY CONTACTS")
+                  }
+                  style={styles.addButtonContainer}
+                >
+                  <Ionicons size={20} color={"#024552"} name="add-sharp" />
+                </TouchableOpacity>
+              )}
+            </View>
             {emergencyContacts.map((item, idx) => (
               <View key={`profile-info${idx}`}>
                 <Text style={styles.headerText}>{item.title}</Text>
@@ -343,6 +435,14 @@ const CreateProfileScreen = ({
                   setEmergencyContacts,
                   idx,
                   "address"
+                )}
+                {idx === 1 && (
+                  <TouchableOpacity
+                    onPress={() => deleteItem(setEmergencyContacts, idx)}
+                    style={styles.deleteButtonContainer}
+                  >
+                    <Text style={styles.deleteText}>Delete</Text>
+                  </TouchableOpacity>
                 )}
                 <View style={styles.divider} />
               </View>
@@ -427,7 +527,7 @@ const CreateProfileScreen = ({
             </View>
             {bloodGroup.map((item, idx) => (
               <View key={`profile-info${idx}`}>
-                {renderText("", bloodGroup, setBloodGroup, idx, "name")}
+                {renderText("", bloodGroup, setBloodGroup, idx, "item")}
               </View>
             ))}
           </View>
