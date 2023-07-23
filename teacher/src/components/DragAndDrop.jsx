@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ const DragAndDrop = ({ studentID }) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [uploadFiles, setUploadFiles] = useState([]);
+  const [isUploadDisabled, setIsUploadDisabled] = useState(false);
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/png": [".png", ".jpg", ".jpeg"],
@@ -20,9 +21,10 @@ const DragAndDrop = ({ studentID }) => {
     setIsUploading(true);
     setIsDisabled(true);
     setIsSuccess(false);
+    setIsUploadDisabled(true);
     const teacherID = localStorage.getItem("teacherID");
 
-    acceptedFiles.forEach(async (file, idx) => {
+    uploadFiles.forEach(async (file, idx) => {
       dispatch(getUploadUrl({ teacherID, studentID }))
         .then(async (response) => {
           // console.log(response.payload.data);
@@ -47,6 +49,7 @@ const DragAndDrop = ({ studentID }) => {
                         setIsSuccess(true);
                         setIsUploading(false);
                         setUploadFiles([]);
+                        setIsUploadDisabled(false);
                         setIsDisabled(false);
                       }
                     }
@@ -64,11 +67,28 @@ const DragAndDrop = ({ studentID }) => {
     });
   };
 
-  const files = acceptedFiles.map((file) => (
+  const files = uploadFiles.map((file) => (
     <View key={file.name}>
       <Text>{file.name}</Text>
     </View>
   ));
+
+  const onFocus = () => {
+    // console.log("---------", acceptedFiles);
+    // const newFiles = [];
+    // acceptedFiles.forEach((file) => newFiles.push(file));
+    // setUploadFiles(newFiles);
+    console.log("focused");
+    setIsDisabled(false);
+  };
+
+  useEffect(() => {
+    //console.log(acceptedFiles.length);
+    const newFiles = [];
+    acceptedFiles.forEach((file) => newFiles.push(file));
+    setUploadFiles(newFiles);
+  }, [acceptedFiles]);
+  // console.log(uploadFiles);
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Media Upload</Text>
@@ -78,16 +98,26 @@ const DragAndDrop = ({ studentID }) => {
           alignItems: "center",
         }}
       >
-        <div
-          {...getRootProps({ className: "dropzone" })}
-          style={styles.dropzone}
-        >
-          <Text style={styles.text}>Drag and Drop</Text>
-        </div>
+        <TouchableOpacity disabled={isUploadDisabled}>
+          <div
+            {...getRootProps({ className: "dropzone" })}
+            style={styles.dropzone}
+          >
+            <Text style={styles.text}>Drag and Drop</Text>
+          </div>
+        </TouchableOpacity>
         <Text style={styles.text}>OR</Text>
-        <div {...getRootProps({ className: "dropzone" })} style={styles.upload}>
-          <Text style={styles.text}>Select Pictures</Text>
-        </div>
+        <TouchableOpacity
+          //onPress={() => setIsDisabled(false)}
+          disabled={isUploadDisabled}
+        >
+          <div
+            {...getRootProps({ className: "dropzone" })}
+            style={styles.upload}
+          >
+            <Text style={styles.text}>Select Pictures</Text>
+          </div>
+        </TouchableOpacity>
       </View>
       {isUploading ? <Text>Uploading images....</Text> : null}
       {isSuccess ? <Text>Successfully uploaded images!</Text> : null}

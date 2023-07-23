@@ -141,6 +141,7 @@ export interface LogState {
   fetchLogsError: boolean;
   editLogsError: boolean;
   editLogsPending: boolean;
+  editLogsSuccessful: boolean;
   isNewLogAdded: boolean;
 }
 
@@ -152,6 +153,7 @@ const initialState: LogState = {
   fetchLogsError: false,
   editLogsError: false,
   editLogsPending: null,
+  editLogsSuccessful: false,
   logs: [],
   isNewLogAdded: false,
 };
@@ -204,18 +206,18 @@ export const logSlice = createSlice({
         state.editLogsPending = true;
         state.editLogsError = false;
         state.isNewLogAdded = false;
-        // state.updateLogsSuccessful = false;
+        state.updateLogsSuccessful = false;
       })
       .addCase(editLogs.rejected, (state) => {
         state.editLogsPending = null;
         state.editLogsError = true;
-        // state.editogsSuccessful = false;
+        state.editLogsSuccessful = false;
       })
       .addCase(editLogs.fulfilled, (state, action) => {
         state.editLogsPending = false;
         state.editLogsError = false;
         state.isNewLogAdded = false;
-        //state.editLogsSuccessful = true;
+        state.editLogsSuccessful = true;
       });
   },
 });

@@ -203,12 +203,24 @@ const CreateLogScreen = ({
     // ...more questions
   ]);
 
+  // Function to check if all answer arrays are filled
+  const areAllCheckboxFieldsFilled = () => {
+    return checkBoxQuestionState.every(
+      (question) => question.answer.length > 0
+    );
+  };
+
+  // Function to check if all answer properties are filled
+  const areAllFieldsFilled = (state) => {
+    return state.every((question) => question.answer !== "");
+  };
+
   const handleDispatch = (action) => {
     // console.log(action);
     if (
-      radioQuestionState &&
-      checkBoxQuestionState &&
-      openEndedQuestionState &&
+      // areAllCheckboxFieldsFilled() &&
+      // areAllFieldsFilled(radioQuestionState) &&
+      // areAllFieldsFilled(openEndedQuestionState) &&
       filledStars
     ) {
       dispatch(action)
@@ -222,7 +234,7 @@ const CreateLogScreen = ({
             setIsInputEmpty(false);
             setIsSaved(true);
             setIsCancelled(false);
-            setLogID(response.payload.data.createLog._id);
+            !logID && setLogID(response.payload.data.createLog._id);
             setFilledStars(0);
             setTimeout(() => {
               setIsOldLogSelected(true);
@@ -239,9 +251,7 @@ const CreateLogScreen = ({
           }, 2000);
         });
     } else {
-      setIsInputEmpty(true);
-      setIsCancelled(false);
-      setIsSaved(false);
+      setError("Please fill in all fields");
     }
   };
   const onSave = () => {
@@ -418,7 +428,7 @@ const CreateLogScreen = ({
                     />
                   ))}
                 </View>
-                <View style={{ marginBottom: 30 }}>
+                <View style={{ marginBottom: 40 }}>
                   {checkBoxQuestionState.map((question, idx) => (
                     <MultiSelectQuestion
                       key={`multi-question-${idx}`}
@@ -452,7 +462,7 @@ const CreateLogScreen = ({
                   </Text>
                 ) : null}
                 {updateLogsPending ? <Text>Saving your changes.</Text> : null}
-                {error !== "" && <Text>{error}</Text>}
+                {error !== "" && <Text style={{ color: "red" }}>{error}</Text>}
                 <View style={styles.buttonsContainer}>
                   <TouchableOpacity
                     style={styles.saveButtonContainer}

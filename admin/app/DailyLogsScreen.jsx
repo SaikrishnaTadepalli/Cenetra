@@ -189,6 +189,7 @@ const DailyLogsScreen = () => {
                   curDate={curDate}
                   name={name}
                   setLogID={setLogID}
+                  studentID={studentID}
                 />
               ) : (
                 <CreateLogScreen

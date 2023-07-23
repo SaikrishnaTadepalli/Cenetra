@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { Checkbox, Provider, DefaultTheme } from "react-native-paper";
 
@@ -35,56 +41,54 @@ const MultiSelectQuestion = ({
   };
   return (
     <>
-      <Provider theme={theme}>
-        <Text style={styles.questionText}>{question}</Text>
-        {!disabled && (
-          <TouchableOpacity
-            style={styles.checkBoxContainer}
-            onPress={onSelectAll}
-          >
+      <Text style={styles.questionText}>{question}</Text>
+      {!disabled && (
+        <TouchableOpacity
+          style={styles.checkBoxContainer}
+          onPress={onSelectAll}
+        >
+          <Checkbox
+            status={
+              checkedItems.length === answers.length ? "checked" : "unchecked"
+            }
+            color="#6750A4"
+          />
+          <Text style={styles.answerText}>
+            {checkedItems.length === answers.length
+              ? "Deselect All"
+              : "Select All"}
+          </Text>
+          <View
+            style={[
+              styles.divider,
+              {
+                marginLeft: checkedItems.length === answers.length ? -115 : -98,
+              },
+            ]}
+          />
+        </TouchableOpacity>
+      )}
+      {answers.map((input, idx) => (
+        <TouchableOpacity
+          style={styles.checkBoxContainer}
+          key={`multi-select-${idx}`}
+          onPress={() => {
+            setCheckedItems(input);
+          }}
+        >
+          {!disabled && (
             <Checkbox
               status={
-                checkedItems.length === answers.length ? "checked" : "unchecked"
+                checkedItems.indexOf(input) !== -1 ? "checked" : "unchecked"
               }
+              disabled={disabled}
               color="#6750A4"
             />
-            <Text style={styles.answerText}>
-              {checkedItems.length === answers.length
-                ? "Deselect All"
-                : "Select All"}
-            </Text>
-            <View
-              style={[
-                styles.divider,
-                {
-                  marginLeft:
-                    checkedItems.length === answers.length ? -115 : -98,
-                },
-              ]}
-            />
-          </TouchableOpacity>
-        )}
-        {answers.map((input, idx) => (
-          <TouchableOpacity
-            style={styles.checkBoxContainer}
-            key={`multi-select-${idx}`}
-            onPress={() => {
-              setCheckedItems(input);
-            }}
-          >
-            {!disabled && (
-              <Checkbox
-                status={
-                  checkedItems.indexOf(input) !== -1 ? "checked" : "unchecked"
-                }
-                disabled={disabled}
-                color="#6750A4"
-              />
-            )}
-            <Text style={styles.answerText}>{input}</Text>
-          </TouchableOpacity>
-        ))}
-      </Provider>
+          )}
+
+          <Text style={styles.answerText}>{input}</Text>
+        </TouchableOpacity>
+      ))}
     </>
   );
 };

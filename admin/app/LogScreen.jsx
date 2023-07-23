@@ -5,13 +5,13 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 import colors from "../src/constants/Colors";
-import { setIsNewLogAdded } from "../src/redux/logsSlice";
+import { fetchLogs, setIsNewLogAdded } from "../src/redux/logsSlice";
 import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 
@@ -23,8 +23,9 @@ const LogScreen = ({
   curDate,
   name,
   setLogID,
+  studentID,
 }) => {
-  const { logs } = useSelector((state) => state.log);
+  const { logs, editLogsSuccessful } = useSelector((state) => state.log);
   const findLogById = (id) => {
     let foundLog = null;
 
@@ -67,6 +68,16 @@ const LogScreen = ({
     setIsStudentNameSelected(true);
     setIsOldLogSelected(false);
   };
+
+  const retrieveData = () => {
+    dispatch(fetchLogs(studentID))
+      .then(() => {})
+      .catch((error) => console.error(error));
+  };
+  //console.log("Log scren", logID);
+  useEffect(() => {
+    retrieveData();
+  }, [editLogsSuccessful]);
 
   return (
     <View style={styles.container}>
@@ -118,49 +129,64 @@ const LogScreen = ({
       </View>
       {parsedLog &&
         parsedLog.radioButtonQuestions.map((radioButtonQuestion, index) => (
-          <View
-            key={`radio-button-question-${index}`}
-            style={{
-              marginBottom: 20,
-              width: "100%",
-              // backgroundColor: "red",
-            }}
-          >
-            <MultipleChoiceQuestion
-              question={radioButtonQuestion.question}
-              answers={radioButtonQuestion.options}
-              selectedValue={radioButtonQuestion.answer}
-              disabled={true}
-            />
+          <View key={`radio-button-question-${index}`}>
+            <>
+              {radioButtonQuestion.answer && (
+                <View
+                  style={{
+                    marginBottom: 20,
+                    width: "100%",
+                    // backgroundColor: "red",
+                  }}
+                >
+                  <MultipleChoiceQuestion
+                    question={radioButtonQuestion.question}
+                    answers={radioButtonQuestion.options}
+                    selectedValue={radioButtonQuestion.answer}
+                    disabled={true}
+                  />
+                </View>
+              )}
+            </>
           </View>
         ))}
       {parsedLog &&
         parsedLog.checkBoxQuestions.map((checkBoxQuestion, index) => (
           <View key={`multi-select-question-${index}`}>
-            <MultiSelectQuestion
-              disabled={true}
-              question={checkBoxQuestion.question}
-              answers={checkBoxQuestion.answer}
-              checkedItems={checkBoxQuestion.options}
-              isDropdown={false}
-            />
+            {checkBoxQuestion.answer.length > 0 && (
+              <MultiSelectQuestion
+                disabled={true}
+                question={checkBoxQuestion.question}
+                answers={checkBoxQuestion.answer}
+                checkedItems={checkBoxQuestion.options}
+              />
+            )}
           </View>
         ))}
       {parsedLog &&
         parsedLog.openEndedQuestions.map((openEndedQuestion, index) => (
-          <View
-            key={`open-ended-question-${index}`}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 20,
-              marginTop: 30,
-            }}
-          >
-            <Text style={styles.question}>{openEndedQuestion.question}</Text>
-            <View style={styles.openEndedAnswerContainer}>
-              <Text style={styles.answer}>{openEndedQuestion.answer}</Text>
-            </View>
+          <View key={`open-ended-question-${index}`}>
+            <>
+              {openEndedQuestion.answer && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 20,
+                    marginTop: 30,
+                  }}
+                >
+                  <Text style={styles.question}>
+                    {openEndedQuestion.question}
+                  </Text>
+                  <View style={styles.openEndedAnswerContainer}>
+                    <Text style={styles.answer}>
+                      {openEndedQuestion.answer}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </>
           </View>
         ))}
     </View>
