@@ -157,7 +157,7 @@ module.exports = {
       }
 
       const indexToRemove = fetchedClass.students.findIndex(
-        (id) => id === args.studentId
+        (student) => student.toString() === args.studentId
       );
 
       if (indexToRemove === -1) {
@@ -191,7 +191,7 @@ module.exports = {
         }
 
         const indexToRemove = fetchedClass.students.findIndex(
-          (id) => id === args.studentIds[i]
+          (student) => student.toString() === args.studentIds[i]
         );
 
         if (indexToRemove === -1) {
