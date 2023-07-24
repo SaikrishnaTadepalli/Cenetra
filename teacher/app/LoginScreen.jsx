@@ -60,7 +60,7 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.loginContainer}>
-        <Text style={styles.welcomeText}>Welcome to Cenetra</Text>
+        <Text style={styles.welcomeText}>Welcome to Curiouss Kids</Text>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}

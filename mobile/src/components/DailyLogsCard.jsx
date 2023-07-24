@@ -35,6 +35,7 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
       pictures: pictures,
       title: moment(curLog.createdAt).utc().format("MMMM D, YYYY"),
       date: curLog.createdAt,
+      logID: logID,
     });
   };
 
