@@ -43,7 +43,7 @@ const Header = () => {
       {loggedIn === "true" ? (
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Cenetra</Text>
+            <Text style={styles.headerText}>Curiouss Kids</Text>
             <>
               {pages.map((page, idx) => (
                 <View

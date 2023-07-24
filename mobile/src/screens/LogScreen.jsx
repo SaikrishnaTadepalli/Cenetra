@@ -17,19 +17,43 @@ import { useDispatch } from "react-redux";
 import { getMediaByDate } from "../redux/mediaSlice";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
+import { fetchLogs } from "../redux/dailyLogsSlice";
 
 const LogScreen = ({ navigation, route }) => {
-  const logs = JSON.parse(route.params.data);
+  const [logs, setLogs] = useState(JSON.parse(route.params.data));
   const { pictures, fetchImagesLoading, fetchImagesError } = useSelector(
     (state) => state.media
   );
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
+  const findLogById = (logs, id) => {
+    let foundLog = null;
+
+    logs.forEach((segment) => {
+      const log = segment.data.find((item) => item._id === id);
+      if (log) {
+        foundLog = log;
+      }
+    });
+
+    return foundLog;
+  };
   const retrieveData = async () => {
     const studentID = await AsyncStorage.getItem("studentID");
     dispatch(getMediaByDate({ studentID: studentID, date: route.params.date }))
       .then((response) => {})
       .catch((error) => console.error("Error in logs screen", error));
+    dispatch(fetchLogs(studentID))
+      .then((response) => {
+        if (!response.error) {
+          const log = findLogById(
+            response.payload.data.logs,
+            route.params.logID
+          );
+          setLogs(JSON.parse(log.details));
+        }
+      })
+      .catch((error) => console.error("Error in Daily logs screen", error));
   };
   useFocusEffect(
     React.useCallback(() => {
@@ -40,7 +64,7 @@ const LogScreen = ({ navigation, route }) => {
       };
     }, [])
   );
-
+  console.log(logs);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     retrieveData();
@@ -110,29 +134,35 @@ const LogScreen = ({ navigation, route }) => {
             </ScrollView>
             {logs.radioButtonQuestions.map((radioButtonQuestion, index) => (
               <View key={`radio-button-question-${index}`}>
-                <LogCard
-                  question={radioButtonQuestion.question}
-                  answer={radioButtonQuestion.answer}
-                  type="radiobutton"
-                />
+                {radioButtonQuestion.answer && (
+                  <LogCard
+                    question={radioButtonQuestion.question}
+                    answer={radioButtonQuestion.answer}
+                    type="radiobutton"
+                  />
+                )}
               </View>
             ))}
             {logs.checkBoxQuestions.map((checkBoxQuestion, index) => (
               <View key={`multi-select-question-${index}`}>
-                <LogCard
-                  question={checkBoxQuestion.question}
-                  answer={checkBoxQuestion.answer}
-                  type="checkbox"
-                />
+                {checkBoxQuestion.answer.length > 0 && (
+                  <LogCard
+                    question={checkBoxQuestion.question}
+                    answer={checkBoxQuestion.answer}
+                    type="checkbox"
+                  />
+                )}
               </View>
             ))}
             {logs.openEndedQuestions.map((openEndedQuestion, index) => (
               <View key={`open-ended-question-${index}`}>
-                <LogCard
-                  question={openEndedQuestion.question}
-                  answer={openEndedQuestion.answer}
-                  type="openended"
-                />
+                {openEndedQuestion.answer && (
+                  <LogCard
+                    question={openEndedQuestion.question}
+                    answer={openEndedQuestion.answer}
+                    type="openended"
+                  />
+                )}
               </View>
             ))}
           </ScrollView>
