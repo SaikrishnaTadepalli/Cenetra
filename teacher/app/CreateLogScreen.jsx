@@ -88,6 +88,7 @@ const CreateLogScreen = ({
         "Putting on coats and shoes",
         "Sharing toys",
         "Cleaning up after play",
+        "None",
       ],
     },
     {

@@ -21,6 +21,7 @@ import { changeTeacher, fetchTeachers } from "../src/redux/teacherSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { fetchStudents } from "../src/redux/studentSlice";
 import { setClasses } from "../src/redux/authSlice";
+import DropDownSingle from "../src/components/DropDownSingle";
 
 const CreateClassScreen = ({ classInfo }) => {
   const dispatch = useDispatch();
@@ -41,17 +42,11 @@ const CreateClassScreen = ({ classInfo }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [students, setStudents] = useState(classInfo ? classInfo.students : []);
+  const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
-  const [selectedStudents, setSelectedStudents] = useState(
-    classInfo ? classInfo.students : []
-  );
-  const placeholderText = classInfo
-    ? classInfo.teacher.value
-    : "Select from dropdown";
-  const [selectedTeacher, setSelectedTeacher] = useState(
-    classInfo && classInfo.teacher ? classInfo.teacher.value : ""
-  );
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const placeholderText = "Select from dropdown";
+  const [selectedTeacher, setSelectedTeacher] = useState("");
   const renderText = (infoType, key, state, setState) => {
     return (
       <View style={styles.infoLineContainer}>
@@ -105,13 +100,20 @@ const CreateClassScreen = ({ classInfo }) => {
     return Object.values(state).every((value) => value !== "");
   };
 
-  const handleDispatch = (action, classID) => {
-    dispatch(action)
+  const handleDispatch = () => {
+    dispatch(
+      createClass({
+        details: classState.details,
+        teacherID: selectedTeacher.key,
+        className: classState.name,
+      })
+    )
       .then((response) => {
         if (response.error) {
           setError(
             "Something went wrong while creating a class please try again."
           );
+          setTimeout(setError(""), 2000);
         } else {
           // console.log(response);
           setIsButtonDisabled(true);
@@ -124,6 +126,7 @@ const CreateClassScreen = ({ classInfo }) => {
               setError(
                 "Something went wrong while adding a student to a class please try again."
               );
+              setTimeout(setError(""), 2000);
               setIsButtonDisabled(false);
               return;
             } else {
@@ -134,6 +137,7 @@ const CreateClassScreen = ({ classInfo }) => {
                       "error while fetching classes after creating a new class"
                     );
                     setError("Something went wrong please try again.");
+                    setTimeout(setError(""), 2000);
                     setIsButtonDisabled(false);
                     return;
                   } else {
@@ -146,6 +150,9 @@ const CreateClassScreen = ({ classInfo }) => {
                     localStorage.setItem("classes", `"${stringifiedDetails}"`);
                     setIsButtonDisabled(true);
                     setIsSaved(true);
+                    setClassState(initialState);
+                    setSelectedStudents([]);
+                    setSelectedTeacher("");
                     setIsCancelled(false);
                     setTimeout(() => {
                       setIsSaved(false);
@@ -155,6 +162,7 @@ const CreateClassScreen = ({ classInfo }) => {
                 .catch((error) => {
                   console.error("Catch: error while fetching classes", error);
                   setError("Something went wrong please try again.");
+                  setTimeout(setError(""), 2000);
                 });
             }
           });
@@ -166,6 +174,7 @@ const CreateClassScreen = ({ classInfo }) => {
           error
         );
         setError("Error while creating a class");
+        setTimeout(setError(""), 2000);
       });
   };
   const haveSameElements = (arr1, arr2) => {
@@ -229,7 +238,7 @@ const CreateClassScreen = ({ classInfo }) => {
           className: classState.name,
         });
       }
-      handleDispatch(newAction, classInfo.key);
+      // handleDispatch(newAction, classInfo.key);
     } else {
       setError("Please fill in all the fields.");
       setTimeout(() => setError(""), 2000);
@@ -305,13 +314,13 @@ const CreateClassScreen = ({ classInfo }) => {
           </View>
           <View style={styles.infoLineContainer}>
             <Text style={styles.infoTypeText}>Add Teacher</Text>
-            <SelectList
+            {/* <SelectList
               setSelected={(val) => setSelectedTeacher(val)}
               // onSelect={retrieveData()}
               data={teachers}
               save="key"
               boxStyles={styles.boxContainer}
-              placeholder={placeholderText}
+              placeholder="Select from dropdown"
               inputStyles={styles.selectedOptionsContainer}
               dropdownStyles={styles.dropdownContainer}
               dropdownTextStyles={styles.dropdownItem}
@@ -322,6 +331,12 @@ const CreateClassScreen = ({ classInfo }) => {
                 <Ionicons name={"caret-up-sharp"} size={16} color="#719792" />
               }
               search={false}
+            /> */}
+            <DropDownSingle
+              options={teachers}
+              setSelectedOption={setSelectedTeacher}
+              selectedOption={selectedTeacher}
+              dropdownText="Select from dropdown"
             />
           </View>
           {isSaved ? (
@@ -339,7 +354,7 @@ const CreateClassScreen = ({ classInfo }) => {
                 styles.saveButtonContainer,
                 { opacity: isButtonDisabled ? 0.5 : 1 },
               ]}
-              onPress={onSave}
+              onPress={handleDispatch}
               disabled={isButtonDisabled}
             >
               <Text style={styles.saveButtonText}>Create</Text>
