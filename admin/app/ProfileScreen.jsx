@@ -45,6 +45,7 @@ const ProfileScreen = ({
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [isProfileEdited, setIsProfileEdited] = useState(false);
+  const [studentData, setStudentData] = useState(studentInfo);
 
   const retrieveData = async () => {
     dispatch(fetchProfile(curStudentID))
@@ -55,7 +56,8 @@ const ProfileScreen = ({
           setError(response.error);
         } else {
           setError("");
-          // console.log(response.payload.data);
+          setStudentData(response.payload.studentInfo);
+          console.log(response.payload.studentInfo);
         }
       })
       .catch((error) => {
@@ -70,7 +72,6 @@ const ProfileScreen = ({
   const onPressCreate = () => {
     dispatch(setIsNewProfileAdded(true));
     setIsProfileEdited(false);
-    console.log(curStudentID);
   };
 
   const renderText = (infoType, info) => {
@@ -86,19 +87,20 @@ const ProfileScreen = ({
 
   useEffect(() => {
     const d = [];
-    if (studentInfo.information) {
-      studentInfo.information.map((info, idx) => {
-        d.push({
-          sectionHeader: info.sectionHeader,
-          data: info.section,
-        });
-      });
-      setData(d);
-      setAllergies(studentInfo.information[2].section);
-      setMedications(studentInfo.information[3].section);
-      setBloodGroup(studentInfo.information[4].section);
-    }
-  }, []);
+    retrieveData();
+    // if (studentInfo.information) {
+    //   studentInfo.information.map((info, idx) => {
+    //     d.push({
+    //       sectionHeader: info.sectionHeader,
+    //       data: info.section,
+    //     });
+    //   });
+    //   setData(d);
+    //   setAllergies(studentInfo.information[2].section);
+    //   setMedications(studentInfo.information[3].section);
+    //   setBloodGroup(studentInfo.information[4].section);
+    // }
+  }, [isNewProfileAdded]);
   const onPressEdit = () => {
     dispatch(setIsNewProfileAdded(true));
     setIsProfileEdited(true);
@@ -159,13 +161,13 @@ const ProfileScreen = ({
                       />
                       <View style={styles.studentDetailsContainer}>
                         <Text style={styles.studentName}>
-                          {studentInfo.name}
+                          {studentData.name}
                         </Text>
                         <Text style={styles.studentId}>
-                          Student ID: {studentInfo.student_number}
+                          Student ID: {studentData.student_number}
                         </Text>
-                        {studentInfo.information
-                          ? studentInfo.information[4].section.map(
+                        {studentData.information
+                          ? studentData.information[4].section.map(
                               (item, idx) => (
                                 <Text style={styles.studentId}>
                                   Blood group: {item.name}
@@ -192,8 +194,8 @@ const ProfileScreen = ({
                   <Text style={styles.footerText}>
                     Last Updated {lastUpdated}
                   </Text>
-                  {studentInfo.information
-                    ? studentInfo.information.map(
+                  {studentData.information
+                    ? studentData.information.map(
                         (item, idx) =>
                           (item.sectionHeader === "PRIMARY CONTACTS" ||
                             item.sectionHeader === "EMERGENCY CONTACTS") && (
@@ -212,15 +214,15 @@ const ProfileScreen = ({
                       <Text style={styles.headerText}>
                         Allergen information
                       </Text>
-                      {studentInfo.information &&
-                        studentInfo.information[2].section.map((data, idx) => (
+                      {studentData.information &&
+                        studentData.information[2].section.map((data, idx) => (
                           <View key={`profile-info-allergies${idx}`}>
                             {renderText("Item:", data.name)}
                             {renderText("Severity:", data.severity)}
-                            {studentInfo.information[2].section.indexOf(
+                            {studentData.information[2].section.indexOf(
                               data
                             ) !==
-                            studentInfo.information[2].section.length - 1 ? (
+                            studentData.information[2].section.length - 1 ? (
                               <View style={styles.divider} />
                             ) : null}
                           </View>
@@ -228,16 +230,16 @@ const ProfileScreen = ({
                     </View>
                     <View style={[styles.whiteCardContainer]}>
                       <Text style={styles.headerText}>Medications</Text>
-                      {studentInfo.information &&
-                        studentInfo.information[3].section.map((data, idx) => (
+                      {studentData.information &&
+                        studentData.information[3].section.map((data, idx) => (
                           <View key={`profile-info-medications${idx}`}>
                             {renderText("Medicine Name:", data.name)}
                             {renderText("Dosage:", data.dosage)}
                             {renderText("Frequency:", data.frequency)}
-                            {studentInfo.information[3].section.indexOf(
+                            {studentData.information[3].section.indexOf(
                               data
                             ) !==
-                            studentInfo.information[3].section.length - 1 ? (
+                            studentData.information[3].section.length - 1 ? (
                               <View style={styles.divider} />
                             ) : null}
                           </View>
@@ -252,11 +254,11 @@ const ProfileScreen = ({
                 <CreateProfileScreen
                   studentID={curStudentID || studentID}
                   studentName={
-                    doesProfileExist ? studentInfo.name : studentName
+                    doesProfileExist ? studentData.name : studentName
                   }
                   studentNumber={
                     doesProfileExist
-                      ? studentInfo.student_number
+                      ? studentData.student_number
                       : studentNumber
                   }
                   isEdit={isProfileEdited}

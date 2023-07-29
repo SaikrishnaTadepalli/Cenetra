@@ -91,6 +91,7 @@ const CreateProfileScreen = ({
     let allFieldsFilled = true;
 
     array.forEach((obj) => {
+      console.log(obj);
       for (const key in obj) {
         if (!obj[key]) {
           allFieldsFilled = false;
@@ -109,7 +110,6 @@ const CreateProfileScreen = ({
       ? studentInfo.information[0].section.slice()
       : [primaryContact1InitialState]
   );
-  console.log(primaryContacts);
   const [emergencyContacts, setEmergencyContacts] = useState(
     isEdit
       ? studentInfo.information[1].section
@@ -131,9 +131,7 @@ const CreateProfileScreen = ({
   const renderText = (infoType, state, setState, idx, property) => {
     return (
       <View style={styles.infoLineContainer}>
-        <Text style={styles.infoTypeText}>{infoType}</Text>
-        <Text style={styles.infoTypeText}>{infoType}</Text>) : null}
-        <Text style={styles.infoTypeText}>{infoType}</Text>) : null}
+        {infoType !== "" && <Text style={styles.infoTypeText}>{infoType}</Text>}
         <TextInput
           editable={isEditable}
           style={styles.infoInputText}
@@ -147,7 +145,6 @@ const CreateProfileScreen = ({
   };
 
   const dispatch = useDispatch();
-  console.log(studentID);
   const handleDispatch = (action) => {
     dispatch(action)
       .then((response) => {
@@ -174,7 +171,7 @@ const CreateProfileScreen = ({
               setAllergies([allergiesInitialState]);
               setMedications([medicationsInitialState]);
               setBloodGroup([bloodGroupInitialState]);
-              setStudentName("");
+              // setStudentName("");
               setStudentNumber("");
               setIsEditable(true);
             }, 2000);
@@ -192,13 +189,6 @@ const CreateProfileScreen = ({
   // }
 
   const onSave = () => {
-    console.log(
-      primaryContacts,
-      emergencyContacts,
-      allergies,
-      medications,
-      bloodGroup
-    );
     var action = "";
     const adminID = localStorage.getItem("adminID");
     const updatedInfo = {
@@ -527,7 +517,7 @@ const CreateProfileScreen = ({
             </View>
             {bloodGroup.map((item, idx) => (
               <View key={`profile-info${idx}`}>
-                {renderText("", bloodGroup, setBloodGroup, idx, "item")}
+                {renderText("", bloodGroup, setBloodGroup, idx, "name")}
               </View>
             ))}
           </View>

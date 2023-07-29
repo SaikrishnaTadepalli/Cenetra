@@ -40,13 +40,18 @@ const MultiSelectQuestion = ({
     ...DefaultTheme,
     roundness: 100, // Change this value to modify the size
   };
-  // console.log(
-  //   checkedItems.length > 0 && checkedItems[0].key[0],
-  //   answers[0].key[0],
-  //   answers[0].key.charAt(0)
-  // );
+  console.log(
+    checkedItems.length > 0 && checkedItems[0].key[0],
+    answers[0].key[0],
+    answers[0].key.charAt(0)
+  );
 
   const getInputValue = (input, item) => {
+    // console.log(item.key);
+    // console.log(
+    //   (input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key) ===
+    //     item.key
+    // );
     return input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key;
   };
   return (
@@ -106,7 +111,7 @@ const MultiSelectQuestion = ({
                       // )
                       (item) =>
                         (isDropdown &&
-                          item.key === getInputValue(input, item)) ||
+                          getInputValue(item) === getInputValue(input)) ||
                         (!isDropdown && item === input)
                     ) !== -1
                       ? "checked"
