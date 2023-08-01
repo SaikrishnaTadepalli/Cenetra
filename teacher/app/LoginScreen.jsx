@@ -46,7 +46,7 @@ const LoginScreen = () => {
           .catch((error) => console.error("Error in sending SMS", error));
       } else {
         setIsError("Invalid access code.");
-        setTimeout(() => setIsError(""), 1000);
+        setTimeout(() => setIsError(""), 2000);
       }
     });
 

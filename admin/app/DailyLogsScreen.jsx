@@ -179,7 +179,7 @@ const DailyLogsScreen = () => {
               </Text>
             </View>
           ) : (
-            <View style={{ height: "100%" }}>
+            <View style={{ height: "100%", width: "100%" }}>
               {isOldLogSelected ? (
                 <LogScreen
                   logID={logID}

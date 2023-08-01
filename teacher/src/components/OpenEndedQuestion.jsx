@@ -5,18 +5,16 @@ import colors from "../constants/Colors";
 
 const OpenEndedQuestion = ({ question, answer, handleInputChange }) => {
   return (
-    <View style={{ width: "60%" }}>
-      <View style={styles.container}>
-        <Text style={styles.inputText}>{question}</Text>
-        <TextInput
-          style={styles.inputContainer}
-          multiline
-          editable={true}
-          key={question}
-          value={answer}
-          onChangeText={handleInputChange}
-        />
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.inputText}>{question}</Text>
+      <TextInput
+        style={styles.inputContainer}
+        multiline
+        editable={true}
+        key={question}
+        value={answer}
+        onChangeText={handleInputChange}
+      />
     </View>
   );
 };
@@ -28,13 +26,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
+    width: "100%",
   },
   inputContainer: {
-    minHeight: 100,
+    minHeight: 400,
     borderColor: colors.lightGrey,
     borderWidth: 1,
     borderRadius: 4,
-    width: "100%",
+    width: "80%",
     justifyContent: "center",
     backgroundColor: "white",
     paddingHorizontal: 10,
