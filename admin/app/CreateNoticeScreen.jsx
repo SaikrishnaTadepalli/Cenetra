@@ -63,9 +63,19 @@ const CreateNoticeScreen = ({ date, noticeID, setIsOldNoticeSelected }) => {
       value: student.firstName + " " + student.lastName,
     }));
   const [selectedStudents, setSelectedStudents] = useState(studentInfo);
-
+  const getInputValue = (input) => {
+    // console.log("-----------------------------");
+    // console.log(
+    //   (input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key) ===
+    //     (item.key.charAt(0) === '"' ? item.key.slice(1, -1) : item.key)
+    // );
+    return input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key;
+  };
   const handleCheckboxSelection = (input) => {
-    const idx = selectedStudents.indexOf(input);
+    console.log(input, selectedStudents);
+    const idx = selectedStudents.findIndex(
+      (item) => getInputValue(item) === getInputValue(input)
+    );
     const selected = [...selectedStudents];
     if (idx !== -1) {
       selected.splice(idx, 1);

@@ -106,7 +106,7 @@ const ClassListScreen = () => {
             height: "100%",
             width: "50%",
             marginTop: -45,
-            // backgroundColor: "pink",
+            //backgroundColor: "pink",
           }}
         >
           <View style={styles.verticalDivider} />
@@ -126,7 +126,7 @@ const ClassListScreen = () => {
               </Text>
             </View>
           ) : (
-            <View>
+            <View style={{ width: "100%" }}>
               {isOldLogSelected ? (
                 <LogScreen
                   logID={logID}

@@ -28,16 +28,16 @@ const MultipleChoiceQuestion = ({
           alignItems: "center",
           width: "100%",
           //backgroundColor: "blue",
-          paddingVertical: 30,
+          paddingVertical: 20,
         }}
       >
-        <Text style={[styles.question, { width: disabled ? "60%" : "60%" }]}>
+        <Text style={[styles.question, { width: disabled ? "40%" : "40%" }]}>
           {question}
         </Text>
         <View
           style={{
-            //flexDirection: "row",
-            width: !disabled ? "40%" : "40%",
+            flexDirection: "row",
+            width: !disabled ? "65%" : "65%",
             flexWrap: "wrap",
             // paddingVertical: 10,
             // backgroundColor: "pink",

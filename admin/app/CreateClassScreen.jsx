@@ -51,17 +51,34 @@ const CreateClassScreen = ({ classInfo }) => {
     return (
       <View style={styles.infoLineContainer}>
         <Text style={styles.infoTypeText}>{infoType}</Text>
-        <TextInput
-          editable={true}
-          style={styles.infoInputText}
-          value={state[key] || ""}
-          onChangeText={(value) => handleChange(key, value, state, setState)}
-        />
+        {classInfo ? (
+          <Text>{classState[key]}</Text>
+        ) : (
+          <TextInput
+            editable={true}
+            style={styles.infoInputText}
+            value={classState[key] || ""}
+            onChangeText={(value) => handleChange(key, value, state, setState)}
+          />
+        )}
       </View>
     );
   };
+
+  const getInputValue = (input) => {
+    // console.log("-----------------------------");
+    // console.log(
+    //   input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key
+    // );
+    return input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key;
+  };
+
   const handleCheckboxSelectionForStudents = (input) => {
-    const idx = selectedStudents.indexOf(input);
+    // console.log(getInputValue(input), selectedStudents);
+    // console.log(selectedStudents[0].key);
+    const idx = selectedStudents.findIndex(
+      (item) => getInputValue(item) === getInputValue(input)
+    );
     const selected = [...selectedStudents];
     if (idx !== -1) {
       selected.splice(idx, 1);
@@ -113,59 +130,13 @@ const CreateClassScreen = ({ classInfo }) => {
           setError(
             "Something went wrong while creating a class please try again."
           );
-          setTimeout(setError(""), 2000);
+          setTimeout(() => setError(""), 2000);
         } else {
           // console.log(response);
           setIsButtonDisabled(true);
           const classID = classID || response.payload.data.createClass._id;
           const studentIDs = selectedStudents.map((student) => student.key);
-          dispatch(
-            addStudentsToClass({ classID, studentIDs: studentIDs })
-          ).then((response) => {
-            if (response.error) {
-              setError(
-                "Something went wrong while adding a student to a class please try again."
-              );
-              setTimeout(setError(""), 2000);
-              setIsButtonDisabled(false);
-              return;
-            } else {
-              dispatch(fetchClasses())
-                .then((response) => {
-                  if (response.error) {
-                    console.error(
-                      "error while fetching classes after creating a new class"
-                    );
-                    setError("Something went wrong please try again.");
-                    setTimeout(setError(""), 2000);
-                    setIsButtonDisabled(false);
-                    return;
-                  } else {
-                    localStorage.removeItem("classes");
-                    const classes = response.payload.data.classes;
-                    dispatch(setClasses(classes));
-                    const stringifiedDetails = JSON.stringify({ classes })
-                      .replace(/\\/g, "\\\\") // Escape backslashes
-                      .replace(/"/g, '\\"');
-                    localStorage.setItem("classes", `"${stringifiedDetails}"`);
-                    setIsButtonDisabled(true);
-                    setIsSaved(true);
-                    setClassState(initialState);
-                    setSelectedStudents([]);
-                    setSelectedTeacher("");
-                    setIsCancelled(false);
-                    setTimeout(() => {
-                      setIsSaved(false);
-                    }, 2000);
-                  }
-                })
-                .catch((error) => {
-                  console.error("Catch: error while fetching classes", error);
-                  setError("Something went wrong please try again.");
-                  setTimeout(setError(""), 2000);
-                });
-            }
-          });
+          addStudents(classID, studentIDs);
         }
       })
       .catch((error) => {
@@ -174,7 +145,7 @@ const CreateClassScreen = ({ classInfo }) => {
           error
         );
         setError("Error while creating a class");
-        setTimeout(setError(""), 2000);
+        setTimeout(() => setError(""), 2000);
       });
   };
   const haveSameElements = (arr1, arr2) => {
@@ -184,66 +155,179 @@ const CreateClassScreen = ({ classInfo }) => {
 
     return arr1.every((item) => arr2.includes(item));
   };
+  const fetchClass = () => {
+    dispatch(fetchClasses())
+      .then((response) => {
+        if (response.error) {
+          console.error(
+            "error while fetching classes after creating a new class"
+          );
+          setError("Something went wrong please try again.");
+          setTimeout(() => setError(""), 2000);
+          setIsButtonDisabled(false);
+          return;
+        } else {
+          localStorage.removeItem("classes");
+          const classes = response.payload.data.classes;
+          dispatch(setClasses(classes));
+          const stringifiedDetails = JSON.stringify({ classes })
+            .replace(/\\/g, "\\\\") // Escape backslashes
+            .replace(/"/g, '\\"');
+          localStorage.setItem("classes", `"${stringifiedDetails}"`);
+          setIsButtonDisabled(true);
+          setIsSaved(true);
+          setClassState(initialState);
+
+          setSelectedStudents([]);
+          setSelectedTeacher("");
+          setIsCancelled(false);
+          setTimeout(() => {
+            setIsSaved(false);
+            classInfo && dispatch(setIsNewClassAdded(false));
+          }, 2000);
+        }
+      })
+      .catch((error) => {
+        console.error("Catch: error while fetching classes", error);
+        setError("Something went wrong please try again.");
+        setTimeout(() => setError(""), 2000);
+      });
+  };
+  const addStudents = (classID, studentIDs) => {
+    dispatch(addStudentsToClass({ classID, studentIDs: studentIDs }))
+      .then((response) => {
+        if (response.error) {
+          setError(
+            "Something went wrong while adding a student to a class please try again."
+          );
+          setTimeout(() => setError(""), 2000);
+          setIsButtonDisabled(false);
+          return;
+        } else {
+          setIsButtonDisabled(true);
+          fetchClass();
+        }
+      })
+      .catch((err) => {
+        console.error("Error while adding students to the class", err);
+        setError("Something went wrong please try again.");
+        setTimeout(() => setError(""), 2000);
+      });
+  };
+
+  const removeStudents = (classID, studentIDs, studentsToAddIDs) => {
+    dispatch(removeStudentsFromClass({ classID, studentIDs: studentIDs }))
+      .then((response) => {
+        if (response.error) {
+          setError(
+            "Something went wrong while adding a student to a class please try again."
+          );
+          setTimeout(() => setError(""), 2000);
+          setIsButtonDisabled(false);
+          return;
+        } else {
+          setIsButtonDisabled(true);
+          if (studentsToAddIDs.length > 0) {
+            addStudents(classInfo.key, studentsToAddIDs);
+          } else {
+            fetchClass();
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Error while adding students to the class", err);
+        setError("Something went wrong please try again.");
+        setTimeout(() => setError(""), 2000);
+      });
+  };
+
   const onSave = () => {
     var newAction = "";
-    if (areAllFieldsFilled(classState)) {
-      if (classInfo) {
-        if (classInfo.teacher.key !== selectedTeacher) {
-          setIsButtonDisabled(true);
-          dispatch(
-            changeTeacher({
-              teacherID: classInfo.teacher.key,
-              classID: classInfo.key,
-            })
-          ).then((response) => {
-            if (response.error) {
-              setError(
-                "Something went wrong while changing the teacher. Please try again."
-              );
-              setTimeout(() => setError(""), 2000);
-            }
-          });
-        }
-        if (
-          !haveSameElements(classInfo.students, selectedStudents) &&
-          classInfo.students.length > 0
-        ) {
-          setIsButtonDisabled(true);
-          const studentIDs = classInfo.students.map(
+    if (selectedStudents.length === 0) {
+      setError("There must be at least one student in the class.");
+      setTimeout(() => setError(""), 2000);
+    } else {
+      if (areAllFieldsFilled(classState)) {
+        if (classInfo) {
+          if (classInfo.teacher.key !== selectedTeacher.key) {
+            setIsButtonDisabled(true);
+            dispatch(
+              changeTeacher({
+                teacherID: classInfo.teacher.key,
+                classID: classInfo.key,
+              })
+            ).then((response) => {
+              if (response.error) {
+                setError(
+                  "Something went wrong while changing the teacher. Please try again."
+                );
+                setTimeout(() => setError(""), 2000);
+              }
+            });
+          }
+          console.log("Some student");
+          const studentsToRemove = classInfo.students.filter(
+            (student) => !selectedStudents.some((s) => s.key === student.key)
+          );
+          const studentsToRemoveIDs = studentsToRemove.map(
             (student) => `"${student.key}"`
           );
-          // dispatch(
-          //   removeStudentsFromClass({
-          //     classID: classInfo.key,
-          //     studentIDs: studentIDs,
-          //   })
-          // ).then((response) => {
-          //   if (response.error) {
-          //     setError(
-          //       "Something went wrong while removing a student from a class please try again."
-          //     );
-          //     setIsButtonDisabled(false);
-          //     return;
-          //   }
-          // });
-          newAction = removeStudentsFromClass({
-            classID: classInfo.key,
-            studentIDs: studentIDs,
+          const studentsToAdd = selectedStudents.filter(
+            (student) => !classInfo.students.some((s) => s.key === student.key)
+          );
+          const studentsToAddIDs = studentsToAdd.map((student) => student.key);
+          studentsToRemoveIDs.length > 0 &&
+            removeStudents(
+              classInfo.key,
+              studentsToRemoveIDs,
+              studentsToAddIDs
+            );
+          console.log(error);
+          if (
+            error === "" &&
+            studentsToAddIDs.length > 0 &&
+            studentsToRemoveIDs.length === 0
+          ) {
+            console.log("addstudnets");
+            addStudents(classInfo.key, studentsToAddIDs);
+          }
+        } else {
+          newAction = createClass({
+            details: classState.details,
+            teacherID: selectedTeacher,
+            className: classState.name,
           });
+          handleDispatch(newAction, classState.name);
         }
+        // handleDispatch(newAction, classInfo.key);
       } else {
-        newAction = createClass({
-          details: classState.details,
-          teacherID: selectedTeacher,
-          className: classState.name,
-        });
+        setError("Please fill in all the fields.");
+        setTimeout(() => setError(""), 2000);
       }
-      // handleDispatch(newAction, classInfo.key);
-    } else {
-      setError("Please fill in all the fields.");
-      setTimeout(() => setError(""), 2000);
     }
   };
+
+  useEffect(() => {
+    // Check if classInfo is not empty and then update the state
+    if (
+      classInfo !== "" &&
+      classInfo !== null &&
+      typeof classInfo === "object"
+    ) {
+      setClassState({
+        name: classInfo.value,
+        details: classInfo.details || "", // If details property is missing, set it as an empty string
+      });
+      // console.log(classInfo.students);
+      const students2 = classInfo.students.map((student) => ({
+        key: getInputValue(student),
+        value: student.value,
+      }));
+      // console.log(students2);
+      setSelectedStudents(students2);
+      setSelectedTeacher(classInfo.teacher);
+    }
+  }, [classInfo]);
 
   const onCancel = () => {
     setIsCancelled(true);
@@ -339,22 +423,22 @@ const CreateClassScreen = ({ classInfo }) => {
               dropdownText="Select from dropdown"
             />
           </View>
-          {isSaved ? (
-            <Text>Your class have been created successfully!</Text>
-          ) : null}
-          {(addStudentsToClassPending ||
-            createClassPending ||
-            fetchClassesPending) && (
-            <Text>Your class is being created....</Text>
-          )}
           {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
+          {isSaved ? (
+            <Text>Your class has been created successfully!</Text>
+          ) : null}
+          {addStudentsToClassPending ||
+            createClassPending ||
+            (fetchClassesPending && (
+              <Text>Your class is being created....</Text>
+            ))}
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
               style={[
                 styles.saveButtonContainer,
                 { opacity: isButtonDisabled ? 0.5 : 1 },
               ]}
-              onPress={handleDispatch}
+              onPress={onSave}
               disabled={isButtonDisabled}
             >
               <Text style={styles.saveButtonText}>Create</Text>

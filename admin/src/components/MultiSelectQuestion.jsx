@@ -40,17 +40,13 @@ const MultiSelectQuestion = ({
     ...DefaultTheme,
     roundness: 100, // Change this value to modify the size
   };
-  console.log(
-    checkedItems.length > 0 && checkedItems[0].key[0],
-    answers[0].key[0],
-    answers[0].key.charAt(0)
-  );
+  // console.log(checkedItems, answers);
 
   const getInputValue = (input, item) => {
-    // console.log(item.key);
+    // console.log("-----------------------------");
     // console.log(
     //   (input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key) ===
-    //     item.key
+    //     (item.key.charAt(0) === '"' ? item.key.slice(1, -1) : item.key)
     // );
     return input.key.charAt(0) === '"' ? input.key.slice(1, -1) : input.key;
   };
@@ -99,16 +95,6 @@ const MultiSelectQuestion = ({
                 <Checkbox
                   status={
                     checkedItems.findIndex(
-                      // input.key
-
-                      // (item) =>
-
-                      // console.log(
-                      //   typeof item.key,
-                      //   typeof input.key,
-                      //   item.key === input.key
-                      // )
-                      // )
                       (item) =>
                         (isDropdown &&
                           getInputValue(item) === getInputValue(input)) ||

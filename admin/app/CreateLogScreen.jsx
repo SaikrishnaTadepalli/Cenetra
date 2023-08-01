@@ -54,7 +54,7 @@ const CreateLogScreen = ({
 
   const [openEndedQuestionState, setOpenEndedQuestionState] = useState([
     {
-      question: "Additional Comments",
+      question: "Today's lessons",
       answer: parsedLog ? parsedLog.openEndedQuestions[0].answer : "",
     },
   ]);
@@ -128,78 +128,88 @@ const CreateLogScreen = ({
   ]);
   const [radioQuestionState, setRadioQuestionState] = useState([
     {
-      question: "How would you rate the overall behavior of the child today?",
+      question: "Did they have their snack?",
       answer: parsedLog ? parsedLog.radioButtonQuestions[0].answer : "",
-      options: ["Excellent", "Good", "Fair", "Poor"],
+      options: ["Yes", "No", "Partial"],
     },
     {
-      question: "Did the child actively participate in group activities?",
+      question: "How did they use their toilet?",
       answer: parsedLog ? parsedLog.radioButtonQuestions[1].answer : "",
-      options: ["Yes", "No", "Sometimes"],
+      options: ["Pee in toilet", "Pee/Poo in toilet", "Accident"],
     },
-    {
-      question: "How well did the child follow instructions today?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[2].answer : "",
-      options: ["Very well", "Well", "Not so well", "Poorly"],
-    },
-    {
-      question: "Did the child show kindness and respect towards others?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[3].answer : "",
-      options: ["Yes, always", "Most of the time", "Occasionally", "Rarely"],
-    },
-    {
-      question:
-        "Were there any discipline issues that needed addressing today?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[4].answer : "",
-      options: [
-        "No issues",
-        "Minor issues",
-        "Some moderate issues",
-        "Significant issues",
-      ],
-    },
-    {
-      question: "How engaged was the child during learning activities?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[5].answer : "",
-      options: [
-        "Highly engaged",
-        "Moderately engaged",
-        "Somewhat engaged",
-        "Not Engaged",
-      ],
-    },
-    {
-      question: "Did the child demonstrate good listening skills?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[6].answer : "",
-      options: [
-        "Yes, always",
-        "Most of the time",
-        "Mostly well, with occasional lapses",
-        "Occasionally",
-        "Rarely",
-      ],
-    },
-    {
-      question:
-        "Were there any notable achievements or milestones reached by the child today?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[7].answer : "",
-      options: ["Yes, several", "Yes, a few", "None"],
-    },
-    {
-      question: "How well did the child cooperate with others during playtime?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[8].answer : "",
-      options: ["Very well", "Well", "Not so well", "Poorly"],
-    },
-    {
-      question: "How well did the child transition between activities today?",
-      answer: parsedLog ? parsedLog.radioButtonQuestions[9].answer : "",
-      options: [
-        "Smoothly",
-        "Somewhat smoothly",
-        "With some difficulty",
-        "Chaotically",
-      ],
-    },
+    // {
+    //   question: "How would you rate the overall behavior of the child today?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[0].answer : "",
+    //   options: ["Excellent", "Good", "Fair", "Poor"],
+    // },
+    // {
+    //   question: "Did the child actively participate in group activities?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[1].answer : "",
+    //   options: ["Yes", "No", "Sometimes"],
+    // },
+    // {
+    //   question: "How well did the child follow instructions today?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[2].answer : "",
+    //   options: ["Very well", "Well", "Not so well", "Poorly"],
+    // },
+    // {
+    //   question: "Did the child show kindness and respect towards others?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[3].answer : "",
+    //   options: ["Yes, always", "Most of the time", "Occasionally", "Rarely"],
+    // },
+    // {
+    //   question:
+    //     "Were there any discipline issues that needed addressing today?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[4].answer : "",
+    //   options: [
+    //     "No issues",
+    //     "Minor issues",
+    //     "Some moderate issues",
+    //     "Significant issues",
+    //   ],
+    // },
+    // {
+    //   question: "How engaged was the child during learning activities?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[5].answer : "",
+    //   options: [
+    //     "Highly engaged",
+    //     "Moderately engaged",
+    //     "Somewhat engaged",
+    //     "Not Engaged",
+    //   ],
+    // },
+    // {
+    //   question: "Did the child demonstrate good listening skills?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[6].answer : "",
+    //   options: [
+    //     "Yes, always",
+    //     "Most of the time",
+    //     "Mostly well, with occasional lapses",
+    //     "Occasionally",
+    //     "Rarely",
+    //   ],
+    // },
+    // {
+    //   question:
+    //     "Were there any notable achievements or milestones reached by the child today?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[7].answer : "",
+    //   options: ["Yes, several", "Yes, a few", "None"],
+    // },
+    // {
+    //   question: "How well did the child cooperate with others during playtime?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[8].answer : "",
+    //   options: ["Very well", "Well", "Not so well", "Poorly"],
+    // },
+    // {
+    //   question: "How well did the child transition between activities today?",
+    //   answer: parsedLog ? parsedLog.radioButtonQuestions[9].answer : "",
+    //   options: [
+    //     "Smoothly",
+    //     "Somewhat smoothly",
+    //     "With some difficulty",
+    //     "Chaotically",
+    //   ],
+    // },
     // ...more questions
   ]);
 
@@ -218,8 +228,8 @@ const CreateLogScreen = ({
     // console.log(action);
     if (
       // areAllCheckboxFieldsFilled() &&
-      // areAllFieldsFilled(radioQuestionState) &&
-      // areAllFieldsFilled(openEndedQuestionState) &&
+      areAllFieldsFilled(radioQuestionState) &&
+      areAllFieldsFilled(openEndedQuestionState) &&
       filledStars
     ) {
       dispatch(action)
@@ -247,7 +257,7 @@ const CreateLogScreen = ({
           console.error(error);
         });
     } else {
-      setError("Please fill in the ratings field.");
+      setError("Please fill in all the questions.");
       setTimeout(() => setError(""), 2000);
     }
   };
@@ -358,7 +368,7 @@ const CreateLogScreen = ({
   const renderStars = () => {
     const stars = [];
 
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 7; i++) {
       const isFilled = i <= filledStars;
       const starIconName = isFilled ? "star" : "star-outline";
 
@@ -384,8 +394,8 @@ const CreateLogScreen = ({
           contentContainerStyle={{ paddingBottom: 60 }}
         >
           <Text style={styles.headerText}>{name}'s Logs</Text>
-          <View style={{ flexDirection: "row" }}>
-            <View>
+          <View style={{ flexDirection: "row", width: "100%" }}>
+            <View style={{ width: "100%" }}>
               <View style={styles.dateContainer}>
                 <Text
                   style={[styles.dateText, { fontFamily: "InterSemiBold" }]}
@@ -396,38 +406,30 @@ const CreateLogScreen = ({
                   {date}
                 </Text>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <View style={styles.ratingContainer}>
-                  <Text style={styles.ratingText}>Fill in a rating</Text>
-                  <View style={{ flexDirection: "row" }}>{renderStars()}</View>
-                </View>
-              </View>
               {/* <View style={styles.dragAndDropContainer}>
                 <DragAndDrop studentID={studentID} />
               </View> */}
+              <View style={{ marginBottom: 20 }}>
+                {radioQuestionState.map((question, idx) => (
+                  <MultipleChoiceQuestion
+                    key={`radio-question-${idx}`}
+                    question={question.question}
+                    answers={question.options}
+                    selectedValue={question.answer}
+                    disabled={false}
+                    setSelectedValue={(option) =>
+                      handleRadioSelection(idx, option)
+                    }
+                  />
+                ))}
+              </View>
               <View style={styles.listView}>
-                <View style={{ marginBottom: 20 }}>
-                  {radioQuestionState.map((question, idx) => (
-                    <MultipleChoiceQuestion
-                      key={`radio-question-${idx}`}
-                      question={question.question}
-                      answers={question.options}
-                      selectedValue={question.answer}
-                      disabled={false}
-                      setSelectedValue={(option) =>
-                        handleRadioSelection(idx, option)
-                      }
-                    />
-                  ))}
+                <View style={styles.ratingContainer}>
+                  <Text style={styles.ratingText}>Mood on arrival</Text>
+                  <View style={{ flexDirection: "row" }}>{renderStars()}</View>
                 </View>
                 <View style={{ marginBottom: 30 }}>
-                  {checkBoxQuestionState.map((question, idx) => (
+                  {/* {checkBoxQuestionState.map((question, idx) => (
                     <MultiSelectQuestion
                       key={`multi-question-${idx}`}
                       question={question.question}
@@ -440,9 +442,15 @@ const CreateLogScreen = ({
                       }
                       onSelectAll={() => handleSelectAll(idx)}
                     />
-                  ))}
+                  ))} */}
                 </View>
-                <View style={{ marginBottom: 20 }}>
+
+                <View
+                  style={{
+                    marginBottom: 20,
+                    width: "100%",
+                  }}
+                >
                   {openEndedQuestionState.map((question, idx) => (
                     <OpenEndedQuestion
                       key={`open-question-${idx}`}
@@ -454,6 +462,7 @@ const CreateLogScreen = ({
                     />
                   ))}
                 </View>
+
                 {isInputEmpty && !filledStars ? (
                   <Text style={styles.errorText}>
                     Could not save logs. Please answer all questions.
@@ -499,6 +508,7 @@ const styles = StyleSheet.create({
   dateContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 20,
   },
   dateText: {
     fontFamily: "InterBold",
@@ -520,11 +530,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   ratingContainer: {
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
   },
   ratingText: {
-    fontFamily: "InterSemiBold",
+    fontFamily: "InterMedium",
     fontSize: 16,
     marginRight: 40,
   },

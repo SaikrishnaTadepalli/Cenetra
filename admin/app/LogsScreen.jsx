@@ -132,6 +132,9 @@ const LogsScreen = ({
               renderSectionHeader={renderSectionHeader}
             />
           ) : (
+            <View>
+              <Text>No logs are available.</Text>
+            </View>
             // logs.map((log, idx) => (
             //   <TouchableOpacity
             //     style={styles.cardContainer}
@@ -152,9 +155,6 @@ const LogsScreen = ({
             //     ) : null}
             //   </TouchableOpacity>
             // ))
-            <View>
-              <Text>No logs are available.</Text>
-            </View>
           )}
         </ScrollView>
       </View>

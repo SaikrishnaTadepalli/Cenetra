@@ -16,7 +16,7 @@ export const getTeacherID = createAsyncThunk(
   }`;
     console.log(query, envs);
     try {
-      const response = await fetch("https://saikrishnat.com/graphql", {
+      const response = await fetch(envs, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,10 +26,10 @@ export const getTeacherID = createAsyncThunk(
       if (response.status !== 200) {
         if (response.status === 500) {
           console.error("Error while getting teacher ID");
-          throw new Error("Invalid Access code");
+          throw new Error("Network error");
         } else if (response.status === 400) {
           console.error("Invalid teacher number");
-          throw new Error("Invalid or wrong teacher number");
+          throw new Error("Invalid Access code");
         }
       }
       const data = await response.json();

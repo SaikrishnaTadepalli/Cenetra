@@ -118,15 +118,6 @@ const LogScreen = ({
           <Text style={styles.dateText}>{date}</Text>
         </View>
       </View>
-      <View style={styles.ratingContainer}>
-        {rating > 0 ? (
-          <>
-            <Text style={styles.ratingText}>Rating</Text>
-            {renderIcons(rating, "star")}
-            {renderIcons(5 - rating, "star-outline")}{" "}
-          </>
-        ) : null}
-      </View>
       {parsedLog &&
         parsedLog.radioButtonQuestions.map((radioButtonQuestion, index) => (
           <View key={`radio-button-question-${index}`}>
@@ -150,7 +141,16 @@ const LogScreen = ({
             </>
           </View>
         ))}
-      {parsedLog &&
+      <View style={styles.ratingContainer}>
+        {rating > 0 ? (
+          <>
+            <Text style={styles.ratingText}>Mood on arrival</Text>
+            {renderIcons(rating, "star")}
+            {renderIcons(7 - rating, "star-outline")}{" "}
+          </>
+        ) : null}
+      </View>
+      {/* {parsedLog &&
         parsedLog.checkBoxQuestions.map((checkBoxQuestion, index) => (
           <View key={`multi-select-question-${index}`}>
             {checkBoxQuestion.answer.length > 0 && (
@@ -162,7 +162,7 @@ const LogScreen = ({
               />
             )}
           </View>
-        ))}
+        ))} */}
       {parsedLog &&
         parsedLog.openEndedQuestions.map((openEndedQuestion, index) => (
           <View key={`open-ended-question-${index}`}>
@@ -230,12 +230,14 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 16,
-    fontFamily: "InterSemiBold",
+    fontFamily: "InterMedium",
+    width: "20%",
     marginRight: 10,
   },
   dateContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 20,
   },
   cardContainer: {
     marginTop: 10,

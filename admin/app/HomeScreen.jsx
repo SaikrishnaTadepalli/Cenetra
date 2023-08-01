@@ -31,6 +31,7 @@ import TeacherProfileScreen from "./TeacherProfileScreen";
 
 const HomeScreen = () => {
   const { loginLoading } = useSelector((state) => state.auth);
+  const { fetchClassesSuccessful } = useSelector((state) => state.class);
   const { isNewProfileAdded } = useSelector((state) => state.studentProfile);
   const [studentID, setStudentID] = useState("");
   const [teacherID, setTeacherID] = useState("");
@@ -373,7 +374,7 @@ const HomeScreen = () => {
                         }}
                       >
                         <Text style={styles.className}>{cls.value}</Text>
-                        {/* <TouchableOpacity
+                        <TouchableOpacity
                           onPress={() => onPressEdit(cls)}
                           style={styles.editButtonContainer}
                         >
@@ -383,7 +384,7 @@ const HomeScreen = () => {
                             color="#024552"
                           />
                           <Text style={styles.editButtonText}>Edit Class</Text>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                       </View>
                       {cls.students.map((student, idx) => (
                         <TouchableOpacity
