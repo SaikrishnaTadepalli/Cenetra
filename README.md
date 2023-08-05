@@ -1,5 +1,12 @@
 # Cenetra
 
+## App downloads
+### Now available on iOS and android! <br>
+Download for iOS: https://apps.apple.com/ca/app/cenetra/id6450727228 <br>
+Download for android: https://play.google.com/store/apps/details?id=com.cenetra.cenetra <br>
+Website link: https://cenetra.vercel.app/
+
+
 ## Objective
 
 Cenetra is a mobile-first application designed to facilitate communication between preschools, parents, and teachers. It enables preschools to update parents about their child's daily activities and milestones, and allows teachers to send important notices and updates. The parent platform is a mobile app, while the teacher platform is a website.
@@ -156,8 +163,6 @@ JWT_SECRET =[YOUR_JWT_SECRET_KEY_HERE]
 JWT_EXPIRY = [YOUR_EXPIRY_TIME_HERE_IN_SECONDS]
 ```
 
-
-
 ## How to Contribute
 
 If you would like to contribute to the development of Cenetra, please follow these guidelines:
@@ -172,8 +177,8 @@ Copyright © 2022, Saikrishna Tadepalli. Released under the [MIT](https://choose
 
 ## Contact Information
 
-We appreciate your interest and contribution to Cenetra!
-
+We appreciate your interest and contribution to Cenetra! Feel free to contact us at cenetra.team@gmail.com
+ 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
