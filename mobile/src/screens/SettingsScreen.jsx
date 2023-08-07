@@ -13,7 +13,7 @@ import SettingsCard from "../components/SettingsCard";
 import { logout } from "../redux/authSlice";
 
 import { useDispatch } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import FeedbackScreen from "./FeedbackScreen";
 
@@ -29,9 +29,14 @@ const SettingsScreen = ({ navigation }) => {
     android: `geo:0,0?q=${fullAddress}`,
   });
   const icons = [
-    { icon: "call-outline", url: `tel:${phoneNumber}` },
-    { icon: "ios-location-outline", url: url },
-    { icon: "mail-outline", url: `mailto:${email}` },
+    { icon: "call-outline", url: `tel:${phoneNumber}`, iconFamily: "Ionicons" },
+    { icon: "ios-location-outline", url: url, iconFamily: "Ionicons" },
+    { icon: "mail-outline", url: `mailto:${email}`, iconFamily: "Ionicons" },
+    {
+      icon: "web",
+      url: "https://www.yhiinternationalgroup.com",
+      iconFamily: "MaterialCommunityIcons",
+    },
   ];
   const dispatch = useDispatch();
   const options = [
@@ -55,7 +60,7 @@ const SettingsScreen = ({ navigation }) => {
     },
   ];
   const handleOpenLink = async () => {
-    const phoneNumber = "+14379852844"; // Replace with your desired URL
+    const phoneNumber = "+917620633298"; // Replace with your desired URL
 
     try {
       await Linking.openURL(`tel:${phoneNumber}`);
@@ -84,12 +89,21 @@ const SettingsScreen = ({ navigation }) => {
             key={`settings-${idx}`}
             onPress={() => Linking.openURL(icon.url)}
           >
-            <Ionicons
-              key={icon.icon}
-              name={icon.icon}
-              size={30}
-              color={colors.darkGreen}
-            />
+            {icon.iconFamily === "Ionicons" ? (
+              <Ionicons
+                key={icon.icon}
+                name={icon.icon}
+                size={30}
+                color={colors.darkGreen}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                key={icon.icon}
+                name={icon.icon}
+                size={30}
+                color={colors.darkGreen}
+              />
+            )}
           </TouchableOpacity>
         ))}
       </View>

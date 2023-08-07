@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Linking } from "react-native";
 
 const PrivacyScreen = () => {
   return (
@@ -375,10 +375,19 @@ const PrivacyScreen = () => {
         posted on this page.
       </Text>
       <Text style={styles.heading}>Contact Us</Text>
+
       <Text style={styles.paragraph}>
-        If you have any questions about this Privacy Policy, You can contact us:
+        If you have any questions about this Privacy Policy, You can contact us
+        at{" "}
+        <Text
+          style={styles.link}
+          onPress={() => {
+            Linking.openURL("mailto:cenetra.team@gmail.com");
+          }}
+        >
+          cenetra.team@gmail.com
+        </Text>
       </Text>
-      <Text style={styles.bulletPoint}>By email: team@cenetra.com</Text>
     </ScrollView>
   );
 };

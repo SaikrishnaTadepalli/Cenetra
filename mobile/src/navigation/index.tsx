@@ -334,7 +334,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
           };
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Chat"
         component={ChatScreen}
         options={({ navigation, route }) => {
@@ -359,7 +359,7 @@ const BottomTabNavigator = ({ navigation, route }) => {
             ),
           };
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Settings"
         component={SettingsScreen}

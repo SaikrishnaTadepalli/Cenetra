@@ -64,7 +64,7 @@ const LogScreen = ({ navigation, route }) => {
       };
     }, [])
   );
-  console.log(logs);
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     retrieveData();
@@ -132,6 +132,11 @@ const LogScreen = ({ navigation, route }) => {
                 ) : null
               )}
             </ScrollView>
+            <LogCard
+              question="Mood on arrival"
+              answer={route.params.rating}
+              type="rating"
+            />
             {logs.radioButtonQuestions.map((radioButtonQuestion, index) => (
               <View key={`radio-button-question-${index}`}>
                 {radioButtonQuestion.answer && (
@@ -143,7 +148,7 @@ const LogScreen = ({ navigation, route }) => {
                 )}
               </View>
             ))}
-            {logs.checkBoxQuestions.map((checkBoxQuestion, index) => (
+            {/* {logs.checkBoxQuestions.map((checkBoxQuestion, index) => (
               <View key={`multi-select-question-${index}`}>
                 {checkBoxQuestion.answer.length > 0 && (
                   <LogCard
@@ -153,7 +158,7 @@ const LogScreen = ({ navigation, route }) => {
                   />
                 )}
               </View>
-            ))}
+            ))} */}
             {logs.openEndedQuestions.map((openEndedQuestion, index) => (
               <View key={`open-ended-question-${index}`}>
                 {openEndedQuestion.answer && (
