@@ -36,21 +36,9 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
       title: moment(curLog.createdAt).utc().format("MMMM D, YYYY"),
       date: curLog.createdAt,
       logID: logID,
+      rating: rating,
     });
   };
-
-  const renderIcon = (name, idx) => (
-    <Ionicons
-      key={`${name}-${idx}`}
-      name={name}
-      color={colors.yellow}
-      size={16}
-      style={{ marginRight: 2 }}
-    />
-  );
-
-  const renderIcons = (num, name) =>
-    [...Array(num).keys()].map((idx) => renderIcon(name, idx));
 
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={handleClick}>
@@ -58,10 +46,6 @@ const DailyLogsCard = ({ navigation, data, date, logID, rating }) => {
         <Text style={styles.titleText}>
           {moment(date).utc().format("MMMM D, YYYY")}
         </Text>
-        <View style={{ alignItems: "center", flexDirection: "row" }}>
-          {renderIcons(rating, "star")}
-          {renderIcons(5 - rating, "star-outline")}
-        </View>
       </View>
     </TouchableOpacity>
   );

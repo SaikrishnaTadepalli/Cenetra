@@ -282,7 +282,7 @@ const CreateProfileScreen = ({
       return updatedInputs;
     });
   };
-  console.log(error);
+  //console.log(error);
   return (
     <ScrollView
       style={styles.container}

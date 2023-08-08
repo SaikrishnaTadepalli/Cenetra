@@ -154,35 +154,47 @@ const ProfileScreen = ({ curStudentID, imageUrl }) => {
                   )
                 : null}
               <View style={{ flexDirection: "row" }}>
-                <View style={styles.whiteCardContainer}>
-                  <Text style={styles.headerText}>Allergen information</Text>
-                  {studentInfo.information &&
-                    studentInfo.information[2].section.map((data, idx) => (
-                      <View key={`profile-info-allergies${idx}`}>
-                        {renderText("Item:", data.name)}
-                        {renderText("Severity:", data.severity)}
-                        {studentInfo.information[2].section.indexOf(data) !==
-                        studentInfo.information[2].section.length - 1 ? (
-                          <View style={styles.divider} />
-                        ) : null}
-                      </View>
-                    ))}
-                </View>
-                <View style={[styles.whiteCardContainer]}>
-                  <Text style={styles.headerText}>Medications</Text>
-                  {studentInfo.information &&
-                    studentInfo.information[3].section.map((data, idx) => (
-                      <View key={`profile-info-medications${idx}`}>
-                        {renderText("Medicine Name:", data.name)}
-                        {renderText("Dosage:", data.dosage)}
-                        {renderText("Frequency:", data.frequency)}
-                        {studentInfo.information[3].section.indexOf(data) !==
-                        studentInfo.information[3].section.length - 1 ? (
-                          <View style={styles.divider} />
-                        ) : null}
-                      </View>
-                    ))}
-                </View>
+                {studentInfo.information &&
+                  studentInfo.information[2].section.length > 0 && (
+                    <View style={styles.whiteCardContainer}>
+                      <Text style={styles.headerText}>
+                        Allergen information
+                      </Text>
+                      {studentInfo.information &&
+                        studentInfo.information[2].section.map((data, idx) => (
+                          <View key={`profile-info-allergies${idx}`}>
+                            {renderText("Item:", data.name)}
+                            {renderText("Severity:", data.severity)}
+                            {studentInfo.information[2].section.indexOf(
+                              data
+                            ) !==
+                            studentInfo.information[2].section.length - 1 ? (
+                              <View style={styles.divider} />
+                            ) : null}
+                          </View>
+                        ))}
+                    </View>
+                  )}
+                {studentInfo.information &&
+                  studentInfo.information[3].section.length > 0 && (
+                    <View style={[styles.whiteCardContainer]}>
+                      <Text style={styles.headerText}>Medications</Text>
+                      {studentInfo.information &&
+                        studentInfo.information[3].section.map((data, idx) => (
+                          <View key={`profile-info-medications${idx}`}>
+                            {renderText("Medicine Name:", data.name)}
+                            {renderText("Dosage:", data.dosage)}
+                            {renderText("Frequency:", data.frequency)}
+                            {studentInfo.information[3].section.indexOf(
+                              data
+                            ) !==
+                            studentInfo.information[3].section.length - 1 ? (
+                              <View style={styles.divider} />
+                            ) : null}
+                          </View>
+                        ))}
+                    </View>
+                  )}
               </View>
             </View>
           </ScrollView>

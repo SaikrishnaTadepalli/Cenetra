@@ -10,7 +10,7 @@ import colors from "../constants/Colors";
 
 const ProfileCard = ({ sectionHeader, data }) => {
   const renderText = (infoType, info) => {
-    info.trim();
+    // info.trim();
     return (
       <View style={styles.infoLineContainer}>
         {infoType !== "" ? (
