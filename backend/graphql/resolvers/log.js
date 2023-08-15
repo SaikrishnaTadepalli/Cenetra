@@ -73,7 +73,7 @@ module.exports = {
         throw new error("Teacher does not exist.");
       }
 
-      if (args.rating < 0 || args.rating > 5) {
+      if (args.rating < 0 || args.rating > 7) {
         throw new error("Rating Invalid");
       }
 
