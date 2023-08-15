@@ -88,7 +88,7 @@ module.exports = {
       const result = await log.save();
 
       const message = `A New Log has been Uploded`;
-      await sendSMS(fetchedStudent.primaryContactNumber.toString(), message);
+      // await sendSMS(fetchedStudent.primaryContactNumber.toString(), message);
 
       return transformLog(result);
     } catch (err) {
