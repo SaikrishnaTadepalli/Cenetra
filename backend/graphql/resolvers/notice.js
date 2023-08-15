@@ -159,10 +159,10 @@ module.exports = {
 
       const result = await notice.save();
 
-      const message = `A New Notice has been Uploded!`;
-      fetchedStudents.map(async (fetchedStudent) => {
-        await sendSMS(fetchedStudent.primaryContactNumber, message);
-      });
+      // const message = `A New Notice has been Uploded!`;
+      // fetchedStudents.map(async (fetchedStudent) => {
+      //   await sendSMS(fetchedStudent.primaryContactNumber, message);
+      // });
 
       return transformNotice(result, args.teacherId);
     } catch (err) {
