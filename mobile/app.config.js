@@ -3,9 +3,9 @@ module.exports = {
     name: "Cenetra",
     slug: "cenetra",
     description: "Mobile first daycare application",
-    version: "1.0.5",
+    version: "1.1.8",
     orientation: "portrait",
-    icon: "./assets/images/SchoolAppIcon2.png",
+    icon: "./assets/images/SchoolLogo.jpeg",
     userInterfaceStyle: "light",
     extra: {
       eas: {
@@ -24,7 +24,7 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.cenetra.cenetra",
-      buildNumber: "18",
+      buildNumber: "20",
     },
     android: {
       package: "com.cenetra.cenetra",
