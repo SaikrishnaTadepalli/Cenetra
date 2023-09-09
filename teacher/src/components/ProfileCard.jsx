@@ -4,11 +4,13 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 import React from "react";
 import Colors from "../constants/Colors";
 
 const ProfileCard = ({ sectionHeader, data, title }) => {
+  const layout = useWindowDimensions();
   const renderButton = (infoType, info) => {
     return (
       <View style={styles.infoLineContainer}>
@@ -39,7 +41,7 @@ const ProfileCard = ({ sectionHeader, data, title }) => {
       sectionHeader === "EMERGENCY CONTACTS"
     ) {
       return (
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: layout.width >= 768 ? "row" : "column" }}>
           {data.map((item, idx) => (
             <View key={`profile-info${idx}`} style={styles.cardContainer}>
               <Text style={styles.headerText}>{item.title} information</Text>

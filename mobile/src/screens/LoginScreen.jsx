@@ -28,23 +28,23 @@ const LoginScreen = ({ navigation }) => {
           setTimeout(() => setError(""), 2000);
         } else {
           const studentID = response.payload.data.studentByStudentNumber._id;
-          if (studentNumber === "547821963025") {
-            await AsyncStorage.setItem("studentID", studentID);
-            await AsyncStorage.setItem("isLoggedIn", "true");
-            dispatch(login());
-            return;
-          }
-          dispatch(sendSMS(studentID))
-            .then(() => {
-              setIsDisabled(true);
-              navigation.navigate("Verification");
-            })
-            .catch((error) => console.error("Error in sending SMS", error));
+          // if (studentNumber === "547821963025") {
+          await AsyncStorage.setItem("studentID", studentID);
+          await AsyncStorage.setItem("isLoggedIn", "true");
+          dispatch(login());
+          //   return;
+          // }
+          // dispatch(sendSMS(studentID))
+          //   .then(() => {
+          //     setIsDisabled(true);
+          //     navigation.navigate("Verification");
+          //   })
+          //   .catch((error) => console.error("Error in sending SMS", error));
         }
       })
       .catch((error) => {
         console.error("Error in dispatch to loginUser", error);
-        setError(error);
+        setError("Error while logging in. Please try again.");
       });
   };
 

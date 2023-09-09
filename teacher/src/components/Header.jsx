@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../constants/Colors";
@@ -9,6 +15,7 @@ import { logout } from "../redux/authSlice";
 
 const Header = () => {
   const pages = ["Home", "Daily Logs", "Notices"];
+  const layout = useWindowDimensions();
   const screens = ["HomeScreen", "ClassListScreen", "NoticesScreen"];
   const [activeButton, setActiveButton] = useState("Home");
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -34,7 +41,15 @@ const Header = () => {
       {loggedIn === "true" ? (
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Curiouss Kids</Text>
+            <Text
+              style={[
+                styles.headerText,
+                { fontSize: layout.width >= 768 ? 26 : 0 },
+              ]}
+            >
+              Curiouss Kids
+            </Text>
+
             {pages.map((page, idx) => (
               <View
                 key={`page-${idx}`}
@@ -77,6 +92,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     alignItems: "center",
+    width: "100%",
   },
   header: {
     height: 60,
@@ -89,7 +105,6 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: "InterBold",
-    fontSize: 26,
     marginLeft: 15,
     color: "#23342C",
   },

@@ -5,7 +5,9 @@ import {
   TouchableOpacity,
   View,
   Image,
+  useWindowDimensions,
 } from "react-native";
+import CreateResponsiveStyle from "../src/components/CreateResponsiveStyle";
 import React, { useEffect, useState } from "react";
 import {
   sendSMS,
@@ -26,6 +28,8 @@ import {
 import { useRouter } from "expo-router";
 
 const VerificationScreen = () => {
+  const layout = useWindowDimensions();
+  const styles = responsiveStyle(layout);
   const dispatch = useDispatch();
   const router = useRouter();
   //const { curStudentDetails } = useSelector((state) => state.auth);
@@ -108,15 +112,17 @@ const VerificationScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.verificationContainer}>
-        <Text style={styles.titleText}>Verify your number</Text>
-        <Text style={styles.text}>
+    <View style={styles("container")}>
+      <View style={styles("verificationContainer")}>
+        <Text style={styles("titleText")}>Verify your number</Text>
+        <Text style={styles("text")}>
           Enter Verification code sent to{" "}
           {teacherInfo && teacherInfo.phoneNumber}
         </Text>
-        <View style={{ alignSelf: "flex-start", width: "41%" }}>
-          <Text style={styles.codeText}>Enter Code</Text>
+        <View
+          style={{ alignSelf: "flex-start", width: "41%", marginLeft: -25 }}
+        >
+          <Text style={styles("codeText")}>Enter Code</Text>
         </View>
         <CodeField
           ref={ref}
@@ -125,13 +131,13 @@ const VerificationScreen = () => {
           value={value}
           onChangeText={setValue}
           cellCount={5}
-          rootStyle={styles.codeFieldRoot}
+          rootStyle={styles("codeFieldRoot")}
           keyboardType="number-pad"
           textContentType="oneTimeCode"
           renderCell={({ index, symbol, isFocused }) => (
             <Text
               key={index}
-              style={[styles.box, isFocused && styles.focusCell]}
+              style={[styles("box"), isFocused && styles("focusCell")]}
               onLayout={getCellOnLayoutHandler(index)}
             >
               {symbol || (isFocused ? <Cursor /> : null)}
@@ -139,18 +145,18 @@ const VerificationScreen = () => {
           )}
         />
         <TouchableOpacity onPress={onResend}>
-          <Text style={styles.resendCodeText}>Resend Code?</Text>
+          <Text style={styles("resendCodeText")}>Resend Code?</Text>
         </TouchableOpacity>
-        {error !== "" ? <Text style={styles.errorText}>{error}</Text> : null}
+        {error !== "" ? <Text style={styles("errorText")}>{error}</Text> : null}
         {isCodeSent ? <Text>Code resent successfully!</Text> : null}
         <TouchableOpacity
-          style={styles.loginButtonContainer}
+          style={styles("loginButtonContainer")}
           onPress={handleClick}
         >
-          <Text style={styles.loginButtonText}>Verify</Text>
+          <Text style={styles("loginButtonText")}>Verify</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.imageContainer}>
+      <View style={styles("imageContainer")}>
         <Image
           source={require("../assets/images/SchoolLogo.png")}
           style={{
@@ -164,6 +170,117 @@ const VerificationScreen = () => {
 };
 
 export default VerificationScreen;
+
+const responsiveStyle = CreateResponsiveStyle(
+  {
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+      height: "100%",
+    },
+    verificationContainer: {
+      width: "40%",
+      alignItems: "center",
+    },
+    titleText: {
+      fontSize: 30,
+      color: "#23342C",
+      fontFamily: "InterSemiBold",
+      marginBottom: 10,
+    },
+    text: {
+      color: "#23342C",
+      fontSize: 14,
+      fontFamily: "InterRegular",
+      width: "85%",
+      textAlign: "center",
+      marginBottom: 20,
+    },
+    codeText: {
+      color: "#23342C",
+      fontSize: 16,
+      fontFamily: "InterRegular",
+      width: "96%",
+      textAlign: "right",
+    },
+    boxContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    box: {
+      marginTop: 10,
+      height: 60,
+      width: 50,
+      borderRadius: 10,
+      borderWidth: 2,
+      marginRight: 10,
+      borderColor: "#A0B2AF",
+      textAlign: "center",
+      lineHeight: 58,
+      fontSize: 24,
+      fontFamily: "InterMedium",
+    },
+    loginButtonContainer: {
+      justifyContent: "center",
+      width: 130,
+      height: 45,
+      backgroundColor: "#23342C",
+      borderRadius: 100,
+      marginTop: 20,
+    },
+    loginButtonText: {
+      alignSelf: "center",
+      color: "white",
+      fontFamily: "InterMedium",
+    },
+    errorText: {
+      color: colors.red,
+      marginTop: 10,
+      textAlign: "left",
+    },
+    focusCell: {
+      borderColor: "#23342C",
+    },
+    resendCodeText: {
+      marginLeft: 180,
+      marginTop: 10,
+      color: "#99B8BE",
+    },
+    imageContainer: {
+      backgroundColor: "#23342C",
+      width: "60%",
+      height: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  },
+  {
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+      height: "100%",
+      width: "100%",
+    },
+    verificationContainer: {
+      width: "100%",
+      alignItems: "center",
+    },
+    text: {
+      color: "#23342C",
+      fontSize: 14,
+      fontFamily: "InterRegular",
+      width: "100%",
+      textAlign: "center",
+      marginBottom: 20,
+    },
+    imageContainer: {
+      width: "0%",
+    },
+    welcomeText: {
+      fontSize: 40,
+    },
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

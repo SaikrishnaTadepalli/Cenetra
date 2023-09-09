@@ -15,7 +15,7 @@ const HomeLayout = () => {
   return (
     <>
       <Provider store={store}>
-        <PaperProvider theme={theme}>
+        <PaperProvider>
           <Header />
           <Slot />
         </PaperProvider>

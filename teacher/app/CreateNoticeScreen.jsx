@@ -24,6 +24,8 @@ const CreateNoticeScreen = ({
   noticeID,
   setNoticeID,
   setIsOldNoticeSelected,
+  setIsSaved,
+  isSaved,
 }) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
@@ -49,7 +51,6 @@ const CreateNoticeScreen = ({
     noticeDetails ? noticeDetails.details : ""
   );
   const [isCancelled, setIsCancelled] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewNoticeSelected = getIsNewNoticeAdded(state);
@@ -155,6 +156,8 @@ const CreateNoticeScreen = ({
         });
       }
       handleDispatch(action);
+    } else {
+      setIsInputEmpty(true);
     }
   };
 
@@ -206,10 +209,14 @@ const CreateNoticeScreen = ({
       </View>
     );
   };
-
+  console.log(isInputEmpty);
   return (
     <>
-      {isSaved ? <Text>Your notice has been successfully saved!</Text> : null}
+      {isSaved ? (
+        <View style={{ width: "100%" }}>
+          <Text>Your notice has been successfully saved!</Text>
+        </View>
+      ) : null}
       {error ? (
         <View>
           <Text>There was an error in creating the log. Please try again.</Text>

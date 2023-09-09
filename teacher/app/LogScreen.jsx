@@ -197,6 +197,8 @@ export default LogScreen;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+    backgroundColor: "white",
+    paddingLeft: 20,
     // backgroundColor: "red",
   },
   logHeaderContainer: {

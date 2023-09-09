@@ -5,11 +5,13 @@ import {
   ScrollView,
   TouchableOpacity,
   SectionList,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import moment from "moment-timezone";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import CreateResponsiveStyle from "../src/components/CreateResponsiveStyle";
 import colors from "../src/constants/Colors";
 import CreateLogScreen from "./CreateLogScreen";
 import { useRouter } from "expo-router";
@@ -26,9 +28,12 @@ const DailyLogsScreen = ({
   studentID,
   setIsStudentNameSelected,
   setIsOldLogSelected,
+  setIsStudentListSelected,
   setDate,
   setLogID,
 }) => {
+  const layout = useWindowDimensions();
+  const styles = responsiveStyle(layout);
   const dispatch = useDispatch();
   const router = useRouter();
   const state = useSelector((state) => state.log);
@@ -59,10 +64,11 @@ const DailyLogsScreen = ({
     setIsStudentNameSelected(false);
   };
 
-  const onPressEdit = (date) => {
+  const onPressBack = (date) => {
     //console.log(date);
+    setIsStudentListSelected(true);
+    setIsStudentNameSelected(false);
     setIsOldLogSelected(false);
-    setDate(date);
   };
 
   const handleButtonPress = (buttonId) => {
@@ -85,10 +91,10 @@ const DailyLogsScreen = ({
     };
     return (
       <TouchableOpacity
-        style={[styles.sectionHeader, style()]}
+        style={[styles("sectionHeader"), style()]}
         onPress={() => handleButtonPress(segment)}
       >
-        <Text style={styles.sectionHeaderText}>{segment}</Text>
+        <Text style={styles("sectionHeaderText")}>{segment}</Text>
         <Ionicons
           name={
             isExpanded[segment]
@@ -111,7 +117,7 @@ const DailyLogsScreen = ({
       <>
         {isExpanded[date] ? (
           <TouchableOpacity
-            style={styles.cardContainer}
+            style={styles("cardContainer")}
             onPress={() => onClickLog(item._id)}
           >
             {item ? (
@@ -121,7 +127,7 @@ const DailyLogsScreen = ({
                   alignItems: "center",
                 }}
               >
-                <Text style={styles.dateText}>
+                <Text style={styles("dateText")}>
                   {moment(item.createdAt).utc().format("DD MMMM YYYY")}
                 </Text>
               </View>
@@ -133,26 +139,33 @@ const DailyLogsScreen = ({
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{name}'s Logs</Text>
+    <View style={styles("container")}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        {layout.width < 768 && (
+          <TouchableOpacity onPress={onPressBack}>
+            <Ionicons name="arrow-back" size={30} color="black" />
+          </TouchableOpacity>
+        )}
+        <Text style={styles("header")}>{name}'s Logs</Text>
+      </View>
       <View>
         <TouchableOpacity
           style={
             isDisabled
-              ? [styles.buttonContainer, styles.disabled]
-              : styles.buttonContainer
+              ? [styles("buttonContainer"), styles("disabled")]
+              : styles("buttonContainer")
           }
           onPress={handleClick}
           disabled={isDisabled}
         >
           <Ionicons name="add" size={20} color="#024552" />
-          <Text style={styles.buttonText} onPress={handleClick}>
+          <Text style={styles("buttonText")} onPress={handleClick}>
             Add a new log
           </Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
-        <ScrollView contentContainerStyle={styles.listView}>
+        <ScrollView contentContainerStyle={styles("listView")}>
           {fetchLogsPending ? (
             <Text>Retrieving data...</Text>
           ) : logs.length > 0 ? (
@@ -162,7 +175,7 @@ const DailyLogsScreen = ({
               keyExtractor={(log) => log._id}
               ListFooterComponent={<View />}
               ListFooterComponentStyle={{ height: 20 }}
-              contentContainerStyle={styles.listView}
+              contentContainerStyle={styles("listView")}
               renderItem={renderItem}
               renderSectionHeader={renderSectionHeader}
             />
@@ -210,6 +223,79 @@ const DailyLogsScreen = ({
 };
 
 export default DailyLogsScreen;
+
+const responsiveStyle = CreateResponsiveStyle(
+  {
+    container: {
+      //backgroundColor: "red",
+      width: "100%",
+    },
+    header: {
+      fontSize: 20,
+      fontFamily: "InterSemiBold",
+    },
+    sectionHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: 320,
+      marginBottom: 10,
+    },
+    sectionHeaderText: {
+      fontFamily: "InterSemiBold",
+      fontSize: 18,
+      marginBottom: 8,
+    },
+    dateText: {
+      fontFamily: "InterMedium",
+      fontSize: 14,
+      marginRight: 100,
+    },
+    listView: {
+      paddingBottom: 60,
+    },
+    cardContainer: {
+      width: 250,
+      minHeight: 50,
+      borderColor: colors.lightGrey,
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingLeft: 16,
+      paddingVertical: 8,
+      justifyContent: "center",
+      backgroundColor: "white",
+      marginBottom: 10,
+    },
+    buttonContainer: {
+      marginVertical: 20,
+      backgroundColor: "#99B8BE99",
+      height: 40,
+      width: 132,
+      borderRadius: 10,
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
+    },
+    disabled: {
+      opacity: 0.5,
+    },
+    buttonText: {
+      alignSelf: "center",
+      color: "#024552",
+      fontWeight: 600,
+    },
+  },
+  {
+    container: {
+      width: "100%",
+      //backgroundColor: "pink",
+      paddingLeft: 20,
+    },
+    dateText: {
+      marginRight: 0,
+    },
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

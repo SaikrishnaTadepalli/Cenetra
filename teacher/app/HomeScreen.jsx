@@ -4,17 +4,22 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
+import CreateResponsiveStyle from "../src/components/CreateResponsiveStyle";
 import colors from "../src/constants/Colors";
 import ProfileScreen from "./ProfileScreen";
 import { fetchProfile } from "../src/redux/studentProfileSlice";
 import { getViewUrl } from "../src/redux/mediaSlice";
 
 const HomeScreen = () => {
+  const layout = useWindowDimensions();
+  const styles = responsiveStyle(layout);
   const { loginLoading } = useSelector((state) => state.auth);
   const [studentID, setStudentID] = useState("");
   const s = localStorage.getItem("students");
@@ -24,6 +29,10 @@ const HomeScreen = () => {
   const [imageUrl, setImageUrl] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const onPressBack = () => {
+    setError("");
+  };
 
   const handleClick = (studentID) => {
     // console.log(studentID);
@@ -61,22 +70,22 @@ const HomeScreen = () => {
   // }, [router, loginLoading, isLoggedIn]);
   // console.log(localStorage.getItem("students"));
   return (
-    <View style={styles.container}>
+    <View style={styles("container")}>
       {loginLoading ? (
-        <Text style={styles.text}>Loading details...</Text>
+        <Text style={styles("text")}>Loading details...</Text>
       ) : (
         <>
-          <Text style={styles.headerText}>My Class</Text>
+          <Text style={styles("headerText")}>My Class</Text>
           <View style={{ flexDirection: "row", height: "100%" }}>
             <ScrollView
-              contentContainerStyle={styles.listView}
+              contentContainerStyle={styles("listView")}
               nestedScrollEnabled={true}
             >
               {students &&
                 students.map((student, idx) => (
                   <TouchableOpacity
                     style={[
-                      styles.cardContainer,
+                      styles("cardContainer"),
                       {
                         backgroundColor:
                           student._id === studentID
@@ -89,7 +98,7 @@ const HomeScreen = () => {
                   >
                     <Text
                       style={[
-                        styles.nameText,
+                        styles("nameText"),
                         {
                           color:
                             student._id === studentID ? "#4F0059" : "#5E5E5E",
@@ -101,26 +110,43 @@ const HomeScreen = () => {
                   </TouchableOpacity>
                 ))}
             </ScrollView>
-            <View
-              style={{
-                flexDirection: "row",
-                // height: "100%",
-                width: "50%",
-                marginTop: -45,
-                // backgroundColor: "green",
-              }}
-            >
-              <View style={styles.verticalDivider} />
-              {error === "500" ? (
-                <View style={styles.errorContainer}>
-                  <Text style={styles.emptyText}>
-                    No profile exists for this student
-                  </Text>
-                </View>
-              ) : (
-                <ProfileScreen curStudentID={studentID} imageUrl={imageUrl} />
-              )}
-            </View>
+            {layout.width >= 768 ? (
+              <View style={styles("rightContent")}>
+                <View style={styles("verticalDivider")} />
+                {error === "500" ? (
+                  <View style={styles("errorContainer")}>
+                    <Text style={styles("emptyText")}>
+                      No profile exists for this student
+                    </Text>
+                  </View>
+                ) : (
+                  <ProfileScreen curStudentID={studentID} imageUrl={imageUrl} />
+                )}
+              </View>
+            ) : (
+              <>
+                {error === "500" ? (
+                  <View style={{ width: error ? "100%" : "0%" }}>
+                    <TouchableOpacity onPress={onPressBack}>
+                      <Ionicons name="arrow-back" size={30} color="black" />
+                    </TouchableOpacity>
+                    <Text style={styles("emptyText")}>
+                      No profile exists for this student
+                    </Text>
+                  </View>
+                ) : (
+                  studentID !== "" && (
+                    <View style={{ width: studentID ? "100%" : "0%" }}>
+                      <ProfileScreen
+                        curStudentID={studentID}
+                        imageUrl={imageUrl}
+                        setStudentID={setStudentID}
+                      />
+                    </View>
+                  )
+                )}
+              </>
+            )}
           </View>
         </>
       )}
@@ -129,6 +155,84 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+
+const responsiveStyle = CreateResponsiveStyle(
+  {
+    container: {
+      // width: "80%",
+      height: "100%",
+      // backgroundColor: "red",
+    },
+    headerText: {
+      fontSize: 30,
+      marginLeft: 30,
+      marginTop: 60,
+      fontFamily: "InterBold",
+      alignSelf: "flex-start",
+      marginBottom: 20,
+    },
+    listView: {
+      width: "30%",
+      marginLeft: 30,
+      //flex: 1,
+    },
+    cardContainer: {
+      width: 300,
+      height: 50,
+      borderRadius: 4,
+      justifyContent: "center",
+      marginBottom: 10,
+      paddingLeft: 10,
+    },
+    nameText: {
+      fontFamily: "InterMedium",
+      fontSize: 16,
+    },
+    verticalDivider: {
+      borderLeftColor: "#D9D9D980",
+      borderLeftWidth: 1,
+      marginRight: 50,
+      marginLeft: "-45%",
+    },
+    emptyText: {
+      fontFamily: "InterSemiBold",
+      fontSize: 20,
+      color: "#99B8BE",
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: "center",
+      marginBottom: 300,
+      alignItems: "center",
+    },
+    rightContent: {
+      flexDirection: "row",
+      // height: "100%",
+      width: "50%",
+      marginTop: -45,
+      // backgroundColor: "green",
+    },
+  },
+  {
+    container: {
+      width: "100%",
+    },
+    listView: {
+      width: "100%",
+      //flex: 1,
+    },
+    rightContent: {
+      width: "100%",
+    },
+    errorContainer: {
+      width: "100%",
+    },
+    headerText: {},
+    mobileContainer: {
+      //width: "100%",
+    },
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
