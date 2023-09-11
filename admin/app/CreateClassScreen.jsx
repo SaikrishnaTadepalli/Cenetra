@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,7 @@ import { setClasses } from "../src/redux/authSlice";
 import DropDownSingle from "../src/components/DropDownSingle";
 
 const CreateClassScreen = ({ classInfo }) => {
+  const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const {
     isNewClassAdded,
@@ -50,7 +52,7 @@ const CreateClassScreen = ({ classInfo }) => {
   const renderText = (infoType, key, state, setState) => {
     return (
       <View style={styles.infoLineContainer}>
-        <Text style={styles.infoTypeText}>{infoType}</Text>
+        <Text style={[styles.infoTypeText]}>{infoType}</Text>
         {classInfo ? (
           <Text>{classState[key]}</Text>
         ) : (
@@ -376,7 +378,7 @@ const CreateClassScreen = ({ classInfo }) => {
   return (
     <View
       style={{
-        paddingLeft: 40,
+        paddingLeft: layout.width >= 768 ? 40 : 0,
         marginTop: 30,
       }}
     >
@@ -386,7 +388,14 @@ const CreateClassScreen = ({ classInfo }) => {
           {renderText("Name", "name", classState, setClassState)}
           {renderText("Details", "details", classState, setClassState)}
           <View style={styles.infoLineContainer}>
-            <Text style={styles.infoTypeText}>Add students</Text>
+            <Text
+              style={[
+                styles.infoTypeText,
+                { width: layout.width >= 768 ? "20%" : "25%" },
+              ]}
+            >
+              Add students
+            </Text>
             <DropDown
               options={students}
               selectedOptions={selectedStudents}
@@ -397,7 +406,14 @@ const CreateClassScreen = ({ classInfo }) => {
             />
           </View>
           <View style={styles.infoLineContainer}>
-            <Text style={styles.infoTypeText}>Add Teacher</Text>
+            <Text
+              style={[
+                styles.infoTypeText,
+                { width: layout.width >= 768 ? "20%" : "25%" },
+              ]}
+            >
+              Add Teacher
+            </Text>
             {/* <SelectList
               setSelected={(val) => setSelectedTeacher(val)}
               // onSelect={retrieveData()}

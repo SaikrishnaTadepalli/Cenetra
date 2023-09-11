@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   SectionList,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
@@ -22,8 +23,13 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
-const TeacherProfileScreen = ({ teacherID, teacherInfo }) => {
+const TeacherProfileScreen = ({ teacherID, teacherInfo, setTeacherID }) => {
   const dispatch = useDispatch();
+  const layout = useWindowDimensions();
+
+  const onPressBack = () => {
+    setTeacherID("");
+  };
 
   const renderText = (infoType, info) => {
     return (
@@ -39,9 +45,21 @@ const TeacherProfileScreen = ({ teacherID, teacherInfo }) => {
   //console.log(studentInfo.information[4].section);
   return (
     <>
-      <Text style={styles.headerText}>{teacherInfo.name}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        {layout.width < 768 && (
+          <TouchableOpacity onPress={onPressBack}>
+            <Ionicons
+              name="arrow-back"
+              size={24}
+              color="black"
+              style={{ marginRight: 20 }}
+            />
+          </TouchableOpacity>
+        )}
+        <Text style={styles.headerText}>{teacherInfo.name}</Text>
+      </View>
       <Text style={styles.sectionHeaderText}>Profile information</Text>
-      <View style={styles.cardContainer}>
+      <View style={[styles.cardContainer, { width: "100%" }]}>
         {renderText("Teacher Number:", teacherInfo.teacherNumber)}
         {renderText("Email:", teacherInfo.email)}
         {renderText("Phone Number:", teacherInfo.phoneNumber)}
@@ -58,9 +76,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   cardContainer: {
-    // width: "100%",
     backgroundColor: "#D9D9D94D",
-    width: 400,
+    // width: layout.width >= 768 ? 400 : "10%",
     justifyContent: "center",
     paddingVertical: 20,
     // height: 250,

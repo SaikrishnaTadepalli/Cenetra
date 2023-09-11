@@ -19,7 +19,13 @@ import {
 import typeColorMapping from "../api/typeColorMapping";
 import Dropdown from "../src/components/DropDown";
 
-const CreateNoticeScreen = ({ date, noticeID, setIsOldNoticeSelected }) => {
+const CreateNoticeScreen = ({
+  date,
+  noticeID,
+  setIsOldNoticeSelected,
+  setIsSaved,
+  isSaved,
+}) => {
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const state = useSelector((state) => state.notices);
@@ -48,7 +54,6 @@ const CreateNoticeScreen = ({ date, noticeID, setIsOldNoticeSelected }) => {
     noticeDetails ? noticeDetails.details : ""
   );
   const [isCancelled, setIsCancelled] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewNoticeSelected = getIsNewNoticeAdded(state);

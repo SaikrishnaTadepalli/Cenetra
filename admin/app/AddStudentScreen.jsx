@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ import CreateProfileScreen from "./CreateProfileScreen";
 
 const AddStudentScreen = () => {
   const dispatch = useDispatch();
+  const layout = useWindowDimensions();
   const { isNewStudentAdded, createStudentPending } = useSelector(
     (state) => state.student
   );
@@ -32,6 +34,7 @@ const AddStudentScreen = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isAddProfileDisabled, setIsAddProfileDisabled] = useState(false);
   const [studentNumber, setStudentNumber] = useState("");
+  const [isStudentInfoSelected, setIsStudentInfoSelected] = useState(true);
   const [studentInfoState, setStudentInfoState] = useState({
     name: "",
     ID: "",
@@ -121,85 +124,116 @@ const AddStudentScreen = () => {
   };
 
   const handleClick = () => {
-    if (studentInfoState.ID === "") {
-      setError("Please create a student before adding a profile.");
-      setTimeout(() => setError(""), 3000);
-    } else {
-      dispatch(setIsNewProfileAdded(true));
-      setStudentNumber("");
-    }
+    // if (studentInfoState.ID === "") {
+    //   setError("Please create a student before adding a profile.");
+    //   setTimeout(() => setError(""), 3000);
+    // } else {
+    dispatch(setIsNewProfileAdded(true));
+    setStudentNumber("");
+    setIsStudentInfoSelected(false);
+    // }
   };
   return (
     <View style={styles.container}>
       {isNewStudentAdded && (
         <>
-          <View>
-            <Text style={styles.subHeaderText}>Student details</Text>
-            {renderText("Student first name", "firstName")}
-            {renderText("Student last name", "lastName")}
-            {renderText("Parent phone number", "primaryContactNumber")}
-            {isSaved ? <Text>Student has been added successfully!</Text> : null}
-            {error !== "" ? (
-              <Text style={styles.errorText}>{error}</Text>
-            ) : null}
-            {createStudentPending && <Text>Adding student...</Text>}
-            <View style={styles.buttonsContainer}>
+          {isStudentInfoSelected && (
+            <View>
+              <Text style={styles.subHeaderText}>Student details</Text>
+              {renderText("Student first name", "firstName")}
+              {renderText("Student last name", "lastName")}
+              {renderText("Parent phone number", "primaryContactNumber")}
+              {isSaved ? (
+                <Text>Student has been added successfully!</Text>
+              ) : null}
+              {error !== "" ? (
+                <Text style={styles.errorText}>{error}</Text>
+              ) : null}
+              {createStudentPending && <Text>Adding student...</Text>}
+              {studentNumber && layout.width < 768 && (
+                <View style={{ width: "100%" }}>
+                  <Text style={styles.studentNumberText}>
+                    The student number is: {studentNumber}
+                  </Text>
+                </View>
+              )}
+              <View style={styles.buttonsContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.saveButtonContainer,
+                    { opacity: isButtonDisabled ? 0.5 : 1 },
+                  ]}
+                  onPress={onSave}
+                >
+                  <Text style={styles.saveButtonText}>Create</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButtonContainer}
+                  onPress={onCancel}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity
-                style={[
-                  styles.saveButtonContainer,
-                  { opacity: isButtonDisabled ? 0.5 : 1 },
-                ]}
-                onPress={onSave}
+                style={
+                  isAddProfileDisabled
+                    ? [styles.buttonContainer, styles.disabled]
+                    : styles.buttonContainer
+                }
+                onPress={handleClick}
+                disabled={isAddProfileDisabled}
               >
-                <Text style={styles.saveButtonText}>Create</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.cancelButtonContainer}
-                onPress={onCancel}
-              >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Ionicons name="add" size={20} color="#024552" />
+                <Text style={styles.buttonText} onPress={handleClick}>
+                  Add a profile
+                </Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={
-                isAddProfileDisabled
-                  ? [styles.buttonContainer, styles.disabled]
-                  : styles.buttonContainer
-              }
-              onPress={handleClick}
-              disabled={isAddProfileDisabled}
-            >
-              <Ionicons name="add" size={20} color="#024552" />
-              <Text style={styles.buttonText} onPress={handleClick}>
-                Add a profile
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.verticalDivider} />
-          <View
-            style={{
-              width: "50%",
-              height: "30%",
-              marginTop: 50,
-              marginLeft: 100,
-            }}
-          >
+          )}
+          {layout.width >= 768 ? (
+            <>
+              <View style={styles.verticalDivider} />
+              <View style={styles.rightContent}>
+                <>
+                  {studentInfoState.ID !== "" && isNewProfileAdded ? (
+                    <CreateProfileScreen
+                      studentID={studentInfoState.ID}
+                      studentName={studentInfoState.name}
+                      studentNumber={studentInfoState.number}
+                      isEdit={false}
+                    />
+                  ) : null}
+                  {studentNumber && (
+                    <Text style={styles.studentNumberText}>
+                      The student number is: {studentNumber}
+                    </Text>
+                  )}
+                </>
+              </View>
+            </>
+          ) : (
             <>
               {studentInfoState.ID !== "" && isNewProfileAdded ? (
-                <CreateProfileScreen
-                  studentID={studentInfoState.ID}
-                  studentName={studentInfoState.name}
-                  studentNumber={studentInfoState.number}
-                  isEdit={false}
-                />
+                <View
+                  style={{
+                    width:
+                      studentInfoState.ID !== "" && isNewProfileAdded
+                        ? "100%"
+                        : "0%",
+                    // backgroundColor: "pink",
+                  }}
+                >
+                  <CreateProfileScreen
+                    studentID={studentInfoState.ID}
+                    studentName={studentInfoState.name}
+                    studentNumber={studentInfoState.number}
+                    isEdit={false}
+                    setIsStudentInfoSelected={setIsStudentInfoSelected}
+                  />
+                </View>
               ) : null}
-              {studentNumber && (
-                <Text style={styles.studentNumberText}>
-                  The student number is: {studentNumber}
-                </Text>
-              )}
             </>
-          </View>
+          )}
         </>
       )}
     </View>
@@ -318,5 +352,11 @@ const styles = StyleSheet.create({
   studentNumberText: {
     fontSize: 18,
     fontFamily: "InterMedium",
+  },
+  rightContent: {
+    width: "50%",
+    height: "30%",
+    marginTop: 50,
+    marginLeft: 100,
   },
 });

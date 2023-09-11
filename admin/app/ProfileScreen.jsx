@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   SectionList,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
@@ -22,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import CreateProfileScreen from "./CreateProfileScreen";
+import CreateResponsiveStyle from "../src/components/CreateResponsiveStyle";
 
 const ProfileScreen = ({
   curStudentID,
@@ -29,6 +31,7 @@ const ProfileScreen = ({
   doesProfileExist,
   studentName,
   studentNumber,
+  setStudentID,
 }) => {
   const {
     studentInfo,
@@ -46,6 +49,8 @@ const ProfileScreen = ({
   const [error, setError] = useState("");
   const [isProfileEdited, setIsProfileEdited] = useState(false);
   const [studentData, setStudentData] = useState(studentInfo);
+  const layout = useWindowDimensions();
+  const styles = responsiveStyle(layout);
 
   const retrieveData = async () => {
     dispatch(fetchProfile(curStudentID))
@@ -76,11 +81,11 @@ const ProfileScreen = ({
 
   const renderText = (infoType, info) => {
     return (
-      <View style={styles.infoLineContainer}>
+      <View style={styles("infoLineContainer")}>
         {infoType !== "" ? (
-          <Text style={styles.infoTypeText}>{infoType}</Text>
+          <Text style={styles("infoTypeText")}>{infoType}</Text>
         ) : null}
-        <Text style={styles.infoInputText}>{info} </Text>
+        <Text style={styles("infoInputText")}>{info} </Text>
       </View>
     );
   };
@@ -105,71 +110,84 @@ const ProfileScreen = ({
     dispatch(setIsNewProfileAdded(true));
     setIsProfileEdited(true);
   };
+
+  const onPressBack = () => {
+    setStudentID("");
+  };
   //console.log(studentInfo.information[0].section);
   return (
     <>
+      {layout.width < 768 && (
+        <TouchableOpacity onPress={onPressBack}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+      )}
       {curStudentID === "" && !fetchProfileLoading && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.emptyText}>
+        <View style={styles("errorContainer")}>
+          <Text style={styles("emptyText")}>
             Click on a student to view profile
           </Text>
         </View>
       )}
       {!doesProfileExist && !isNewProfileAdded ? (
-        <View style={styles.errorContainer}>
+        <View style={styles("errorContainer")}>
           <TouchableOpacity
-            style={styles.buttonContainer}
+            style={styles("buttonContainer")}
             onPress={onPressCreate}
           >
             <Ionicons name="add" size={20} color="#024552" />
-            <Text style={styles.buttonText}>Add Profile</Text>
+            <Text style={styles("buttonText")}>Add Profile</Text>
           </TouchableOpacity>
-          <Text style={styles.emptyText}>
+          <Text style={styles("emptyText")}>
             No profile exists for this student
           </Text>
         </View>
       ) : null}
       {!fetchProfileLoading && fetchProfileError && doesProfileExist ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Error while retrieving data</Text>
-          <TouchableOpacity
-            onPress={retrieveData}
-            style={{ alignSelf: "center", marginTop: 20 }}
-          >
-            <Text style={styles.reloadButtonText}>Reload Data</Text>
-          </TouchableOpacity>
-        </View>
+        <>
+          <View style={styles("errorContainer")}>
+            <Text style={styles("errorText")}>Error while retrieving data</Text>
+            <TouchableOpacity
+              onPress={retrieveData}
+              style={{ alignSelf: "center", marginTop: 20 }}
+            >
+              <Text style={styles("reloadButtonText")}>Reload Data</Text>
+            </TouchableOpacity>
+          </View>
+        </>
       ) : null}
       {fetchProfileLoading ? (
-        <Text style={styles.errorContainer}>Loading student profile....</Text>
+        <Text style={styles("errorContainer")}>
+          Loading student profile....
+        </Text>
       ) : (
         (!fetchProfileError || !doesProfileExist) && (
           <>
             {curStudentID !== "" && !isNewProfileAdded && doesProfileExist && (
               <ScrollView
-                style={styles.container}
+                style={styles("container")}
                 contentContainerStyle={{ paddingBottom: 50 }}
               >
-                <View style={styles.profileContainer}>
-                  <View style={styles.imageAndChildInfoContainer}>
+                <View style={styles("profileContainer")}>
+                  <View style={styles("imageAndChildInfoContainer")}>
                     <View style={{ flexDirection: "row" }}>
                       <Image
                         source={{ uri: imageUrl }}
                         width={100}
                         height={100}
-                        style={styles.image}
+                        style={styles("image")}
                       />
-                      <View style={styles.studentDetailsContainer}>
-                        <Text style={styles.studentName}>
+                      <View style={styles("studentDetailsContainer")}>
+                        <Text style={styles("studentName")}>
                           {studentInfo.name}
                         </Text>
-                        <Text style={styles.studentId}>
+                        <Text style={styles("studentId")}>
                           Student ID: {studentInfo.student_number}
                         </Text>
                         {studentInfo.information
                           ? studentInfo.information[4].section.map(
                               (item, idx) => (
-                                <Text style={styles.studentId}>
+                                <Text style={styles("studentId")}>
                                   Blood group: {item.name}
                                 </Text>
                               )
@@ -179,19 +197,19 @@ const ProfileScreen = ({
                     </View>
                     {/* <TouchableOpacity
                       onPress={onPressEdit}
-                      style={styles.editButtonContainer}
+                      style={styles("editButtonContainer}
                     >
                       <MaterialCommunityIcons
                         name="pencil-outline"
                         size={20}
                         color="#024552"
                       />
-                      <Text style={styles.editButtonText}>Edit Profile</Text>
+                      <Text style={styles("editButtonText}>Edit Profile</Text>
                     </TouchableOpacity> */}
                   </View>
                 </View>
-                <View style={styles.profileContainer}>
-                  <Text style={styles.footerText}>
+                <View style={styles("profileContainer")}>
+                  <Text style={styles("footerText")}>
                     Last Updated {lastUpdated}
                   </Text>
                   {studentInfo.information
@@ -212,8 +230,8 @@ const ProfileScreen = ({
                   <View style={{ flexDirection: "row" }}>
                     {studentInfo.information &&
                       studentInfo.information[2].section.length > 0 && (
-                        <View style={styles.whiteCardContainer}>
-                          <Text style={styles.headerText}>
+                        <View style={styles("whiteCardContainer")}>
+                          <Text style={styles("headerText")}>
                             Allergen information
                           </Text>
                           {studentInfo.information &&
@@ -227,7 +245,7 @@ const ProfileScreen = ({
                                   ) !==
                                   studentInfo.information[2].section.length -
                                     1 ? (
-                                    <View style={styles.divider} />
+                                    <View style={styles("divider")} />
                                   ) : null}
                                 </View>
                               )
@@ -236,8 +254,8 @@ const ProfileScreen = ({
                       )}
                     {studentInfo.information &&
                       studentInfo.information[3].section.length > 0 && (
-                        <View style={[styles.whiteCardContainer]}>
-                          <Text style={styles.headerText}>Medications</Text>
+                        <View style={[styles("whiteCardContainer")]}>
+                          <Text style={styles("headerText")}>Medications</Text>
                           {studentInfo.information &&
                             studentInfo.information[3].section.map(
                               (data, idx) => (
@@ -250,7 +268,7 @@ const ProfileScreen = ({
                                   ) !==
                                   studentInfo.information[3].section.length -
                                     1 ? (
-                                    <View style={styles.divider} />
+                                    <View style={styles("divider")} />
                                   ) : null}
                                 </View>
                               )
@@ -262,7 +280,7 @@ const ProfileScreen = ({
               </ScrollView>
             )}
             {isNewProfileAdded && (
-              <View style={{ width: "80%" }}>
+              <View style={{ width: layout.width >= 768 ? "80%" : "100%" }}>
                 <CreateProfileScreen
                   studentID={curStudentID || studentID}
                   studentName={
@@ -287,166 +305,175 @@ const ProfileScreen = ({
 
 export default ProfileScreen;
 
-const styles = StyleSheet.create({
-  container: {},
-  profileContainer: {
-    paddingVertical: 16,
+const responsiveStyle = CreateResponsiveStyle(
+  {
+    container: {},
+    profileContainer: {
+      paddingVertical: 16,
+    },
+    imageAndChildInfoContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "70%",
+    },
+    studentDetailsContainer: {
+      marginLeft: 10,
+      height: 90,
+      justifyContent: "space-around",
+    },
+    studentName: {
+      fontSize: 20,
+      fontFamily: "InterBold",
+    },
+    studentId: {
+      fontSize: 16,
+      fontFamily: "InterSemiBold",
+    },
+    section: {
+      fontSize: 14,
+      color: colors.navyBlue,
+    },
+    footerText: {
+      fontFamily: "InterMedium",
+      fontSize: 16,
+      marginLeft: 10,
+      marginBottom: 20,
+    },
+    saveButton: {
+      marginLeft: 18,
+    },
+    saveText: {
+      color: colors.buttonText,
+      fontSize: 18,
+      textAlign: "center",
+    },
+    cancelText: {
+      color: colors.red,
+      fontSize: 18,
+    },
+    image: {
+      height: 100,
+      width: 100,
+      borderRadius: 50,
+    },
+    indicator: {
+      alignSelf: "center",
+      justifyContent: "center",
+      flex: 1,
+      borderRadius: 999,
+    },
+    errorContainer: {
+      //flex: 1,
+      //justifyContent: "center",
+      marginBottom: 300,
+      // alignItems: "center",
+    },
+    errorText: {
+      color: colors.red,
+      fontSize: 20,
+    },
+    reloadButtonText: {
+      color: colors.black,
+      fontSize: 16,
+    },
+    whiteCardContainer: {
+      width: 400,
+      paddingBottom: 10,
+      // height: "100%",
+      borderColor: "#D9D9D980",
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingLeft: 20,
+      marginRight: 40,
+      flexWrap: "no-wrap",
+      // height: 300,
+    },
+    infoContainer: {
+      marginLeft: 10,
+    },
+    sectionHeaderText: {
+      color: colors.navyBlue,
+      fontFamily: "InterSemiBold",
+      fontSize: 16,
+      marginBottom: 10,
+    },
+    headerText: {
+      color: "black",
+      fontFamily: "InterSemiBold",
+      fontSize: 20,
+      marginVertical: 12,
+    },
+    infoLineContainer: {
+      flexDirection: "row",
+      marginBottom: 10,
+      width: "100%",
+    },
+    infoTypeText: {
+      fontSize: 16,
+      fontFamily: "InterMedium",
+      marginRight: 10,
+    },
+    infoInputText: {
+      fontSize: 16,
+      fontFamily: "InterMedium",
+      flexWrap: "wrap",
+    },
+    healthInfoContainer: {
+      flexDirection: "row",
+    },
+    divider: {
+      borderColor: "#23342C",
+      width: "95%",
+      marginRight: 10,
+      marginBottom: 14,
+      alignSelf: "center",
+      borderWidth: 0.7,
+    },
+    emptyText: {
+      fontFamily: "InterSemiBold",
+      fontSize: 20,
+      color: "#99B8BE",
+      alignSelf: "center",
+      textAlignVertical: "center",
+    },
+    editButtonContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+      paddingHorizontal: 5,
+      backgroundColor: "#99B8BE99",
+      width: 120,
+      height: 40,
+      borderRadius: 5,
+    },
+    editButtonText: {
+      color: "#024552",
+      fontSize: 14,
+      fontFamily: "InterMedium",
+      textAlign: "right",
+    },
+    buttonContainer: {
+      marginVertical: 20,
+      backgroundColor: "#99B8BE99",
+      height: 40,
+      width: 132,
+      borderRadius: 10,
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
+    },
+    buttonText: {
+      alignSelf: "center",
+      color: "#024552",
+      fontWeight: 600,
+    },
   },
-  imageAndChildInfoContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "70%",
-  },
-  studentDetailsContainer: {
-    marginLeft: 10,
-    height: 90,
-    justifyContent: "space-around",
-  },
-  studentName: {
-    fontSize: 20,
-    fontFamily: "InterBold",
-  },
-  studentId: {
-    fontSize: 16,
-    fontFamily: "InterSemiBold",
-  },
-  section: {
-    fontSize: 14,
-    color: colors.navyBlue,
-  },
-  footerText: {
-    fontFamily: "InterMedium",
-    fontSize: 16,
-    marginLeft: 10,
-    marginBottom: 20,
-  },
-  saveButton: {
-    marginLeft: 18,
-  },
-  saveText: {
-    color: colors.buttonText,
-    fontSize: 18,
-    textAlign: "center",
-  },
-  cancelText: {
-    color: colors.red,
-    fontSize: 18,
-  },
-  image: {
-    height: 100,
-    width: 100,
-    borderRadius: 50,
-  },
-  indicator: {
-    alignSelf: "center",
-    justifyContent: "center",
-    flex: 1,
-    borderRadius: 999,
-  },
-  errorContainer: {
-    //flex: 1,
-    //justifyContent: "center",
-    marginBottom: 300,
-    // alignItems: "center",
-  },
-  errorText: {
-    color: colors.red,
-    fontSize: 20,
-  },
-  reloadButtonText: {
-    color: colors.black,
-    fontSize: 16,
-  },
-  whiteCardContainer: {
-    width: 400,
-    paddingBottom: 10,
-    // height: "100%",
-    borderColor: "#D9D9D980",
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 20,
-    marginRight: 40,
-    flexWrap: "no-wrap",
-    // height: 300,
-  },
-  infoContainer: {
-    marginLeft: 10,
-  },
-  sectionHeaderText: {
-    color: colors.navyBlue,
-    fontFamily: "InterSemiBold",
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  headerText: {
-    color: "black",
-    fontFamily: "InterSemiBold",
-    fontSize: 20,
-    marginVertical: 12,
-  },
-  infoLineContainer: {
-    flexDirection: "row",
-    marginBottom: 10,
-    width: "100%",
-  },
-  infoTypeText: {
-    fontSize: 16,
-    fontFamily: "InterMedium",
-    marginRight: 10,
-  },
-  infoInputText: {
-    fontSize: 16,
-    fontFamily: "InterMedium",
-    flexWrap: "wrap",
-  },
-  healthInfoContainer: {
-    flexDirection: "row",
-  },
-  divider: {
-    borderColor: "#23342C",
-    width: "95%",
-    marginRight: 10,
-    marginBottom: 14,
-    alignSelf: "center",
-    borderWidth: 0.7,
-  },
-  emptyText: {
-    fontFamily: "InterSemiBold",
-    fontSize: 20,
-    color: "#99B8BE",
-    alignSelf: "center",
-    textAlignVertical: "center",
-  },
-  editButtonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 5,
-    backgroundColor: "#99B8BE99",
-    width: 120,
-    height: 40,
-    borderRadius: 5,
-  },
-  editButtonText: {
-    color: "#024552",
-    fontSize: 14,
-    fontFamily: "InterMedium",
-    textAlign: "right",
-  },
-  buttonContainer: {
-    marginVertical: 20,
-    backgroundColor: "#99B8BE99",
-    height: 40,
-    width: 132,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  buttonText: {
-    alignSelf: "center",
-    color: "#024552",
-    fontWeight: 600,
-  },
-});
+  {
+    errorContainer: {
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  }
+);

@@ -26,7 +26,6 @@ const ProfileScreen = ({ curStudentID, imageUrl, setStudentID }) => {
     studentInfo,
     lastUpdated,
     studentID,
-
     fetchProfileLoading,
     fetchProfileError,
   } = useSelector((state) => state.studentProfile);

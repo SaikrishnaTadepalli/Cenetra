@@ -44,7 +44,7 @@ const ProfileCard = ({ sectionHeader, data, title }) => {
         <View style={{ flexDirection: layout.width >= 768 ? "row" : "column" }}>
           {data.map((item, idx) => (
             <View key={`profile-info${idx}`} style={styles.cardContainer}>
-              <Text style={styles.headerText}>{item.title} information</Text>
+              <Text style={styles.headerText}>{item.title}</Text>
               {renderText("Name:", item.name)}
               {renderText("Relationship:", item.relationship)}
               {renderText("Phone Number:", item.phoneNumber)}

@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SectionList,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
@@ -23,6 +24,7 @@ import { fetchTeachers } from "../src/redux/teacherSlice";
 
 const NoticesScreen = () => {
   const dispatch = useDispatch();
+  const layout = useWindowDimensions();
   // const router = useRouter();
   const state = useSelector((state) => state.notices);
   const {
@@ -35,6 +37,8 @@ const NoticesScreen = () => {
   const curDate = moment().utc().format("DD MMMM YYYY");
   const [date, setDate] = useState("");
   const [isOldNoticeSelected, setIsOldNoticeSelected] = useState(false);
+  const [isNoticeListSelected, setIsNoticeListSelected] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
   const [noticeID, setNoticeID] = useState("");
   const isDisabled = false;
   const [notices, setNotices] = useState([]);
@@ -59,6 +63,7 @@ const NoticesScreen = () => {
   const onClickNotice = (id) => {
     setIsOldNoticeSelected(true);
     setNoticeID(id);
+    setIsNoticeListSelected(false);
   };
 
   const formatDate = (date) => {
@@ -123,7 +128,7 @@ const NoticesScreen = () => {
     if (idx !== -1) {
       selected.splice(idx, 1);
       setSelectedTeachers(selected);
-      setStudentID("");
+      //setStudentID("");
     } else {
       selected.push(input);
       setSelectedTeachers(selected);
@@ -222,20 +227,23 @@ const NoticesScreen = () => {
         <Text style={styles.subHeaderText}>
           All notices you posted will be shown here.
         </Text>
-        <View style={{ flexDirection: "row", height: "100%" }}>
+        <View
+          style={{
+            flexDirection: layout.width >= 768 && "row",
+            height: "100%",
+          }}
+        >
           <>
             {fetchNoticesPending ? (
               <View
-                style={
-                  {
-                    //flex: 3,
-                    // width: "50%",
-                    // marginLeft: 100,
-                    // marginLeft: "-15%",
-                    // marginTop: "-5%",
-                    //flexDirection: "row"
-                  }
-                }
+                style={{
+                  //flex: 3,
+                  // width: "50%",
+                  // marginLeft: 100,
+                  // marginLeft: "-15%",
+                  // marginTop: "-5%",
+                  flexDirection: "row",
+                }}
               >
                 <Text>Retrieving data...</Text>
               </View>
@@ -249,78 +257,111 @@ const NoticesScreen = () => {
                   onPressDelete={onPressDelete}
                   dropdownText="Select class to view"
                 />
-                <View style={{ height: "100%" }}>
-                  <ScrollView
-                    contentContainerStyle={styles.listView}
-                    nestedScrollEnabled={true}
-                  >
-                    {selectedTeachers &&
-                      selectedTeachers.map((teacher, idx) => (
-                        <View key={`class-list=${idx}`}>
-                          <Text style={styles.teacherName}>
-                            {teacher.value}
-                          </Text>
-                          {teacher.notices.map((notice, idx) => (
-                            <View key={`notice-id-${idx}`}>
-                              {renderItem(notice)}
-                            </View>
-                          ))}
-                        </View>
-                      ))}
-                  </ScrollView>
+                {isNoticeListSelected && (
+                  <View style={{ height: "100%" }}>
+                    <ScrollView
+                      contentContainerStyle={styles.listView}
+                      nestedScrollEnabled={true}
+                    >
+                      {selectedTeachers &&
+                        selectedTeachers.map((teacher, idx) => (
+                          <View key={`class-list=${idx}`}>
+                            <Text style={styles.teacherName}>
+                              {teacher.value}
+                            </Text>
+                            {teacher.notices.map((notice, idx) => (
+                              <View key={`notice-id-${idx}`}>
+                                {renderItem(notice)}
+                              </View>
+                            ))}
+                          </View>
+                        ))}
+                    </ScrollView>
+                  </View>
+                )}
+              </View>
+            ) : (
+              error !== "" && (
+                <View>
+                  <Text>{error}</Text>
+                </View>
+              )
+            )}
+            {layout.width >= 768 ? (
+              <View
+                style={{
+                  // flex: 3,
+                  width: "50%",
+                  marginLeft: fetchNoticesPending ? "20%" : "8%",
+                  height: "100%",
+                  marginTop: "-5%",
+                  flexDirection: "row",
+                  //backgroundColor: "pink",
+                }}
+              >
+                <View style={styles.verticalDivider} />
+                <View style={{ flexDirection: "column", width: "100%" }}>
+                  {isOldNoticeSelected ? (
+                    <NoticeScreen
+                      noticeID={noticeID}
+                      setNoticeID={setNoticeID}
+                      setIsOldNoticeSelected={setIsOldNoticeSelected}
+                    />
+                  ) : true ? (
+                    <CreateNoticeScreen
+                      date={date}
+                      noticeID={noticeID}
+                      setIsOldNoticeSelected={setIsOldNoticeSelected}
+                    />
+                  ) : (
+                    notices && (
+                      <View
+                        style={{
+                          // flex: 1,
+                          width: "100%",
+                          height: "100%",
+                          alignSelf: "center",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          alignContent: "center",
+                        }}
+                      >
+                        <Text style={styles.emptyStateMessage}>
+                          Select a class to view a notice.
+                        </Text>
+                      </View>
+                    )
+                  )}
                 </View>
               </View>
             ) : (
-              <View>
-                <Text>{error}</Text>
-              </View>
-            )}
-            <View
-              style={{
-                // flex: 3,
-                width: "50%",
-                marginLeft: fetchNoticesPending ? "20%" : "8%",
-                height: "100%",
-                marginTop: "-5%",
-                flexDirection: "row",
-                //backgroundColor: "pink",
-              }}
-            >
-              <View style={styles.verticalDivider} />
-              <View style={{ flexDirection: "column", width: "100%" }}>
+              <>
                 {isOldNoticeSelected ? (
-                  <NoticeScreen
-                    noticeID={noticeID}
-                    setNoticeID={setNoticeID}
-                    setIsOldNoticeSelected={setIsOldNoticeSelected}
-                  />
+                  <View style={{ width: isOldNoticeSelected ? "100%" : "0%" }}>
+                    <NoticeScreen
+                      noticeID={noticeID}
+                      setNoticeID={setNoticeID}
+                      setIsOldNoticeSelected={setIsOldNoticeSelected}
+                      setIsNoticeListSelected={setIsNoticeListSelected}
+                    />
+                  </View>
                 ) : true ? (
-                  <CreateNoticeScreen
-                    date={date}
-                    noticeID={noticeID}
-                    setIsOldNoticeSelected={setIsOldNoticeSelected}
-                  />
-                ) : (
-                  notices && (
-                    <View
-                      style={{
-                        // flex: 1,
-                        width: "100%",
-                        height: "100%",
-                        alignSelf: "center",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        alignContent: "center",
-                      }}
-                    >
-                      <Text style={styles.emptyStateMessage}>
-                        Select a class to view a notice.
-                      </Text>
-                    </View>
-                  )
-                )}
-              </View>
-            </View>
+                  <View
+                    style={{
+                      width: isNewNoticeAdded || isSaved ? "100%" : "0%",
+                    }}
+                  >
+                    <CreateNoticeScreen
+                      date={date}
+                      noticeID={noticeID}
+                      setIsOldNoticeSelected={setIsOldNoticeSelected}
+                      setIsSaved={setIsSaved}
+                      isSaved={isSaved}
+                    />
+                  </View>
+                ) : null}
+              </>
+            )}
           </>
         </View>
       </View>
@@ -334,6 +375,7 @@ const styles = StyleSheet.create({
   container: {
     // backgroundColor: "pink",
     // width: "100%",
+    // flexDirection: "column",
     marginLeft: 20,
     marginTop: 20,
     paddingHorizontal: 10,

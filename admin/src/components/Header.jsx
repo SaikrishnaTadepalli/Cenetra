@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useRouter } from "expo-router";
@@ -11,6 +17,7 @@ import { setIsNewTeacherAdded } from "../redux/teacherSlice";
 import { setIsNewStudentAdded } from "../redux/studentSlice";
 
 const Header = () => {
+  const layout = useWindowDimensions();
   const { isLoggedIn } = useSelector((state) => state.auth);
   const pages = ["Home", "Daily Logs", "Notices", "Create"];
   const screens = [
@@ -41,43 +48,55 @@ const Header = () => {
   return (
     <>
       {loggedIn === "true" ? (
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Curiouss Kids</Text>
-            <>
-              {pages.map((page, idx) => (
-                <View
-                  key={`page-${idx}`}
-                  style={
-                    page === activeButton
-                      ? [
-                          styles.optionsButtonContainer,
-                          {
-                            borderBottomColor: "black",
-                            borderBottomWidth: 2,
-                          },
-                        ]
-                      : styles.optionsButtonContainer
-                  }
-                >
-                  <TouchableOpacity onPress={() => handleClick(idx, page)}>
-                    <Text style={styles.optionsText}>{page}</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </>
-            <TouchableOpacity
-              style={styles.logOutButtonContainer}
-              onPress={handleLogOut}
-            >
-              <Text style={styles.logOutText}>Log out</Text>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{ flexDirection: "row", alignSelf: "flex-start" }}
-          ></View>
+        // <View style={[styles.container, { width: layout.width }]}>
+        <View
+          style={[
+            styles.header,
+            { width: layout.width >= 768 ? "100%" : "150%" },
+          ]}
+        >
+          <Text
+            style={[
+              styles.headerText,
+              { fontSize: layout.width >= 768 ? 26 : 0 },
+            ]}
+          >
+            Curiouss Kids
+          </Text>
+          <>
+            {pages.map((page, idx) => (
+              <View
+                key={`page-${idx}`}
+                style={
+                  page === activeButton
+                    ? [
+                        styles.optionsButtonContainer,
+                        {
+                          borderBottomColor: "black",
+                          borderBottomWidth: 2,
+                        },
+                      ]
+                    : styles.optionsButtonContainer
+                }
+              >
+                <TouchableOpacity onPress={() => handleClick(idx, page)}>
+                  <Text style={styles.optionsText}>{page}</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </>
+          <TouchableOpacity
+            style={styles.logOutButtonContainer}
+            onPress={handleLogOut}
+          >
+            <Text style={styles.logOutText}>Log out</Text>
+          </TouchableOpacity>
         </View>
-      ) : null}
+      ) : //   {/* <View
+      //     style={{ flexDirection: "row", alignSelf: "flex-start" }}
+      //   ></View> */}
+      // // </View>
+      null}
     </>
   );
 };
@@ -86,12 +105,12 @@ export default Header;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: "blue",
     alignItems: "center",
+    width: "100%",
   },
   header: {
     height: 60,
-    width: "100%",
     backgroundColor: "#E8A2A84D",
     flexDirection: "row",
     alignItems: "center",
@@ -111,7 +130,7 @@ const styles = StyleSheet.create({
   },
   logOutButtonContainer: {
     display: "flex",
-    flexDirection: "column",
+    //flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     width: 110,
