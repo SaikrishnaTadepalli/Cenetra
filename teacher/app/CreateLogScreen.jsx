@@ -24,6 +24,7 @@ import MultiSelectQuestion from "../src/components/MultiSelectQuestion";
 import MultipleChoiceQuestion from "../src/components/MultipleChoiceQuestion";
 import OpenEndedQuestion from "../src/components/OpenEndedQuestion";
 import { IconButton } from "react-native-paper";
+import ImageUploadFromMobile from "../src/components/ImageUploadFromMobile";
 
 const CreateLogScreen = ({
   date,
@@ -437,9 +438,15 @@ const CreateLogScreen = ({
                   <View style={{ flexDirection: "row" }}>{renderStars()}</View>
                 </View> */}
                 </View>
-                <View style={styles("dragAndDropContainer")}>
-                  <DragAndDrop studentID={studentID} />
-                </View>
+                {layout.width >= 768 ? (
+                  <View style={styles("dragAndDropContainer")}>
+                    <DragAndDrop studentID={studentID} />
+                  </View>
+                ) : (
+                  <View style={styles("dragAndDropContainer")}>
+                    <ImageUploadFromMobile studentID={studentID} />
+                  </View>
+                )}
                 <View style={styles("listView")}>
                   <View style={{ marginBottom: 20, width: "100%" }}>
                     {radioQuestionState.map((question, idx) => (

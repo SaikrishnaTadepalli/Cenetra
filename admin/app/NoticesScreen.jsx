@@ -63,7 +63,9 @@ const NoticesScreen = () => {
   const onClickNotice = (id) => {
     setIsOldNoticeSelected(true);
     setNoticeID(id);
-    setIsNoticeListSelected(false);
+    if (layout.width < 768) {
+      setIsNoticeListSelected(false);
+    }
   };
 
   const formatDate = (date) => {
@@ -312,6 +314,8 @@ const NoticesScreen = () => {
                       date={date}
                       noticeID={noticeID}
                       setIsOldNoticeSelected={setIsOldNoticeSelected}
+                      setIsSaved={setIsSaved}
+                      isSaved={isSaved}
                     />
                   ) : (
                     notices && (

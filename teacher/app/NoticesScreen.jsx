@@ -276,6 +276,8 @@ const NoticesScreen = () => {
                       noticeID={noticeID}
                       setNoticeID={setNoticeID}
                       setIsOldNoticeSelected={setIsOldNoticeSelected}
+                      isSaved={isSaved}
+                      setIsSaved={setIsSaved}
                     />
                   ) : (
                     notices &&

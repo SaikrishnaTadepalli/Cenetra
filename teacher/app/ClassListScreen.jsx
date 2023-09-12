@@ -149,6 +149,8 @@ const ClassListScreen = () => {
                     setIsOldLogSelected={setIsOldLogSelected}
                     logID={logID}
                     setLogID={setLogID}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
                   />
                 )}
               </View>
