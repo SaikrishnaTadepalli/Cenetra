@@ -1,11 +1,13 @@
 module.exports = {
   expo: {
-    name: "Cenetra",
+    name: "Curiouss Kids",
     slug: "cenetra",
     description: "Mobile first daycare application",
-    version: "1.1.8",
+    version: "1.2.2",
+    // current android: 1.0.9
+    // current ios 1.2.2
     orientation: "portrait",
-    icon: "./assets/images/SchoolLogo.jpeg",
+    icon: "./assets/images/SchoolLogo.png",
     userInterfaceStyle: "light",
     extra: {
       eas: {
@@ -24,11 +26,11 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.cenetra.cenetra",
-      buildNumber: "20",
+      buildNumber: "24",
     },
     android: {
       package: "com.cenetra.cenetra",
-      versionCode: 6,
+      versionCode: 10,
       splash: {
         image: "./assets/images/LogoSplashScreen.png",
         resizeMode: "contain",

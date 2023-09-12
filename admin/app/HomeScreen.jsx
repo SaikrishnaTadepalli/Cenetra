@@ -4,12 +4,14 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import CreateResponsiveStyle from "../src/components/CreateResponsiveStyle";
 import colors from "../src/constants/Colors";
 import ProfileScreen from "./ProfileScreen";
 import {
@@ -30,6 +32,8 @@ import { fetchTeachers } from "../src/redux/teacherSlice";
 import TeacherProfileScreen from "./TeacherProfileScreen";
 
 const HomeScreen = () => {
+  const layout = useWindowDimensions();
+  const styles = responsiveStyle(layout);
   const { loginLoading } = useSelector((state) => state.auth);
   const { fetchClassesSuccessful } = useSelector((state) => state.class);
   const { isNewProfileAdded } = useSelector((state) => state.studentProfile);
@@ -294,24 +298,24 @@ const HomeScreen = () => {
 
   useEffect(() => onPressSelectStudents(), []);
   return (
-    <View style={styles.container}>
+    <View style={styles("container")}>
       {loginLoading ? (
-        <Text style={styles.text}>Loading details...</Text>
+        <Text style={styles("text")}>Loading details...</Text>
       ) : (
         <>
-          <Text style={styles.headerText}>Class List</Text>
+          <Text style={styles("headerText")}>Class List</Text>
           <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <TouchableOpacity
-              style={[styles.createButtonContainer, { marginRight: 10 }]}
+              style={[styles("createButtonContainer"), { marginRight: 10 }]}
               onPress={onPressSelectStudents}
             >
-              <Text style={styles.createButtonText}>View all students</Text>
+              <Text style={styles("createButtonText")}>View all students</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.createButtonContainer}
+              style={styles("createButtonContainer")}
               onPress={onPressSelectTeachers}
             >
-              <Text style={styles.createButtonText}>View all teachers</Text>
+              <Text style={styles("createButtonText")}>View all teachers</Text>
             </TouchableOpacity>
           </View>
           <View style={{ marginBottom: 20 }}>
@@ -342,14 +346,14 @@ const HomeScreen = () => {
           )}
           {/* <TouchableOpacity
             onPress={onPressCreate}
-            style={styles.createButtonContainer}
+            style={styles("createButtonContainer}
           >
             <MaterialCommunityIcons
               name="pencil-outline"
               size={20}
               color="#024552"
             />
-            <Text style={styles.createButtonText}>Create a class</Text>
+            <Text style={styles("createButtonText}>Create a class</Text>
           </TouchableOpacity> */}
           <View
             style={{
@@ -360,7 +364,7 @@ const HomeScreen = () => {
           >
             {isSelectStudentsSelected ? (
               <ScrollView
-                // contentContainerStyle={styles.listView}
+                // contentContainerStyle={styles("listView}
                 nestedScrollEnabled={true}
               >
                 {selectedClasses &&
@@ -373,23 +377,25 @@ const HomeScreen = () => {
                           alignItems: "center",
                         }}
                       >
-                        <Text style={styles.className}>{cls.value}</Text>
+                        <Text style={styles("className")}>{cls.value}</Text>
                         <TouchableOpacity
                           onPress={() => onPressEdit(cls)}
-                          style={styles.editButtonContainer}
+                          style={styles("editButtonContainer")}
                         >
                           <MaterialCommunityIcons
                             name="pencil-outline"
                             size={20}
                             color="#024552"
                           />
-                          <Text style={styles.editButtonText}>Edit Class</Text>
+                          <Text style={styles("editButtonText")}>
+                            Edit Class
+                          </Text>
                         </TouchableOpacity>
                       </View>
                       {cls.students.map((student, idx) => (
                         <TouchableOpacity
                           style={[
-                            styles.cardContainer,
+                            styles("cardContainer"),
                             {
                               backgroundColor:
                                 student._id === studentID
@@ -408,7 +414,7 @@ const HomeScreen = () => {
                         >
                           <Text
                             style={[
-                              styles.nameText,
+                              styles("nameText"),
                               {
                                 color:
                                   student._id === studentID
@@ -426,7 +432,7 @@ const HomeScreen = () => {
               </ScrollView>
             ) : (
               <ScrollView
-                //contentContainerStyle={styles.listView}
+                //contentContainerStyle={styles("listView}
                 nestedScrollEnabled={true}
               >
                 {selectedTeachers &&
@@ -434,7 +440,7 @@ const HomeScreen = () => {
                     <View key={`class-list=${idx}`}>
                       <TouchableOpacity
                         style={[
-                          styles.cardContainer,
+                          styles("cardContainer"),
                           {
                             backgroundColor:
                               teacher.key === teacherID
@@ -453,7 +459,7 @@ const HomeScreen = () => {
                       >
                         <Text
                           style={[
-                            styles.nameText,
+                            styles("nameText"),
                             {
                               color:
                                 teacher.key === teacherID
@@ -470,59 +476,90 @@ const HomeScreen = () => {
               </ScrollView>
             )}
 
-            <View
-              style={{
-                // justifyContent: "space-between",
-                flexDirection: "row",
-                // backgroundColor: "yellow",
-                width: "80%",
-                marginTop: "-10%",
-                paddingHorizontal: 100,
-              }}
-            >
-              <View style={styles.verticalDivider} />
-              {/* {error === "500" ? (
+            {layout.width >= 768 ? (
+              <View style={styles("rightContent")}>
+                <View style={styles("verticalDivider")} />
+                {/* {error === "500" ? (
                 <>
                   {/* {!isNewProfileAdded && (
                     <TouchableOpacity
-                      style={styles.createButtonContainer}
+                      style={styles("createButtonContainer}
                       onPress={handleClick}
                     >
                       <Ionicons name="add" size={20} color="#024552" />
                       <Text
-                        style={styles.createButtonText}
+                        style={styles("createButtonText}
                         onPress={onPressCreate}
                       >
                         Add profile
                       </Text>
                     </TouchableOpacity>
                   )}
-                  <View style={styles.errorContainer}>
-                    <Text style={styles.emptyText}>
+                  <View style={styles("errorContainer}>
+                    <Text style={styles("emptyText}>
                       No profile exists for this student
                     </Text>
                   </View> */}
-              {/* </>
+                {/* </>
               ) :  */}
-              <View style={{ paddingLeft: 60, width: "100%" }}>
+                <View style={{ paddingLeft: 60, width: "100%" }}>
+                  {studentID ? (
+                    <ProfileScreen
+                      curStudentID={studentID}
+                      imageUrl={imageUrl}
+                      doesProfileExist={error === "500" ? false : true}
+                      studentName={studentName}
+                      studentNumber={studentNumber}
+                    />
+                  ) : null}
+                  {teacherID ? (
+                    <TeacherProfileScreen
+                      teacherID={teacherID}
+                      teacherInfo={teacherProfileInfo}
+                      // imageUrl={imageUrl}
+                      // doesProfileExist={error === "500" ? false : true}
+                      // studentName={studentName}
+                      // studentNumber={studentNumber}
+                    />
+                  ) : null}
+                  {selectedClassInfo !== {} ? (
+                    <CreateClassScreen
+                      classInfo={selectedClassInfo}
+                      // teacherInfo={teacherProfileInfo}
+                      // imageUrl={imageUrl}
+                      // doesProfileExist={error === "500" ? false : true}
+                      // studentName={studentName}
+                      // studentNumber={studentNumber}
+                    />
+                  ) : null}
+                </View>
+              </View>
+            ) : (
+              <>
                 {studentID ? (
-                  <ProfileScreen
-                    curStudentID={studentID}
-                    imageUrl={imageUrl}
-                    doesProfileExist={error === "500" ? false : true}
-                    studentName={studentName}
-                    studentNumber={studentNumber}
-                  />
+                  <View style={{ width: studentID ? "100%" : "0%" }}>
+                    <ProfileScreen
+                      curStudentID={studentID}
+                      imageUrl={imageUrl}
+                      doesProfileExist={error === "500" ? false : true}
+                      studentName={studentName}
+                      studentNumber={studentNumber}
+                      setStudentID={setStudentID}
+                    />
+                  </View>
                 ) : null}
                 {teacherID ? (
-                  <TeacherProfileScreen
-                    teacherID={teacherID}
-                    teacherInfo={teacherProfileInfo}
-                    // imageUrl={imageUrl}
-                    // doesProfileExist={error === "500" ? false : true}
-                    // studentName={studentName}
-                    // studentNumber={studentNumber}
-                  />
+                  <View style={{ width: teacherID ? "100%" : "0%" }}>
+                    <TeacherProfileScreen
+                      teacherID={teacherID}
+                      teacherInfo={teacherProfileInfo}
+                      setTeacherID={setTeacherID}
+                      // imageUrl={imageUrl}
+                      // doesProfileExist={error === "500" ? false : true}
+                      // studentName={studentName}
+                      // studentNumber={studentNumber}
+                    />
+                  </View>
                 ) : null}
                 {selectedClassInfo !== {} ? (
                   <CreateClassScreen
@@ -534,8 +571,8 @@ const HomeScreen = () => {
                     // studentNumber={studentNumber}
                   />
                 ) : null}
-              </View>
-            </View>
+              </>
+            )}
             {/* <View style={{ width: "50%" }}>
               {isNewProfileAdded && (
                 <CreateProfileScreen studentID={studentID} isEdit={false} />
@@ -550,91 +587,109 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    alignContent: "center",
-    height: "100%",
-    paddingLeft: 30,
-    //backgroundColor: "red",
+const responsiveStyle = CreateResponsiveStyle(
+  {
+    container: {
+      width: "100%",
+      alignContent: "center",
+      height: "100%",
+      paddingLeft: 30,
+      //backgroundColor: "red",
+    },
+    headerText: {
+      fontSize: 30,
+      fontFamily: "InterBold",
+      marginBottom: 34,
+      marginTop: 40,
+    },
+    listView: {
+      width: "30%",
+      backgroundColor: "pink",
+      //marginLeft: 30,
+      //flex: 1,
+    },
+    cardContainer: {
+      width: 300,
+      height: 50,
+      borderRadius: 4,
+      justifyContent: "center",
+      marginBottom: 10,
+      paddingLeft: 10,
+    },
+    nameText: {
+      fontFamily: "InterMedium",
+      fontSize: 16,
+    },
+    className: {
+      fontSize: 16,
+      fontFamily: "InterSemiBold",
+      marginVertical: 20,
+    },
+    verticalDivider: {
+      borderLeftColor: "#D9D9D980",
+      borderLeftWidth: 1,
+      height: "100%",
+    },
+    emptyText: {
+      fontFamily: "InterSemiBold",
+      fontSize: 20,
+      color: "#99B8BE",
+    },
+    errorContainer: {
+      height: "100%",
+      justifyContent: "center",
+      marginBottom: 300,
+      alignItems: "center",
+    },
+    createButtonContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+      paddingHorizontal: 5,
+      marginTop: 20,
+      // marginLeft: 50,
+      backgroundColor: "#99B8BE99",
+      width: 150,
+      height: 40,
+      borderRadius: 5,
+    },
+    createButtonText: {
+      color: "#024552",
+      fontSize: 15,
+      fontFamily: "InterSemiBold",
+      textAlign: "center",
+    },
+    editButtonContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+      paddingHorizontal: 5,
+      backgroundColor: "#99B8BE99",
+      width: 120,
+      height: 30,
+      borderRadius: 5,
+    },
+    editButtonText: {
+      color: "#024552",
+      fontSize: 14,
+      fontFamily: "InterMedium",
+      textAlign: "right",
+    },
+    rightContent: {
+      // justifyContent: "space-between",
+      flexDirection: "row",
+      // backgroundColor: "yellow",
+      width: "80%",
+      marginTop: "-10%",
+      paddingHorizontal: 100,
+    },
   },
-  headerText: {
-    fontSize: 30,
-    fontFamily: "InterBold",
-    marginBottom: 34,
-    marginTop: 40,
-  },
-  listView: {
-    width: "30%",
-    backgroundColor: "pink",
-    //marginLeft: 30,
-    //flex: 1,
-  },
-  cardContainer: {
-    width: 300,
-    height: 50,
-    borderRadius: 4,
-    justifyContent: "center",
-    marginBottom: 10,
-    paddingLeft: 10,
-  },
-  nameText: {
-    fontFamily: "InterMedium",
-    fontSize: 16,
-  },
-  className: {
-    fontSize: 16,
-    fontFamily: "InterSemiBold",
-    marginVertical: 20,
-  },
-  verticalDivider: {
-    borderLeftColor: "#D9D9D980",
-    borderLeftWidth: 1,
-    height: "100%",
-  },
-  emptyText: {
-    fontFamily: "InterSemiBold",
-    fontSize: 20,
-    color: "#99B8BE",
-  },
-  errorContainer: {
-    height: "100%",
-    justifyContent: "center",
-    marginBottom: 300,
-    alignItems: "center",
-  },
-  createButtonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 5,
-    marginTop: 20,
-    // marginLeft: 50,
-    backgroundColor: "#99B8BE99",
-    width: 150,
-    height: 40,
-    borderRadius: 5,
-  },
-  createButtonText: {
-    color: "#024552",
-    fontSize: 15,
-    fontFamily: "InterSemiBold",
-    textAlign: "center",
-  },
-  editButtonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 5,
-    backgroundColor: "#99B8BE99",
-    width: 120,
-    height: 30,
-    borderRadius: 5,
-  },
-  editButtonText: {
-    color: "#024552",
-    fontSize: 14,
-    fontFamily: "InterMedium",
-    textAlign: "right",
-  },
-});
+  {
+    container: {
+      width: "100%",
+    },
+    listView: {
+      width: "100%",
+    },
+  }
+);

@@ -4,25 +4,33 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 import React from "react";
 import Colors from "../constants/Colors";
 
-const ProfileCard = ({ sectionHeader, data, isApproval }) => {
+const ProfileCard = ({ sectionHeader, data, title }) => {
+  const layout = useWindowDimensions();
+  const renderButton = (infoType, info) => {
+    return (
+      <View style={styles.infoLineContainer}>
+        {infoType !== "" ? (
+          <Text style={styles.infoTypeText}>{infoType}</Text>
+        ) : null}
+        <TouchableOpacity>
+          <Text style={styles.infoInputText}>{info} </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   const renderText = (infoType, info) => {
     return (
       <View style={styles.infoLineContainer}>
         {infoType !== "" ? (
           <Text style={styles.infoTypeText}>{infoType}</Text>
         ) : null}
-        <Text
-          style={[
-            styles.infoInputText,
-            { width: infoType === "Home Address:" ? "60%" : "" },
-          ]}
-        >
-          {info}
-        </Text>
+        <Text style={styles.infoInputText}>{info} </Text>
       </View>
     );
   };
@@ -33,47 +41,19 @@ const ProfileCard = ({ sectionHeader, data, isApproval }) => {
       sectionHeader === "EMERGENCY CONTACTS"
     ) {
       return (
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: layout.width >= 768 ? "row" : "column" }}>
           {data.map((item, idx) => (
-            <View
-              key={`profile-info${idx}`}
-              style={!isApproval ? styles.cardContainer : null}
-            >
-              {!isApproval ? (
-                <Text style={styles.headerText}>{item.title}</Text>
-              ) : null}
+            <View key={`profile-info${idx}`} style={styles.cardContainer}>
+              <Text style={styles.headerText}>{item.title}</Text>
               {renderText("Name:", item.name)}
               {renderText("Relationship:", item.relationship)}
               {renderText("Phone Number:", item.phoneNumber)}
               {renderText("Email:", item.email)}
-              {renderText("Home Address:", item.address)}
+              {renderText("Address:", item.address)}
             </View>
           ))}
         </View>
       );
-    } else if (sectionHeader === "ALLERGIES") {
-      return data.map((item, idx) => (
-        <View key={`profile-info${idx}`}>
-          {renderText("Item:", item.name)}
-          {renderText("Severity:", item.severity)}
-          {data.indexOf(item) !== data.length - 1 ? (
-            <View style={styles.divider} />
-          ) : null}
-        </View>
-      ));
-    } else if (sectionHeader === "MEDICATIONS") {
-      return data.map((item, idx) => (
-        <View key={`profile-info${idx}`}>
-          {renderText("Name:", item.name)}
-          {renderText("Dosage:", item.dosage)}
-          {renderText("Frequency:", item.frequency)}
-          {data.indexOf(item) !== data.length - 1 ? (
-            <View style={styles.divider} />
-          ) : null}
-        </View>
-      ));
-    } else if (sectionHeader === "BLOOD GROUP") {
-      return <View>{renderText("", data.name)}</View>;
     }
   };
 
@@ -91,8 +71,7 @@ const styles = StyleSheet.create({
     // width: "100%",
     backgroundColor: "#D9D9D94D",
     width: 400,
-    paddingBottom: 20,
-    // height: 250,
+    height: 250,
     marginBottom: 40,
     borderRadius: 5,
     paddingLeft: 20,
@@ -122,6 +101,8 @@ const styles = StyleSheet.create({
     fontFamily: "InterSemiBold",
     fontSize: 20,
     marginVertical: 12,
+    width: "80%",
+    flexWrap: "wrap",
   },
   infoLineContainer: {
     flexDirection: "row",

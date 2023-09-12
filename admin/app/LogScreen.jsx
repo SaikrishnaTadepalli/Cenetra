@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +26,7 @@ const LogScreen = ({
   setLogID,
   studentID,
 }) => {
+  const layout = useWindowDimensions();
   const { logs, editLogsSuccessful } = useSelector((state) => state.log);
   const findLogById = (id) => {
     let foundLog = null;
@@ -80,7 +82,14 @@ const LogScreen = ({
   }, [editLogsSuccessful]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          width: layout.width,
+        },
+      ]}
+    >
       <View style={styles.logHeaderContainer}>
         <TouchableOpacity onPress={onPressBack}>
           <Ionicons name="arrow-back" size={24} color="black" />
@@ -197,9 +206,9 @@ export default LogScreen;
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    backgroundColor: "white",
+    paddingLeft: 20,
     // backgroundColor: "red",
-    height: "100%",
   },
   logHeaderContainer: {
     flexDirection: "row",
@@ -237,7 +246,6 @@ const styles = StyleSheet.create({
   dateContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
   },
   cardContainer: {
     marginTop: 10,

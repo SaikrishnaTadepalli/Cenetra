@@ -27,25 +27,27 @@ const CreateScreen = () => {
   return (
     <>
       <View style={styles.container}>
-        {buttonOptions.map((button, idx) => (
-          <View
-            style={styles.buttonsContainer}
-            key={`create-options-idx-${idx}`}
-          >
-            <TouchableOpacity onPress={() => handleButtonOptions(idx)}>
-              <Text
-                style={
-                  activeButton === button
-                    ? styles.activeButtonText
-                    : styles.buttonText
-                }
-              >
-                {button}
-              </Text>
-            </TouchableOpacity>
-            {idx !== 2 && <View style={styles.verticalDivider} />}
-          </View>
-        ))}
+        <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
+          {buttonOptions.map((button, idx) => (
+            <View
+              style={styles.buttonsContainer}
+              key={`create-options-idx-${idx}`}
+            >
+              <TouchableOpacity onPress={() => handleButtonOptions(idx)}>
+                <Text
+                  style={
+                    activeButton === button
+                      ? styles.activeButtonText
+                      : styles.buttonText
+                  }
+                >
+                  {button}
+                </Text>
+              </TouchableOpacity>
+              {idx !== 2 && <View style={styles.verticalDivider} />}
+            </View>
+          ))}
+        </View>
       </View>
       <View style={styles.horizontalDivider} />
       {activeButton === buttonOptions[0] && <CreateClassScreen />}
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     paddingLeft: 20,
     flexDirection: "row",
+    width: "100%",
   },
   buttonsContainer: {
     alignItems: "center",

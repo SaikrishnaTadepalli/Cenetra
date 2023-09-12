@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -27,7 +28,9 @@ const CreateProfileScreen = ({
   setStudentNumber,
   isEdit,
   imageUrl,
+  setIsStudentInfoSelected,
 }) => {
+  const layout = useWindowDimensions();
   const { addNewProfileLoading, addNewProfileError, studentInfo } = useSelector(
     (state) => state.studentProfile
   );
@@ -131,10 +134,24 @@ const CreateProfileScreen = ({
   const renderText = (infoType, state, setState, idx, property) => {
     return (
       <View style={styles.infoLineContainer}>
-        {infoType !== "" && <Text style={styles.infoTypeText}>{infoType}</Text>}
+        {infoType !== "" && (
+          <Text
+            style={[
+              styles.infoTypeText,
+              { width: layout.width >= 768 ? "20%" : "40%" },
+            ]}
+          >
+            {infoType}
+          </Text>
+        )}
         <TextInput
           editable={isEditable}
-          style={styles.infoInputText}
+          style={[
+            styles.infoInputText,
+            {
+              height: layout.width >= 768 ? 40 : 60,
+            },
+          ]}
           value={isEditable ? state[idx][property] : ""}
           onChangeText={(value) =>
             updateItem(state, setState, idx, property, value)
@@ -174,6 +191,7 @@ const CreateProfileScreen = ({
               // setStudentName("");
               setStudentNumber("");
               setIsEditable(true);
+              setIsStudentInfoSelected(true);
             }, 2000);
           }
         }
@@ -228,6 +246,7 @@ const CreateProfileScreen = ({
     setIsCancelled(true);
     dispatch(setIsNewProfileAdded(false));
     //dispatch(setIsNewClassAdded(false));
+    setIsStudentInfoSelected(true);
     setTimeout(() => {
       setIsCancelled(false);
     }, 2000);
@@ -695,13 +714,11 @@ const styles = StyleSheet.create({
   infoTypeText: {
     fontSize: 16,
     fontFamily: "InterMedium",
-    width: "20%",
     // marginRight: 40,
   },
   infoInputText: {
     backgroundColor: "#FFF",
     borderRadius: 5,
-    height: 40,
     width: 230,
     paddingVertical: 10,
     borderColor: "rgba(217, 217, 217, 0.50)",

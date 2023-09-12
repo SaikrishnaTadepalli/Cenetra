@@ -4,12 +4,14 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createTeacher, setIsNewTeacherAdded } from "../src/redux/teacherSlice";
 
 const AddTeacherScreen = () => {
+  const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const { isNewTeacherAdded, createTeacherPending } = useSelector(
     (state) => state.teacher
@@ -36,11 +38,20 @@ const AddTeacherScreen = () => {
     return (
       <View style={styles.infoLineContainer}>
         {infoType !== "" ? (
-          <Text style={styles.infoTypeText}>{infoType}</Text>
+          <Text
+            style={[
+              styles.infoTypeText,
+              {
+                width: layout.width >= 768 ? "20%" : "80%",
+              },
+            ]}
+          >
+            {infoType}
+          </Text>
         ) : null}
         <TextInput
           editable={isEditable}
-          style={styles.infoInputText}
+          style={[styles.infoInputText, { marginLeft: 20 }]}
           value={!isEditable ? "" : teacherState[key]}
           onChangeText={(value) => handleChange(key, value)}
         />
@@ -103,7 +114,7 @@ const AddTeacherScreen = () => {
     <View style={{ paddingLeft: 40, marginTop: 30, flexDirection: "row" }}>
       <>
         {isNewTeacherAdded && (
-          <View style={{ width: "50%" }}>
+          <View style={{ width: layout.width >= 768 ? "50%" : "100%" }}>
             <Text style={styles.subHeaderText}>Teacher details</Text>
             {renderText("First name", "firstName")}
             {renderText("Last name", "lastName")}
@@ -114,6 +125,17 @@ const AddTeacherScreen = () => {
               <Text style={styles.errorText}>{error}</Text>
             ) : null}
             {createTeacherPending && <Text>Adding new teacher.</Text>}
+            {teacherNumber && layout.width < 768 && (
+              <View
+                style={{
+                  width: "100%",
+                }}
+              >
+                <Text style={styles.teacherNumberText}>
+                  The teacher number is: {teacherNumber}
+                </Text>
+              </View>
+            )}
             <View style={styles.buttonsContainer}>
               <TouchableOpacity
                 style={[
@@ -133,7 +155,7 @@ const AddTeacherScreen = () => {
             </View>
           </View>
         )}
-        {teacherNumber && (
+        {teacherNumber && layout.width >= 768 && (
           <View
             style={{
               width: "30%",
@@ -168,14 +190,13 @@ const styles = StyleSheet.create({
   infoTypeText: {
     fontSize: 16,
     fontFamily: "InterMedium",
-    width: "20%",
+
     // marginRight: 40,
   },
   infoInputText: {
     backgroundColor: "#FFF",
     borderRadius: 5,
     height: 40,
-    width: 200,
     paddingVertical: 10,
     borderColor: "rgba(217, 217, 217, 0.50)",
     borderBottomColor: "#D9D9D9",

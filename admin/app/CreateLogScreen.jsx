@@ -5,10 +5,12 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  useWindowDimensions,
 } from "react-native";
 import { React, useEffect, useState } from "react";
 // import { StarRating } from "react-native-star-rating";
 
+import CreateResponsiveStyle from "../src/components/CreateResponsiveStyle";
 import colors from "../src/constants/Colors";
 import DragAndDrop from "../src/components/DragAndDrop";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,10 +30,17 @@ const CreateLogScreen = ({
   studentID,
   name,
   logID,
-  setIsStudentNameSelected,
+  setLogID,
   setIsOldLogSelected,
+  setIsStudentNameSelected,
+  setIsSaved,
+  isSaved,
 }) => {
-  const { logs } = useSelector((state) => state.log);
+  const layout = useWindowDimensions();
+  const styles = responsiveStyle(layout);
+  const { logs, updateLogsPending, updateLogsSuccessful } = useSelector(
+    (state) => state.log
+  );
   const findLogById = (id) => {
     let foundLog = null;
 
@@ -50,7 +59,6 @@ const CreateLogScreen = ({
   const [isEditable, setEditable] = useState(true);
   const dispatch = useDispatch();
   const state = useSelector((state) => state.log);
-  const { updateLogsPending, updateLogsSuccessful } = state;
 
   const [openEndedQuestionState, setOpenEndedQuestionState] = useState([
     {
@@ -60,72 +68,71 @@ const CreateLogScreen = ({
   ]);
   const [isCancelled, setIsCancelled] = useState(false);
   const [error, setError] = useState("");
-  const [isSaved, setIsSaved] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(false);
   const isAddNewLogSelected = getIsNewLogAdded(state);
   const [filledStars, setFilledStars] = useState(rating);
-  const [checkBoxQuestionState, setCheckBoxQuestionState] = useState([
-    {
-      question: "Which activities did the children engage in today?",
-      answer: parsedLog ? parsedLog.checkBoxQuestions[0].answer : [],
-      options: [
-        "Outdoor play",
-        "Art and crafts",
-        "Storytime",
-        "Music movement",
-        "Sensor play",
-        "Free play",
-        "Group games",
-      ],
-    },
-    {
-      question: "Which areas did the child need assistance with today?",
-      answer: parsedLog ? parsedLog.checkBoxQuestions[1].answer : [],
-      options: [
-        "Self-care (e.g., toileting, handwashing)",
-        "Snack time",
-        "Putting on coats and shoes",
-        "Sharing toys",
-        "Cleaning up after play",
-        "None",
-      ],
-    },
-    {
-      question: "Which positive behaviors did the child exhibit today?",
-      answer: parsedLog ? parsedLog.checkBoxQuestions[2].answer : [],
-      options: [
-        "Sharing",
-        "Taking turns",
-        "Helping others",
-        "Listening attentively",
-        "Following instructions",
-        "Problem-solving",
-      ],
-    },
-    {
-      question: "Which materials were used during learning activities?",
-      answer: parsedLog ? parsedLog.checkBoxQuestions[3].answer : [],
-      options: [
-        "Manipulatives (e.g., blocks, puzzles)",
-        "Writing tools (e.g., crayons, markers)",
-        "Books and reading materials",
-        "Math manipulatives",
-        "Science experiment materials",
-      ],
-    },
-    {
-      question: "Which behavior management strategies were implemented today?",
-      answer: parsedLog ? parsedLog.checkBoxQuestions[4].answer : [],
-      options: [
-        "Positive reinforcement",
-        "Time-outs",
-        "Redirection",
-        "Verbal reminders",
-        "Visual cues",
-      ],
-    },
-    // ...more questions
-  ]);
+  // const [checkBoxQuestionState, setCheckBoxQuestionState] = useState([
+  //   {
+  //     question: "Which activities did the children engage in today?",
+  //     answer: parsedLog ? parsedLog.checkBoxQuestions[0].answer : [],
+  //     options: [
+  //       "Outdoor play",
+  //       "Art and crafts",
+  //       "Storytime",
+  //       "Music movement",
+  //       "Sensor play",
+  //       "Free play",
+  //       "Group games",
+  //     ],
+  //   },
+  //   {
+  //     question: "Which areas did the child need assistance with today?",
+  //     answer: parsedLog ? parsedLog.checkBoxQuestions[1].answer : [],
+  //     options: [
+  //       "Self-care (e.g., toileting, handwashing)",
+  //       "Snack time",
+  //       "Putting on coats and shoes",
+  //       "Sharing toys",
+  //       "Cleaning up after play",
+  //       "None",
+  //     ],
+  //   },
+  //   {
+  //     question: "Which positive behaviors did the child exhibit today?",
+  //     answer: parsedLog ? parsedLog.checkBoxQuestions[2].answer : [],
+  //     options: [
+  //       "Sharing",
+  //       "Taking turns",
+  //       "Helping others",
+  //       "Listening attentively",
+  //       "Following instructions",
+  //       "Problem-solving",
+  //     ],
+  //   },
+  //   {
+  //     question: "Which materials were used during learning activities?",
+  //     answer: parsedLog ? parsedLog.checkBoxQuestions[3].answer : [],
+  //     options: [
+  //       "Manipulatives (e.g., blocks, puzzles)",
+  //       "Writing tools (e.g., crayons, markers)",
+  //       "Books and reading materials",
+  //       "Math manipulatives",
+  //       "Science experiment materials",
+  //     ],
+  //   },
+  //   {
+  //     question: "Which behavior management strategies were implemented today?",
+  //     answer: parsedLog ? parsedLog.checkBoxQuestions[4].answer : [],
+  //     options: [
+  //       "Positive reinforcement",
+  //       "Time-outs",
+  //       "Redirection",
+  //       "Verbal reminders",
+  //       "Visual cues",
+  //     ],
+  //   },
+  //   // ...more questions
+  // ]);
   const [radioQuestionState, setRadioQuestionState] = useState([
     {
       question: "Did they have their snack?",
@@ -213,6 +220,7 @@ const CreateLogScreen = ({
     // ...more questions
   ]);
 
+  // Function to check if all answer arrays are filled
   const areAllCheckboxFieldsFilled = () => {
     return checkBoxQuestionState.every(
       (question) => question.answer.length > 0
@@ -228,8 +236,8 @@ const CreateLogScreen = ({
     // console.log(action);
     if (
       // areAllCheckboxFieldsFilled() &&
-      areAllFieldsFilled(radioQuestionState) &&
-      areAllFieldsFilled(openEndedQuestionState) &&
+      // areAllFieldsFilled(radioQuestionState) &&
+      // areAllFieldsFilled(openEndedQuestionState) &&
       filledStars
     ) {
       dispatch(action)
@@ -243,32 +251,33 @@ const CreateLogScreen = ({
             setIsInputEmpty(false);
             setIsSaved(true);
             setIsCancelled(false);
-
+            !logID && setLogID(response.payload.data.createLog._id);
             setFilledStars(0);
             setTimeout(() => {
+              setIsOldLogSelected(true);
               setIsSaved(false);
               setEditable(true);
-              setIsOldLogSelected(true);
             }, 2000);
           }
         })
         .catch((error) => {
-          setTimeout(() => setError(""));
           console.error(error);
+          setError("Something went wrong please try again");
+          setTimeout(() => {
+            setError("");
+          }, 2000);
         });
     } else {
-      setError("Please fill in all the questions.");
-      setTimeout(() => setError(""), 2000);
+      setError("Please fill in all fields");
     }
   };
-
   const onSave = () => {
     // console.log(inputs);
     const adminID = localStorage.getItem("adminID");
     const adminName = localStorage.getItem("adminName");
     const data = {
       radioButtonQuestions: radioQuestionState,
-      checkBoxQuestions: checkBoxQuestionState,
+      //checkBoxQuestions: checkBoxQuestionState,
       openEndedQuestions: openEndedQuestionState,
     };
     var action = "";
@@ -280,6 +289,7 @@ const CreateLogScreen = ({
         adminName: adminName,
       });
     } else {
+      console.log(data);
       action = updateLogs({
         adminID: adminID,
         studentID: studentID,
@@ -294,12 +304,12 @@ const CreateLogScreen = ({
   const onCancel = () => {
     setIsCancelled(true);
     setEditable(false);
-    dispatch(setIsNewLogAdded(false));
     if (logID) {
       setIsOldLogSelected(true);
     } else {
       setIsStudentNameSelected(true);
     }
+    dispatch(setIsNewLogAdded(false));
     setTimeout(() => {
       setIsCancelled(false);
       setEditable(true);
@@ -387,49 +397,69 @@ const CreateLogScreen = ({
 
   return (
     <>
-      {isSaved ? <Text>Your logs have been saved successfully!</Text> : null}
+      {isSaved ? (
+        <View style={styles("container")}>
+          <Text>Your logs have been saved successfully!</Text>
+        </View>
+      ) : null}
       {isAddNewLogSelected ? (
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={{ paddingBottom: 60 }}
-        >
-          <Text style={styles.headerText}>{name}'s Logs</Text>
-          <View style={{ flexDirection: "row", width: "100%" }}>
-            <View style={{ width: "100%" }}>
-              <View style={styles.dateContainer}>
-                <Text
-                  style={[styles.dateText, { fontFamily: "InterSemiBold" }]}
-                >
-                  Date
-                </Text>
-                <Text style={[styles.dateText, { marginLeft: -30 }]}>
-                  {date}
-                </Text>
-              </View>
-              {/* <View style={styles.dragAndDropContainer}>
-                <DragAndDrop studentID={studentID} />
-              </View> */}
-              <View style={{ marginBottom: 20 }}>
-                {radioQuestionState.map((question, idx) => (
-                  <MultipleChoiceQuestion
-                    key={`radio-question-${idx}`}
-                    question={question.question}
-                    answers={question.options}
-                    selectedValue={question.answer}
-                    disabled={false}
-                    setSelectedValue={(option) =>
-                      handleRadioSelection(idx, option)
-                    }
-                  />
-                ))}
-              </View>
-              <View style={styles.listView}>
-                <View style={styles.ratingContainer}>
-                  <Text style={styles.ratingText}>Mood on arrival</Text>
-                  <View style={{ flexDirection: "row" }}>{renderStars()}</View>
+        <>
+          <ScrollView
+            style={styles("container")}
+            contentContainerStyle={{ paddingBottom: 60 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles("headerText")}>{name}'s Logs</Text>
+            <View style={{ flexDirection: "row" }}>
+              <View>
+                <View style={styles("dateContainer")}>
+                  <Text
+                    style={[
+                      styles("dateText"),
+                      { fontFamily: "InterSemiBold" },
+                    ]}
+                  >
+                    Date
+                  </Text>
+                  <Text style={[styles("dateText"), { marginLeft: -30 }]}>
+                    {date}
+                  </Text>
                 </View>
-                <View style={{ marginBottom: 30 }}>
-                  {/* {checkBoxQuestionState.map((question, idx) => (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  {/* <View style={styles("ratingContainer}>
+                  <Text style={styles("ratingText}>Fill in a rating</Text>
+                  <View style={{ flexDirection: "row" }}>{renderStars()}</View>
+                </View> */}
+                </View>
+                <View style={styles("listView")}>
+                  <View style={{ marginBottom: 20, width: "100%" }}>
+                    {radioQuestionState.map((question, idx) => (
+                      <MultipleChoiceQuestion
+                        key={`radio-question-${idx}`}
+                        question={question.question}
+                        answers={question.options}
+                        selectedValue={question.answer}
+                        disabled={false}
+                        setSelectedValue={(option) =>
+                          handleRadioSelection(idx, option)
+                        }
+                      />
+                    ))}
+                  </View>
+                  <View style={styles("ratingContainer")}>
+                    <Text style={styles("ratingText")}>Mood on arrival</Text>
+                    <View style={styles("starsContainer")}>
+                      {renderStars()}
+                    </View>
+                  </View>
+                  {/* <View style={{ marginBottom: 40 }}>
+                  {checkBoxQuestionState.map((question, idx) => (
                     <MultiSelectQuestion
                       key={`multi-question-${idx}`}
                       question={question.question}
@@ -442,52 +472,48 @@ const CreateLogScreen = ({
                       }
                       onSelectAll={() => handleSelectAll(idx)}
                     />
-                  ))} */}
-                </View>
-
-                <View
-                  style={{
-                    marginBottom: 20,
-                    width: "100%",
-                  }}
-                >
-                  {openEndedQuestionState.map((question, idx) => (
-                    <OpenEndedQuestion
-                      key={`open-question-${idx}`}
-                      question={question.question}
-                      answer={question.answer}
-                      handleInputChange={(answer) =>
-                        handleInputChange(idx, answer)
-                      }
-                    />
                   ))}
-                </View>
-
-                {isInputEmpty && !filledStars ? (
-                  <Text style={styles.errorText}>
-                    Could not save logs. Please answer all questions.
-                  </Text>
-                ) : null}
-                {updateLogsPending ? <Text>Saving your changes.</Text> : null}
-                {error !== "" && <Text style={{ color: "red" }}>{error}</Text>}
-                <View style={styles.buttonsContainer}>
-                  <TouchableOpacity
-                    style={styles.saveButtonContainer}
-                    onPress={onSave}
-                  >
-                    <Text style={styles.saveButtonText}>Save</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.cancelButtonContainer}
-                    onPress={onCancel}
-                  >
-                    <Text style={styles.cancelButtonText}>Cancel</Text>
-                  </TouchableOpacity>
+                </View> */}
+                  <View style={{ marginBottom: 20 }}>
+                    {openEndedQuestionState.map((question, idx) => (
+                      <OpenEndedQuestion
+                        key={`open-question-${idx}`}
+                        question={question.question}
+                        answer={question.answer}
+                        handleInputChange={(answer) =>
+                          handleInputChange(idx, answer)
+                        }
+                      />
+                    ))}
+                  </View>
+                  {isInputEmpty && !filledStars ? (
+                    <Text style={styles("errorText")}>
+                      Could not save logs. Please answer all questions.
+                    </Text>
+                  ) : null}
+                  {updateLogsPending ? <Text>Saving your changes.</Text> : null}
+                  {error !== "" && (
+                    <Text style={{ color: "red" }}>{error}</Text>
+                  )}
+                  <View style={styles("buttonsContainer")}>
+                    <TouchableOpacity
+                      style={styles("saveButtonContainer")}
+                      onPress={onSave}
+                    >
+                      <Text style={styles("saveButtonText")}>Save</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles("cancelButtonContainer")}
+                      onPress={onCancel}
+                    >
+                      <Text style={styles("cancelButtonText")}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </>
       ) : null}
     </>
   );
@@ -495,10 +521,135 @@ const CreateLogScreen = ({
 
 export default CreateLogScreen;
 
+const responsiveStyle = CreateResponsiveStyle(
+  {
+    container: {
+      //backgroundColor: "red",
+      //width: "100%",
+      paddingLeft: 20,
+    },
+    headerText: {
+      marginBottom: 40,
+      fontSize: 24,
+      fontFamily: "InterMedium",
+    },
+    dateContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    dateText: {
+      fontFamily: "InterBold",
+      fontSize: 16,
+      width: "40%",
+    },
+    listView: {
+      width: "100%",
+    },
+    cardContainer: {
+      minHeight: 60,
+      borderColor: colors.lightGrey,
+      borderWidth: 1,
+      borderRadius: 4,
+      paddingHorizontal: 8,
+      paddingVertical: 8,
+      justifyContent: "center",
+      backgroundColor: "white",
+      marginBottom: 20,
+    },
+    ratingContainer: {
+      alignItems: "center",
+      flexDirection: "row",
+      marginBottom: 20,
+    },
+    ratingText: {
+      fontFamily: "InterMedium",
+      fontSize: 16,
+      marginRight: 40,
+    },
+    buttonContainer: {
+      // marginVertical: 20,
+      backgroundColor: colors.lightPurple,
+      height: 40,
+      width: "30%",
+      borderRadius: 10,
+      justifyContent: "center",
+    },
+    buttonText: {
+      alignSelf: "center",
+      color: colors.primaryText,
+      fontWeight: 600,
+    },
+    saveButtonContainer: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: 120,
+      height: 40,
+      backgroundColor: "#23342C",
+      borderRadius: 100,
+      marginRight: 10,
+    },
+    cancelButtonContainer: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: 120,
+      height: 40,
+      backgroundColor: "white",
+      borderRadius: 100,
+      borderColor: "black",
+      borderWidth: 1,
+    },
+    saveButtonText: {
+      alignSelf: "center",
+      color: "white",
+      fontFamily: "InterMedium",
+      fontSize: 14,
+    },
+    cancelButtonText: {
+      color: "black",
+      fontSize: 14,
+      fontFamily: "InterMedium",
+      fontFamily: "InterBold",
+    },
+    buttonsContainer: {
+      flexDirection: "row",
+      marginTop: 30,
+      marginRight: 100,
+    },
+    errorText: {
+      color: colors.red,
+      marginTop: 20,
+      fontSize: 14,
+      //alignSelf: "center",
+    },
+    dragAndDropContainer: {
+      alignSelf: "flex-start",
+      marginBottom: 40,
+    },
+    starsContainer: {
+      flexDirection: "row",
+    },
+  },
+  {
+    starsContainer: {
+      width: "40%",
+      flexWrap: "wrap",
+    },
+    container: {
+      width: "100%",
+    },
+  }
+);
+
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "red",
-    width: "100%",
+    //backgroundColor: "red",
+    // width: "100%",
+    paddingLeft: 20,
   },
   headerText: {
     marginBottom: 40,
@@ -513,7 +664,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontFamily: "InterBold",
     fontSize: 16,
-    width: "20%",
+    width: "40%",
   },
   listView: {
     width: "100%",
@@ -532,6 +683,7 @@ const styles = StyleSheet.create({
   ratingContainer: {
     alignItems: "center",
     flexDirection: "row",
+    marginBottom: 20,
   },
   ratingText: {
     fontFamily: "InterMedium",
