@@ -86,7 +86,7 @@ const LogScreen = ({
       style={[
         styles.container,
         {
-          width: layout.width,
+          width: layout.width < 768 ? layout.width : "100%",
         },
       ]}
     >

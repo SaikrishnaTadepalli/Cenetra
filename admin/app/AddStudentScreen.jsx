@@ -124,14 +124,16 @@ const AddStudentScreen = () => {
   };
 
   const handleClick = () => {
-    // if (studentInfoState.ID === "") {
-    //   setError("Please create a student before adding a profile.");
-    //   setTimeout(() => setError(""), 3000);
-    // } else {
-    dispatch(setIsNewProfileAdded(true));
-    setStudentNumber("");
-    setIsStudentInfoSelected(false);
-    // }
+    if (studentInfoState.ID === "") {
+      setError("Please create a student before adding a profile.");
+      setTimeout(() => setError(""), 3000);
+    } else {
+      dispatch(setIsNewProfileAdded(true));
+      setStudentNumber("");
+      if (layout.width < 768) {
+        setIsStudentInfoSelected(false);
+      }
+    }
   };
   return (
     <View style={styles.container}>
@@ -194,21 +196,19 @@ const AddStudentScreen = () => {
             <>
               <View style={styles.verticalDivider} />
               <View style={styles.rightContent}>
-                <>
-                  {studentInfoState.ID !== "" && isNewProfileAdded ? (
-                    <CreateProfileScreen
-                      studentID={studentInfoState.ID}
-                      studentName={studentInfoState.name}
-                      studentNumber={studentInfoState.number}
-                      isEdit={false}
-                    />
-                  ) : null}
-                  {studentNumber && (
-                    <Text style={styles.studentNumberText}>
-                      The student number is: {studentNumber}
-                    </Text>
-                  )}
-                </>
+                {studentInfoState.ID !== "" && isNewProfileAdded ? (
+                  <CreateProfileScreen
+                    studentID={studentInfoState.ID}
+                    studentName={studentInfoState.name}
+                    studentNumber={studentInfoState.number}
+                    isEdit={false}
+                  />
+                ) : null}
+                {studentNumber && (
+                  <Text style={styles.studentNumberText}>
+                    The student number is: {studentNumber}
+                  </Text>
+                )}
               </View>
             </>
           ) : (

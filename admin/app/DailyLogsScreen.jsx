@@ -209,6 +209,8 @@ const DailyLogsScreen = () => {
                     logID={logID}
                     setIsStudentNameSelected={setIsStudentNameSelected}
                     setIsOldLogSelected={setIsOldLogSelected}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
                   />
                 )}
               </View>
